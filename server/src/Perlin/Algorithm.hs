@@ -3,6 +3,7 @@ module Perlin.Algorithm
     ( Permute
     , init
     , noise2D
+    , normalizeToFloat
     ) where
 
 import           Data.Bits           ((.&.))
@@ -63,6 +64,19 @@ grad !hash !x !y =
         3 -> (-x) - y
         _ -> 0
 
+-- | Take a Double, clamp it to the range [-1, 1], squeeze the range to [0, 1]
+-- and convert to a Float.
+normalizeToFloat :: Double -> Float
+normalizeToFloat = realToFrac . transformRange . clamp (-1) 1
+{-# INLINE normalizeToFloat #-}
+
+transformRange :: Double -> Double
+transformRange !value = (value + 1) / 2
+{-# INLINE transformRange #-}
+
+clamp :: Double -> Double -> Double -> Double
+clamp !mi !ma = max mi . min ma
+{-# INLINE clamp #-}
 
 -- | Permutations table.
 permutations :: [Int]
