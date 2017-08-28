@@ -19,6 +19,7 @@ library
   other-modules:       Perlin.Algorithm
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , bytestring
                      , JuicyPixels
                      , linear
                      , vector

@@ -14,6 +14,7 @@ import           Prelude             hiding (init)
 
 -- | Permutation table used for Perlin noise generation. Precalculate the table.
 newtype Permute = Permute (Vector Int)
+    deriving Show
 
 -- | Initialize the permutation table.
 init :: Permute
