@@ -19,19 +19,22 @@ type WorldCoordinates = (Int, Int)
 
 -- | A context with parameters for generating a mesh or image.
 data PerlinContext = PerlinContext
-    { maxHeight :: !Int
-    , maxWidth  :: !Int
-    , weights   :: ![(Double, Double)]
-    , permute   :: !Permute
+    { heightDividend :: !Int
+    , widthDividend  :: !Int
+    , weights        :: ![(Double, Double)]
+    , permute        :: !Permute
     } deriving Show
 
 -- | Generate a default 'PerlinContext'.
 defaultPerlinContext :: PerlinContext
 defaultPerlinContext =
     PerlinContext
-        { maxHeight = maxBound
-        , maxWidth = maxBound
-        , weights = [(1, 1)]
+        { heightDividend = 104729
+        , widthDividend = 104729
+        , weights = [ (104729 / 500, 0.8)
+                    , (104729 / 250, 0.2)
+                    , (104729 / 100, 0.1)
+                    ]
         , permute = init
         }
 
@@ -44,8 +47,8 @@ perlinImage :: PerlinContext -> ImageDimensions -> WorldCoordinates -> Image Pix
 perlinImage context (width, height) (startX, startZ) =
     generateImage
         (\x z ->
-            let xFrac = fromIntegral (startX + x) / fromIntegral (maxWidth context)
-                zFrac = fromIntegral (startZ + z) / fromIntegral (maxHeight context)
+            let xFrac = fromIntegral (startX + x) / fromIntegral (widthDividend context)
+                zFrac = fromIntegral (startZ + z) / fromIntegral (heightDividend context)
                 y     = composedNoise2D (permute context) xFrac zFrac (weights context)
             in toColor y
         ) width height
