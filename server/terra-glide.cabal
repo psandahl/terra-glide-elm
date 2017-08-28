@@ -17,6 +17,10 @@ library
   hs-source-dirs:      src
   exposed-modules:     Lib
   build-depends:       base >= 4.7 && < 5
+                     , aeson
+                     , JuicyPixels
+                     , linear
+                     , vector
   default-language:    Haskell2010
   ghc-options:         -Wall
 
@@ -25,6 +29,7 @@ executable terra-glide-server
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , scotty
                      , terra-glide
   default-language:    Haskell2010
 
@@ -33,7 +38,13 @@ test-suite terra-glide-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   build-depends:       base
+                     , HUnit
+                     , HUnit-approx
                      , terra-glide
+                     , test-framework
+                     , test-framework-hunit
+                     , test-framework-quickcheck2
+                     , QuickCheck
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
