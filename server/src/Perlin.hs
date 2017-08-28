@@ -1,21 +1,16 @@
 module Perlin
-    ( ImageDimensions
-    , WorldCoordinates
-    , PerlinContext (..)
+    ( PerlinContext (..)
+    , WorldQuery (..)
     , defaultPerlinContext
-    , asPngFile
+    , asHeightmap
     , module Perlin.Algorithm
     ) where
 
-import           Codec.Picture
+import           Codec.Picture        (Image, PixelRGB8 (..), encodePng,
+                                       generateImage)
+import           Data.ByteString.Lazy (ByteString)
 import           Perlin.Algorithm
-import           Prelude          hiding (init)
-
--- | Image dimensions (width, height).
-type ImageDimensions = (Int, Int)
-
--- | World coordinates (x, z) where to start generate mesh/image.
-type WorldCoordinates = (Int, Int)
+import           Prelude              hiding (init)
 
 -- | A context with parameters for generating a mesh or image.
 data PerlinContext = PerlinContext
@@ -23,6 +18,13 @@ data PerlinContext = PerlinContext
     , widthDividend  :: !Int
     , weights        :: ![(Double, Double)]
     , permute        :: !Permute
+    } deriving Show
+
+data WorldQuery = WorldQuery
+    { xPos  :: !Int
+    , zPos  :: !Int
+    , width :: !Int
+    , depth :: !Int
     } deriving Show
 
 -- | Generate a default 'PerlinContext'.
@@ -38,20 +40,20 @@ defaultPerlinContext =
         , permute = init
         }
 
--- | Generate a PNG file to the given file path.
-asPngFile :: FilePath -> PerlinContext -> ImageDimensions -> WorldCoordinates -> IO ()
-asPngFile filePath context dimensions =
-    writePng filePath . perlinImage context dimensions
+-- | Generate a heightmap as a PNG image encoded to a 'ByteString'.
+asHeightmap :: PerlinContext -> WorldQuery -> ByteString
+asHeightmap context =
+    encodePng . perlinImage context
 
-perlinImage :: PerlinContext -> ImageDimensions -> WorldCoordinates -> Image PixelRGB8
-perlinImage context (width, height) (startX, startZ) =
+perlinImage :: PerlinContext -> WorldQuery -> Image PixelRGB8
+perlinImage context worldQuery =
     generateImage
         (\x z ->
-            let xFrac = fromIntegral (startX + x) / fromIntegral (widthDividend context)
-                zFrac = fromIntegral (startZ + z) / fromIntegral (heightDividend context)
+            let xFrac = fromIntegral (xPos worldQuery + x) / fromIntegral (widthDividend context)
+                zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (heightDividend context)
                 y     = composedNoise2D (permute context) xFrac zFrac (weights context)
             in toColor y
-        ) width height
+        ) (width worldQuery) (depth worldQuery)
 
 toColor :: Double -> PixelRGB8
 toColor value =

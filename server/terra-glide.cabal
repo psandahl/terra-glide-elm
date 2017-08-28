@@ -31,8 +31,10 @@ executable terra-glide-server
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , http-types
                      , scotty
                      , terra-glide
+                     , text
   default-language:    Haskell2010
 
 test-suite terra-glide-test
