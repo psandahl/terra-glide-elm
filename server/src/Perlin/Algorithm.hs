@@ -3,10 +3,12 @@ module Perlin.Algorithm
     ( Permute
     , init
     , noise2D
+    , composedNoise2D
     , normalizeToFloat
     ) where
 
 import           Data.Bits           ((.&.))
+import           Data.List           (foldl')
 import           Data.Vector.Unboxed (Vector, fromList, (!))
 import           Prelude             hiding (init)
 
@@ -63,6 +65,13 @@ grad !hash !x !y =
         2 -> x - y
         3 -> (-x) - y
         _ -> 0
+
+-- | Compose noise for several frequences and altitudes.
+composedNoise2D :: Permute -> Double -> Double -> [(Double, Double)] -> Double
+composedNoise2D permute !x !y =
+    foldl' (\acc (freq, altitude) ->
+        acc + altitude * noise2D permute (x * freq) (y * freq)
+        ) 0
 
 -- | Take a Double, clamp it to the range [-1, 1], squeeze the range to [0, 1]
 -- and convert to a Float.
