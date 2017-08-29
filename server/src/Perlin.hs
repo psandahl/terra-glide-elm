@@ -14,10 +14,10 @@ import           Prelude              hiding (init)
 
 -- | A context with parameters for generating a mesh or image.
 data PerlinContext = PerlinContext
-    { heightDividend :: !Int
-    , widthDividend  :: !Int
-    , weights        :: ![(Double, Double)]
-    , permute        :: !Permute
+    { depthDividend :: !Int
+    , widthDividend :: !Int
+    , weights       :: ![(Double, Double)]
+    , permute       :: !Permute
     } deriving Show
 
 data WorldQuery = WorldQuery
@@ -31,11 +31,12 @@ data WorldQuery = WorldQuery
 defaultPerlinContext :: PerlinContext
 defaultPerlinContext =
     PerlinContext
-        { heightDividend = 104729
-        , widthDividend = 104729
-        , weights = [ (104729 / 500, 0.8)
-                    , (104729 / 250, 0.2)
-                    , (104729 / 100, 0.1)
+        { depthDividend = 1051
+        , widthDividend = 1051
+        , weights = [ (1, 1)
+                    , (3, 0.5)
+                    , (6, 0.25)
+                    , (25, 0.015)
                     ]
         , permute = init
         }
@@ -50,7 +51,7 @@ perlinImage context worldQuery =
     generateImage
         (\x z ->
             let xFrac = fromIntegral (xPos worldQuery + x) / fromIntegral (widthDividend context)
-                zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (heightDividend context)
+                zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (depthDividend context)
                 y     = composedNoise2D (permute context) xFrac zFrac (weights context)
             in toColor y
         ) (width worldQuery) (depth worldQuery)
@@ -58,5 +59,5 @@ perlinImage context worldQuery =
 toColor :: Double -> PixelRGB8
 toColor value =
     let value' = normalizeToFloat value
-        color = floor $ value' * 255
+        color = round $ value' * 255
     in PixelRGB8 color color color
