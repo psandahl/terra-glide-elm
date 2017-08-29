@@ -6,8 +6,7 @@ module Perlin
     , module Perlin.Algorithm
     ) where
 
-import           Codec.Picture        (Image, PixelRGB8 (..), encodePng,
-                                       generateImage)
+import           Codec.Picture        (PixelRGB8 (..), encodePng, generateImage)
 import           Data.ByteString.Lazy (ByteString)
 import           Perlin.Algorithm
 import           Prelude              hiding (init)
@@ -43,21 +42,20 @@ defaultPerlinContext =
 
 -- | Generate a heightmap as a PNG image encoded to a 'ByteString'.
 asHeightmap :: PerlinContext -> WorldQuery -> ByteString
-asHeightmap context =
-    encodePng . perlinImage context
+asHeightmap context worldQuery =
+    encodePng $ generateImage (\x -> toColor . perlin context worldQuery x)
+                              (width worldQuery) (depth worldQuery)
 
-perlinImage :: PerlinContext -> WorldQuery -> Image PixelRGB8
-perlinImage context worldQuery =
-    generateImage
-        (\x z ->
-            let xFrac = fromIntegral (xPos worldQuery + x) / fromIntegral (widthDividend context)
-                zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (depthDividend context)
-                y     = composedNoise2D (permute context) xFrac zFrac (weights context)
-            in toColor y
-        ) (width worldQuery) (depth worldQuery)
+-- | Workhorse function. From all type of context and a pair of coordinates
+-- (starting at 0, 0) produce a normalized Float value.
+perlin :: PerlinContext -> WorldQuery -> Int -> Int -> Float
+perlin context worldQuery x z =
+    let xFrac = fromIntegral (xPos worldQuery + x) / fromIntegral (widthDividend context)
+        zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (depthDividend context)
+        y     = composedNoise2D (permute context) xFrac zFrac (weights context)
+    in normalizeToFloat y
 
-toColor :: Double -> PixelRGB8
+toColor :: Float -> PixelRGB8
 toColor value =
-    let value' = normalizeToFloat value
-        color = round $ value' * 255
+    let color = round $ value * 255
     in PixelRGB8 color color color
