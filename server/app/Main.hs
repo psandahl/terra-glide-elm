@@ -12,14 +12,21 @@ import           Web.Scotty
 main :: IO ()
 main = do
     let perlin = Perlin.defaultPerlinContext
-    scotty 8000 $
-        get "/world/heightmap" $ heightmap perlin `rescue` badRequest
+    scotty 8000 $ do
+        get "/world/heightmap/png" $ heightmapPng perlin `rescue` badRequest
+        get "/world/heightmap/r16" $ heightmapR16 perlin `rescue` badRequest
 
-heightmap :: PerlinContext -> ActionM ()
-heightmap perlin = do
+heightmapPng :: PerlinContext -> ActionM ()
+heightmapPng perlin = do
     worldQuery <- worldQueryParams
     setHeader "Content-Type" "image/png"
-    raw $ Perlin.asHeightmap perlin worldQuery
+    raw $ Perlin.asHeightmapPng perlin worldQuery
+
+heightmapR16 :: PerlinContext -> ActionM ()
+heightmapR16 perlin = do
+    worldQuery <- worldQueryParams
+    setHeader "Content-Type" "image/r16"
+    raw $ Perlin.asHeightMapR16 perlin worldQuery
 
 worldQueryParams :: ActionM WorldQuery
 worldQueryParams =

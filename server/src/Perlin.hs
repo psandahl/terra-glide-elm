@@ -2,13 +2,15 @@ module Perlin
     ( PerlinContext (..)
     , WorldQuery (..)
     , defaultPerlinContext
-    , asHeightmap
+    , asHeightmapPng
+    , asHeightMapR16
     , module Perlin.Algorithm
     ) where
 
 import           Codec.Picture        (PixelRGB8 (..), encodePng, generateImage)
 import           Data.ByteString.Lazy (ByteString)
 import           Perlin.Algorithm
+import           Perlin.Raw16         (generateRaw16, toWord16)
 import           Prelude              hiding (init)
 
 -- | A context with parameters for generating a mesh or image.
@@ -41,10 +43,16 @@ defaultPerlinContext =
         }
 
 -- | Generate a heightmap as a PNG image encoded to a 'ByteString'.
-asHeightmap :: PerlinContext -> WorldQuery -> ByteString
-asHeightmap context worldQuery =
+asHeightmapPng :: PerlinContext -> WorldQuery -> ByteString
+asHeightmapPng context worldQuery =
     encodePng $ generateImage (\x -> toColor . perlin context worldQuery x)
                               (width worldQuery) (depth worldQuery)
+
+-- | Generate a heightmap as a R16 bitmap encoded to a 'ByteString'.
+asHeightMapR16 :: PerlinContext -> WorldQuery -> ByteString
+asHeightMapR16 context worldQuery =
+    generateRaw16 (\x -> toWord16 . perlin context worldQuery x)
+                  (width worldQuery) (depth worldQuery)
 
 -- | Workhorse function. From all type of context and a pair of coordinates
 -- (starting at 0, 0) produce a normalized Float value.
