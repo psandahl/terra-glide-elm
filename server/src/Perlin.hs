@@ -34,10 +34,9 @@ defaultPerlinContext =
     PerlinContext
         { depthDividend = 1051
         , widthDividend = 1051
-        , weights = [ (1, 0.7)
-                    , (3, 2.0)
-                    , (6, 0.2)
-                    , (367, 0.005)
+        , weights = [ (1, 0.8)
+                    , (2.2, 1.2)
+                    , (133, 0.003)
                     ]
         , permute = init
         }
