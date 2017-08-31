@@ -1,10 +1,14 @@
 module Perlin
     ( PerlinContext (..)
     , WorldQuery (..)
+    , Mesh (..)
+    , Vertex (..)
     , defaultPerlinContext
     , asHeightmapPng
     , asHeightMapR16
+    , asMesh
     , generateRaw16
+    , generateMesh
     , module Perlin.Algorithm
     ) where
 
@@ -12,6 +16,7 @@ import           Codec.Picture        (PixelRGB8 (..), encodePng, generateImage)
 import           Data.ByteString.Lazy (ByteString)
 import           Linear.V3            (V3 (..))
 import           Perlin.Algorithm
+import           Perlin.Mesh          (Mesh (..), Vertex (..), generateMesh)
 import           Perlin.Raw16         (generateRaw16, toWord16)
 import           Prelude              hiding (init)
 
@@ -24,11 +29,11 @@ data PerlinContext = PerlinContext
     } deriving Show
 
 data WorldQuery = WorldQuery
-    { xPos   :: !Int
-    , zPos   :: !Int
-    , width  :: !Int
-    , depth  :: !Int
-    , yScale :: !Int
+    { xPos       :: !Int
+    , zPos       :: !Int
+    , worldWidth :: !Int
+    , worldDepth :: !Int
+    , yScale     :: !Int
     } deriving Show
 
 -- | Generate a default 'PerlinContext'.
@@ -63,13 +68,20 @@ defaultPerlinContext =
 asHeightmapPng :: PerlinContext -> WorldQuery -> ByteString
 asHeightmapPng context worldQuery =
     encodePng $ generateImage (\x -> toColor . perlin context worldQuery x)
-                              (width worldQuery) (depth worldQuery)
+                              (worldWidth worldQuery) (worldDepth worldQuery)
 
 -- | Generate a heightmap as a R16 bitmap encoded to a 'ByteString'.
 asHeightMapR16 :: PerlinContext -> WorldQuery -> ByteString
 asHeightMapR16 context worldQuery =
     generateRaw16 (\x -> toWord16 . perlin context worldQuery x)
-                  (width worldQuery) (depth worldQuery)
+                  (worldWidth worldQuery) (worldDepth worldQuery)
+
+-- | Generate a Mesh. No encoding.
+asMesh :: PerlinContext -> WorldQuery -> Mesh
+asMesh context worldQuery =
+    generateMesh (perlin context worldQuery)
+                 (worldWidth worldQuery)
+                 (worldDepth worldQuery)
 
 -- | Workhorse function. From the context and a pair of coordinates
 -- (starting at 0, 0) produce a V3, where x and z are moved using the offset

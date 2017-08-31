@@ -22,4 +22,7 @@ testSuite =
     , testGroup "Perlin raw file generation"
         [ testCase "Raw file data shall be the expected" PerlinTests.rawFileGeneration
         ]
+    , testGroup "Mesh generation"
+        [ testCase "Mesh shall be the expected" PerlinTests.meshGeneration
+        ]
     ]

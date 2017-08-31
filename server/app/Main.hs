@@ -3,9 +3,10 @@ module Main
     ( main
     ) where
 
-import           Data.Text.Lazy     (Text)
-import           Network.HTTP.Types (badRequest400)
-import           Perlin             (PerlinContext, WorldQuery (..))
+import           Control.Monad.IO.Class (liftIO)
+import           Data.Text.Lazy         (Text)
+import           Network.HTTP.Types     (badRequest400)
+import           Perlin                 (PerlinContext, WorldQuery (..))
 import qualified Perlin
 import           Web.Scotty
 
@@ -15,6 +16,7 @@ main = do
     scotty 8000 $ do
         get "/world/heightmap/png" $ heightmapPng perlin `rescue` badRequest
         get "/world/heightmap/r16" $ heightmapR16 perlin `rescue` badRequest
+        get "/world/heightmap/mesh" $ heightmapMesh perlin `rescue` badRequest
 
 heightmapPng :: PerlinContext -> ActionM ()
 heightmapPng perlin = do
@@ -28,11 +30,23 @@ heightmapR16 perlin = do
     setHeader "Content-Type" "image/r16"
     raw $ Perlin.asHeightMapR16 perlin worldQuery
 
+heightmapMesh :: PerlinContext -> ActionM ()
+heightmapMesh perlin = do
+    worldQuery <- worldQueryWithScale
+    liftIO $ print $ Perlin.asMesh perlin worldQuery
+    text "Hepp"
+
 worldQueryConstantScale :: Int -> ActionM WorldQuery
 worldQueryConstantScale scale =
     WorldQuery <$> param "xpos" <*> param "zpos"
                <*> param "width" <*> param "depth"
                <*> pure scale
+
+worldQueryWithScale :: ActionM WorldQuery
+worldQueryWithScale =
+    WorldQuery <$> param "xpos" <*> param "zpos"
+               <*> param "width" <*> param "depth"
+               <*> param "yscale"
 
 badRequest :: Text -> ActionM ()
 badRequest msg = do
