@@ -9,7 +9,8 @@ module Perlin.Mesh
     ) where
 
 import           Data.Aeson
-import           Data.Vector  (Vector, generate)
+import           Data.Vector  (Vector)
+import qualified Data.Vector  as Vector
 import           GHC.Generics (Generic)
 import           Linear.V2    (V2 (..))
 import           Linear.V3    (V3 (..))
@@ -34,7 +35,7 @@ instance ToJSON a => ToJSON (V3 a) where
 
 generateMesh :: (Int -> Int -> V3 Float) -> Int -> Int -> Mesh
 generateMesh g w d =
-    let v = generate (w * d) mkVertex
+    let v = Vector.generate (w * d) mkVertex
     in Mesh { width = w
             , depth = d
             , vertices = v
@@ -54,3 +55,15 @@ fromIndex :: Int -> Int -> (Int, Int)
 fromIndex w index =
     (index `mod` w, index `div` w)
 {-# INLINE fromIndex #-}
+
+generateIndices :: Int -> Int -> Vector Int
+generateIndices w d =
+    Vector.concatMap (\row ->
+        Vector.concatMap (\col ->
+            let upperLeft = row * w + col
+                upperRight = upperLeft + 1
+                lowerLeft = (row + 1) * w + col
+                lowerRight = lowerLeft + 1
+            in Vector.fromList [upperRight, upperLeft, lowerLeft, upperRight, lowerLeft, lowerRight]
+        ) (Vector.fromList [0 .. w - 2])
+    ) (Vector.fromList [0 .. d - 2])
