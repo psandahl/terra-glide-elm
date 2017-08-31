@@ -1,9 +1,12 @@
+{-# LANGUAGE DeriveAnyClass #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Perlin.Mesh
     ( Mesh (..)
     , Vertex (..)
     , generateMesh
     ) where
 
+import           Data.Aeson
 import           Data.Vector (Vector, generate)
 import           Linear.V2   (V2 (..))
 import           Linear.V3   (V3 (..))
@@ -19,6 +22,9 @@ data Vertex = Vertex
     , normal   :: !(V3 Float)
     , texCoord :: !(V2 Float)
     } deriving Show
+
+instance ToJSON a => ToJSON (V2 a) where
+instance ToJSON a => ToJSON (V3 a) where
 
 generateMesh :: (Int -> Int -> V3 Float) -> Int -> Int -> Mesh
 generateMesh g w d =
