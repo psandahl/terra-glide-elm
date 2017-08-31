@@ -19,5 +19,4 @@ generateRaw16 g width depth =
 
 -- | Convert the Float to a Word16.
 toWord16 :: Float -> Word16
-toWord16 value =
-    round $ value * 65535
+toWord16 = round

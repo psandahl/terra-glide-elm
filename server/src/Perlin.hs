@@ -23,10 +23,11 @@ data PerlinContext = PerlinContext
     } deriving Show
 
 data WorldQuery = WorldQuery
-    { xPos  :: !Int
-    , zPos  :: !Int
-    , width :: !Int
-    , depth :: !Int
+    { xPos   :: !Int
+    , zPos   :: !Int
+    , width  :: !Int
+    , depth  :: !Int
+    , yScale :: !Int
     } deriving Show
 
 -- | Generate a default 'PerlinContext'.
@@ -76,9 +77,9 @@ perlin context worldQuery x z =
     let xFrac = fromIntegral (xPos worldQuery + x) / fromIntegral (widthDividend context)
         zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (depthDividend context)
         y     = composedNoise2D (permute context) xFrac zFrac (weights context)
-    in normalizeToFloat y
+    in fromIntegral (yScale worldQuery) * normalizeToFloat y
 
 toColor :: Float -> PixelRGB8
 toColor value =
-    let color = round $ value * 255
+    let color = round value
     in PixelRGB8 color color color

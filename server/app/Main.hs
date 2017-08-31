@@ -18,20 +18,21 @@ main = do
 
 heightmapPng :: PerlinContext -> ActionM ()
 heightmapPng perlin = do
-    worldQuery <- worldQueryParams
+    worldQuery <- worldQueryConstantScale 255
     setHeader "Content-Type" "image/png"
     raw $ Perlin.asHeightmapPng perlin worldQuery
 
 heightmapR16 :: PerlinContext -> ActionM ()
 heightmapR16 perlin = do
-    worldQuery <- worldQueryParams
+    worldQuery <- worldQueryConstantScale 65535
     setHeader "Content-Type" "image/r16"
     raw $ Perlin.asHeightMapR16 perlin worldQuery
 
-worldQueryParams :: ActionM WorldQuery
-worldQueryParams =
+worldQueryConstantScale :: Int -> ActionM WorldQuery
+worldQueryConstantScale scale =
     WorldQuery <$> param "xpos" <*> param "zpos"
                <*> param "width" <*> param "depth"
+               <*> pure scale
 
 badRequest :: Text -> ActionM ()
 badRequest msg = do
