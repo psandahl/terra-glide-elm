@@ -10,6 +10,7 @@ module Perlin
 
 import           Codec.Picture        (PixelRGB8 (..), encodePng, generateImage)
 import           Data.ByteString.Lazy (ByteString)
+import           Linear.V3            (V3 (..))
 import           Perlin.Algorithm
 import           Perlin.Raw16         (generateRaw16, toWord16)
 import           Prelude              hiding (init)
@@ -70,16 +71,20 @@ asHeightMapR16 context worldQuery =
     generateRaw16 (\x -> toWord16 . perlin context worldQuery x)
                   (width worldQuery) (depth worldQuery)
 
--- | Workhorse function. From all type of context and a pair of coordinates
--- (starting at 0, 0) produce a normalized Float value.
-perlin :: PerlinContext -> WorldQuery -> Int -> Int -> Float
+-- | Workhorse function. From the context and a pair of coordinates
+-- (starting at 0, 0) produce a V3, where x and z are moved using the offset
+-- from the WorldQuery and y is scaled according to the WorldQuery.
+perlin :: PerlinContext -> WorldQuery -> Int -> Int -> V3 Float
 perlin context worldQuery x z =
-    let xFrac = fromIntegral (xPos worldQuery + x) / fromIntegral (widthDividend context)
-        zFrac = fromIntegral (zPos worldQuery + z) / fromIntegral (depthDividend context)
-        y     = composedNoise2D (permute context) xFrac zFrac (weights context)
-    in fromIntegral (yScale worldQuery) * normalizeToFloat y
+    let xOffset = xPos worldQuery + x
+        zOffset = zPos worldQuery + z
+        xFrac   = fromIntegral xOffset / fromIntegral (widthDividend context)
+        zFrac   = fromIntegral zOffset / fromIntegral (depthDividend context)
+        y       = composedNoise2D (permute context) xFrac zFrac (weights context)
+        yScaled = fromIntegral (yScale worldQuery) * normalizeToFloat y
+    in V3 (fromIntegral xOffset) yScaled (fromIntegral zOffset)
 
-toColor :: Float -> PixelRGB8
-toColor value =
-    let color = round value
+toColor :: V3 Float -> PixelRGB8
+toColor (V3 _x y _z) =
+    let color = round y
     in PixelRGB8 color color color
