@@ -4,6 +4,7 @@ module Perlin
     , defaultPerlinContext
     , asHeightmapPng
     , asHeightMapR16
+    , generateRaw16
     , module Perlin.Algorithm
     ) where
 

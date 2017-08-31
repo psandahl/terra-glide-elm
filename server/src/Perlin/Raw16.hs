@@ -11,10 +11,10 @@ import           Data.Word            (Word16)
 -- | Generate a r16 file with the given dimensions and the given producer
 -- function.
 generateRaw16 :: (Int -> Int -> Word16) -> Int -> Int -> ByteString
-generateRaw16 g width height =
+generateRaw16 g width depth =
     runPut $
-        forM_ [0 .. width - 1] $ \z ->
-            forM_ [0 .. height - 1] $ \x ->
+        forM_ [0 .. depth - 1] $ \z ->
+            forM_ [0 .. width - 1] $ \x ->
                 putWord16le $ g x z
 
 -- | Convert the Float to a Word16.

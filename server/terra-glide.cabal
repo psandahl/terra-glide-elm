@@ -44,7 +44,10 @@ test-suite terra-glide-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   other-modules:       PerlinProps
+                       PerlinTests
   build-depends:       base
+                     , binary
+                     , bytestring
                      , HUnit
                      , HUnit-approx
                      , terra-glide
