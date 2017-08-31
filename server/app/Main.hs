@@ -3,10 +3,10 @@ module Main
     ( main
     ) where
 
-import           Control.Monad.IO.Class (liftIO)
-import           Data.Text.Lazy         (Text)
-import           Network.HTTP.Types     (badRequest400)
-import           Perlin                 (PerlinContext, WorldQuery (..))
+import           Data.Aeson         (encode)
+import           Data.Text.Lazy     (Text)
+import           Network.HTTP.Types (badRequest400)
+import           Perlin             (PerlinContext, WorldQuery (..))
 import qualified Perlin
 import           Web.Scotty
 
@@ -33,8 +33,8 @@ heightmapR16 perlin = do
 heightmapMesh :: PerlinContext -> ActionM ()
 heightmapMesh perlin = do
     worldQuery <- worldQueryWithScale
-    liftIO $ print $ Perlin.asMesh perlin worldQuery
-    text "Hepp"
+    setHeader "Content-Type" "application/json"
+    raw $ encode (Perlin.asMesh perlin worldQuery)
 
 worldQueryConstantScale :: Int -> ActionM WorldQuery
 worldQueryConstantScale scale =

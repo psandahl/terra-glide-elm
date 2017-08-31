@@ -34,6 +34,7 @@ executable terra-glide-server
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , aeson
                      , http-types
                      , scotty
                      , terra-glide
