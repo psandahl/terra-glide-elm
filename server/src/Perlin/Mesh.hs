@@ -6,6 +6,7 @@ module Perlin.Mesh
     ( Mesh (..)
     , Vertex (..)
     , generateMesh
+    , generateIndices
     ) where
 
 import           Data.Aeson
@@ -56,6 +57,7 @@ fromIndex w index =
     (index `mod` w, index `div` w)
 {-# INLINE fromIndex #-}
 
+-- | Generate indices for a grid of width x height vertices.
 generateIndices :: Int -> Int -> Vector Int
 generateIndices w d =
     Vector.concatMap (\row ->

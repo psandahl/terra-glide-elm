@@ -9,14 +9,19 @@ module Perlin
     , asMesh
     , generateRaw16
     , generateMesh
-    , module Perlin.Algorithm
+    , generateIndices
+    , init
+    , noise2D
+    , normalizeToFloat
     ) where
 
 import           Codec.Picture        (PixelRGB8 (..), encodePng, generateImage)
 import           Data.ByteString.Lazy (ByteString)
 import           Linear.V3            (V3 (..))
-import           Perlin.Algorithm
-import           Perlin.Mesh          (Mesh (..), Vertex (..), generateMesh)
+import           Perlin.Algorithm     (Permute, composedNoise2D, init, noise2D,
+                                       normalizeToFloat)
+import           Perlin.Mesh          (Mesh (..), Vertex (..), generateIndices,
+                                       generateMesh)
 import           Perlin.Raw16         (generateRaw16, toWord16)
 import           Prelude              hiding (init)
 
