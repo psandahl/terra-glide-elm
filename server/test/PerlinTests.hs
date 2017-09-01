@@ -1,6 +1,8 @@
 module PerlinTests
     ( rawFileGeneration
     , meshGeneration
+    , indexGeneration2x2
+    , indexGeneration4x3
     ) where
 
 import           Data.Binary.Put      (putWord16le, runPut)
@@ -8,7 +10,8 @@ import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Vector          as Vector
 import           Data.Word            (Word16)
 import           Linear.V3            (V3 (..))
-import           Perlin               (Mesh (..), generateMesh, generateRaw16)
+import           Perlin               (Mesh (..), generateIndices, generateMesh,
+                                       generateRaw16)
 import           Test.HUnit
 
 -- | Check that the generated raw file has the expected content and size.
@@ -24,6 +27,23 @@ meshGeneration = do
     width mesh @=? w
     depth mesh @=? h
     (w * h) @=? Vector.length (vertices mesh)
+
+-- | Check that the simplest possible index generation look as expected.
+indexGeneration2x2 :: Assertion
+indexGeneration2x2 =
+    Vector.fromList [1, 0, 2, 1, 2, 3] @=? generateIndices 2 2
+
+-- | Check a more complex index generation.
+indexGeneration4x3 :: Assertion
+indexGeneration4x3 =
+    Vector.fromList
+        [ 1, 0, 4, 1, 4, 5
+        , 2, 1, 5, 2, 5, 6
+        , 3, 2, 6, 3, 6, 7
+        , 5, 4, 8, 5, 8, 9
+        , 6, 5, 9, 6, 9, 10
+        , 7, 6, 10, 7, 10, 11
+        ] @=? generateIndices 4 3
 
 -- | The value for the coordinate is y * width + x ...
 writeCoordRaw :: Int -> Int -> Word16

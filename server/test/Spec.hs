@@ -25,4 +25,8 @@ testSuite =
     , testGroup "Mesh generation"
         [ testCase "Mesh shall be the expected" PerlinTests.meshGeneration
         ]
+    , testGroup "Index generation"
+        [ testCase "Index generation 2x2" PerlinTests.indexGeneration2x2
+        , testCase "Index generation 4x3" PerlinTests.indexGeneration4x3
+        ]
     ]
