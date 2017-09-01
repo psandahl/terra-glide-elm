@@ -1,17 +1,19 @@
 module PerlinTests
     ( rawFileGeneration
-    , meshGeneration
+    , meshGenerationDimensions
+    , meshGenerationContents
     , indexGeneration2x2
     , indexGeneration4x3
     ) where
 
 import           Data.Binary.Put      (putWord16le, runPut)
 import qualified Data.ByteString.Lazy as LBS
+import           Data.Vector          ((!))
 import qualified Data.Vector          as Vector
 import           Data.Word            (Word16)
 import           Linear.V3            (V3 (..))
-import           Perlin               (Mesh (..), generateIndices, generateMesh,
-                                       generateRaw16)
+import           Perlin               (Mesh (..), Vertex (..), generateIndices,
+                                       generateMesh, generateRaw16)
 import           Test.HUnit
 
 -- | Check that the generated raw file has the expected content and size.
@@ -21,12 +23,19 @@ rawFileGeneration =
     testDataRaw @=? generateRaw16 writeCoordRaw w h
 
 -- | Check that the generated Mesh have the expected dimensions.
-meshGeneration :: Assertion
-meshGeneration = do
+meshGenerationDimensions :: Assertion
+meshGenerationDimensions = do
     let mesh = generateMesh writeCoordMesh w h
     width mesh @=? w
     depth mesh @=? h
     (w * h) @=? Vector.length (vertices mesh)
+
+meshGenerationContents :: Assertion
+meshGenerationContents = do
+    let mesh = generateMesh writeCoordMesh 2 2
+        v1 = vertices mesh ! 0
+
+    V3 0 0 0 @=? position v1
 
 -- | Check that the simplest possible index generation look as expected.
 indexGeneration2x2 :: Assertion
@@ -50,7 +59,11 @@ writeCoordRaw :: Int -> Int -> Word16
 writeCoordRaw x y = fromIntegral $ y * w + x
 
 writeCoordMesh :: Int -> Int -> V3 Float
-writeCoordMesh x z = V3 (fromIntegral x) 1 (fromIntegral z)
+writeCoordMesh 0 0 = V3 0 0 0
+writeCoordMesh 1 0 = V3 1 1 0
+writeCoordMesh 0 1 = V3 0 1 0
+writeCoordMesh 1 1 = V3 1 0 1
+writeCoordMesh x z = V3 (fromIntegral x) 0 (fromIntegral z)
 
 -- | So put values in the expected way in the test data.
 testDataRaw :: LBS.ByteString

@@ -23,7 +23,10 @@ testSuite =
         [ testCase "Raw file data shall be the expected" PerlinTests.rawFileGeneration
         ]
     , testGroup "Mesh generation"
-        [ testCase "Mesh shall be the expected" PerlinTests.meshGeneration
+        [ testCase "Mesh dimensions shall be the expected"
+                   PerlinTests.meshGenerationDimensions
+        , testCase "Mesh contents shall be the expected"
+                   PerlinTests.meshGenerationContents
         ]
     , testGroup "Index generation"
         [ testCase "Index generation 2x2" PerlinTests.indexGeneration2x2

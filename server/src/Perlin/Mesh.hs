@@ -9,19 +9,26 @@ module Perlin.Mesh
     , generateIndices
     ) where
 
+import           Control.Monad           (forM_)
+import           Control.Monad.Primitive (PrimMonad)
+import           Control.Monad.ST        (runST)
 import           Data.Aeson
-import           Data.Vector  (Vector)
-import qualified Data.Vector  as Vector
-import           GHC.Generics (Generic)
-import           Linear.V2    (V2 (..))
-import           Linear.V3    (V3 (..))
+import           Data.Vector             (Vector, (!?))
+import qualified Data.Vector             as Vector
+import qualified Data.Vector.Mutable     as MVector
+import           GHC.Generics            (Generic)
+import           Linear.Metric           (normalize)
+import           Linear.V2               (V2 (..))
+import           Linear.V3               (V3 (..), cross)
 
+-- | Mesh definition. All vertices in the mesh will be in world space.
 data Mesh = Mesh
     { width    :: !Int
     , depth    :: !Int
     , vertices :: !(Vector Vertex)
     } deriving (Generic, Show, ToJSON)
 
+-- | Vertex definition.
 data Vertex = Vertex
     { position :: !(V3 Float)
     , normal   :: !(V3 Float)
@@ -34,13 +41,14 @@ instance ToJSON a => ToJSON (V2 a) where
 instance ToJSON a => ToJSON (V3 a) where
     toJSON (V3 x y z) = object["x" .= x, "y" .= y, "z" .= z]
 
+-- | Generate a Mesh of size w * d vertices.
 generateMesh :: (Int -> Int -> V3 Float) -> Int -> Int -> Mesh
 generateMesh g w d =
-    let v = Vector.generate (w * d) mkVertex
-    in Mesh { width = w
-            , depth = d
-            , vertices = v
-            }
+    Mesh { width = w
+         , depth = d
+         , vertices = smoothNormals (generateIndices w d) $
+                          Vector.generate (w * d) mkVertex
+         }
     where
         mkVertex :: Int -> Vertex
         mkVertex index =
@@ -51,7 +59,7 @@ generateMesh g w d =
                  , texCoord = V2 (fromIntegral x) (fromIntegral (d - 1 - z))
                  }
 
--- | From a mesh width and a linear index, whatare the (x, z) coordinates.
+-- | From a mesh width and a linear index, find its (x, z) coordinates.
 fromIndex :: Int -> Int -> (Int, Int)
 fromIndex w index =
     (index `mod` w, index `div` w)
@@ -69,3 +77,52 @@ generateIndices w d =
             in Vector.fromList [upperRight, upperLeft, lowerLeft, upperRight, lowerLeft, lowerRight]
         ) (Vector.fromList [0 .. w - 2])
     ) (Vector.fromList [0 .. d - 2])
+
+-- | Smooth all vertices.
+smoothNormals :: Vector Int -> Vector Vertex -> Vector Vertex
+smoothNormals indices inputVertices =
+    runST $ do
+        mutableVertices <- Vector.unsafeThaw inputVertices
+
+        -- Per surface, calculate its normal and add that surface normal
+        -- to each vertice.
+        perSurface
+            (\(i1, i2, i3) -> do
+                v1 <- MVector.read mutableVertices i1
+                v2 <- MVector.read mutableVertices i2
+                v3 <- MVector.read mutableVertices i3
+
+                let sn = surfaceNormal (position v1)
+                                       (position v2)
+                                       (position v3)
+
+                MVector.write mutableVertices i1 $ v1 { normal = normal v1 + sn }
+                MVector.write mutableVertices i2 $ v2 { normal = normal v2 + sn }
+                MVector.write mutableVertices i3 $ v3 { normal = normal v3 + sn }
+            ) indices
+
+        -- Traverse all vertices and normalize their normals.
+        forM_ [0 .. MVector.length mutableVertices - 1] $
+            MVector.modify mutableVertices (\v -> v { normal = normalize (normal v)})
+
+        Vector.unsafeFreeze mutableVertices
+
+perSurface :: PrimMonad m => ((Int, Int, Int) -> m ()) -> Vector Int -> m ()
+perSurface g indexVector = go 0
+    where
+        go baseIndex =
+            case (,,) <$> indexVector !? baseIndex
+                      <*> indexVector !? (baseIndex + 1)
+                      <*> indexVector !? (baseIndex + 2) of
+                Just indices  -> do
+                    g indices
+                    go (baseIndex + 3)
+
+                Nothing -> return ()
+
+surfaceNormal :: V3 Float -> V3 Float -> V3 Float -> V3 Float
+surfaceNormal p1 p2 p3 =
+    let v1 = p2 - p1
+        v2 = p3 - p1
+    in normalize $ v1 `cross` v2
+{-# INLINE surfaceNormal #-}

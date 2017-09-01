@@ -25,6 +25,7 @@ library
                      , bytestring
                      , JuicyPixels
                      , linear
+                     , primitive
                      , vector
   default-language:    Haskell2010
   ghc-options:         -Wall
