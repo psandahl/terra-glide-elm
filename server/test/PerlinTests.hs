@@ -11,6 +11,7 @@ import qualified Data.ByteString.Lazy as LBS
 import           Data.Vector          ((!))
 import qualified Data.Vector          as Vector
 import           Data.Word            (Word16)
+import           Linear.V2            (V2 (..))
 import           Linear.V3            (V3 (..))
 import           Perlin               (Mesh (..), Vertex (..), generateIndices,
                                        generateMesh, generateRaw16)
@@ -30,12 +31,21 @@ meshGenerationDimensions = do
     depth mesh @=? h
     (w * h) @=? Vector.length (vertices mesh)
 
+-- | Check that the generated Mesh have the expected contents.
 meshGenerationContents :: Assertion
 meshGenerationContents = do
     let mesh = generateMesh writeCoordMesh 2 2
         v1 = vertices mesh ! 0
+        v2 = vertices mesh ! 1
 
     V3 0 0 0 @=? position v1
+    V3 (-0.57735026) 0.57735026 (-0.57735026) @=? normal v1
+    V2 0 1 @=? texCoord v1
+
+    V3 1 1 0 @=? position v2
+    V3 (-0.57735026) 0.57735026 (-0.57735026) @=? normal v2
+    V2 0 1 @=? texCoord v2
+
 
 -- | Check that the simplest possible index generation look as expected.
 indexGeneration2x2 :: Assertion
@@ -61,7 +71,7 @@ writeCoordRaw x y = fromIntegral $ y * w + x
 writeCoordMesh :: Int -> Int -> V3 Float
 writeCoordMesh 0 0 = V3 0 0 0
 writeCoordMesh 1 0 = V3 1 1 0
-writeCoordMesh 0 1 = V3 0 1 0
+writeCoordMesh 0 1 = V3 0 1 1
 writeCoordMesh 1 1 = V3 1 0 1
 writeCoordMesh x z = V3 (fromIntegral x) 0 (fromIntegral z)
 
