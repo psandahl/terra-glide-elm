@@ -10,7 +10,7 @@ import Math.Vector3 exposing (Vec3, vec3)
 -}
 type alias MeshData =
     { width : Int
-    , height : Int
+    , depth : Int
     , vertices : List Vertex
     }
 
@@ -28,15 +28,15 @@ decode : Decoder MeshData
 decode =
     Dec.map3 MeshData
         (Dec.field "width" Dec.int)
-        (Dec.field "height" Dec.int)
+        (Dec.field "depth" Dec.int)
         (Dec.field "vertices" <| Dec.list decodeVertex)
 
 
 decodeVec2 : Decoder Vec2
 decodeVec2 =
     Dec.map2 vec2
-        (Dec.field "x" Dec.float)
-        (Dec.field "y" Dec.float)
+        (Dec.field "s" Dec.float)
+        (Dec.field "t" Dec.float)
 
 
 decodeVec3 : Decoder Vec3
