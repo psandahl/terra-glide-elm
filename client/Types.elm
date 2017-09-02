@@ -1,15 +1,17 @@
 module Types exposing (Model, Msg(..), init)
 
+import Window exposing (Size)
+
 
 type alias Model =
-    { dummy : Int
+    { canvasSize : Size
     }
 
 
 type Msg
-    = NoOp
+    = WindowSize Size
 
 
 init : Model
 init =
-    { dummy = 1 }
+    { canvasSize = { width = 30, height = 30 } }

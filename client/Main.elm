@@ -1,16 +1,18 @@
 module Main exposing (main)
 
 import Html
-import Types exposing (Model, Msg)
+import Task
+import Types exposing (Model, Msg(..))
 import Types
 import Update
 import View
+import Window
 
 
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( Types.init, Cmd.none )
+        { init = ( Types.init, Task.perform WindowSize Window.size )
         , update = Update.update
         , view = View.view
         , subscriptions = subscriptions
@@ -19,4 +21,4 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Window.resizes WindowSize
