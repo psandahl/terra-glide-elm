@@ -37,15 +37,24 @@ meshGenerationContents = do
     let mesh = generateMesh writeCoordMesh 2 2
         v1 = vertices mesh ! 0
         v2 = vertices mesh ! 1
+        v3 = vertices mesh ! 2
+        v4 = vertices mesh ! 3
 
     V3 0 0 0 @=? position v1
     V3 (-0.57735026) 0.57735026 (-0.57735026) @=? normal v1
     V2 0 1 @=? texCoord v1
 
     V3 1 1 0 @=? position v2
-    V3 (-0.57735026) 0.57735026 (-0.57735026) @=? normal v2
-    V2 0 1 @=? texCoord v2
+    V3 0 1 0 @=? normal v2
+    V2 1 1 @=? texCoord v2
 
+    V3 0 1 1 @=? position v3
+    V3 0 1 0 @=? normal v3
+    V2 0 0 @=? texCoord v3
+
+    V3 1 0 1 @=? position v4
+    V3 0.57735026 0.57735026 0.57735026 @=? normal v4
+    V2 1 0 @=? texCoord v4
 
 -- | Check that the simplest possible index generation look as expected.
 indexGeneration2x2 :: Assertion
