@@ -8,3 +8,6 @@ update msg model =
     case msg of
         WindowSize size ->
             ( { model | canvasSize = size }, Cmd.none )
+
+        LoadMeshData startX startZ result ->
+            ( model, Cmd.none )
