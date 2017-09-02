@@ -8,15 +8,36 @@ import           Data.Text.Lazy     (Text)
 import           Network.HTTP.Types (badRequest400)
 import           Perlin             (PerlinContext, WorldQuery (..))
 import qualified Perlin
+import           System.EasyFile    ((</>))
 import           Web.Scotty
 
 main :: IO ()
 main = do
     let perlin = Perlin.defaultPerlinContext
     scotty 8000 $ do
-        get "/world/heightmap/png" $ heightmapPng perlin `rescue` badRequest
-        get "/world/heightmap/r16" $ heightmapR16 perlin `rescue` badRequest
-        get "/world/heightmap/mesh" $ heightmapMesh perlin `rescue` badRequest
+        -- Routes to the start page.
+        get "/index.html" startPage
+        get "/" $ redirect "/index.html"
+
+        -- Serving JavaScript.
+        get "/scripts/:file" $
+            serveFile "scripts" "application/javascript; charset=utf-8" =<<
+                param "file"
+
+        -- Terrain generation APIs.
+        get "/terrain/heightmap/png" $ heightmapPng perlin `rescue` badRequest
+        get "/terrain/heightmap/r16" $ heightmapR16 perlin `rescue` badRequest
+        get "/terrain/heightmap/mesh" $ heightmapMesh perlin `rescue` badRequest
+
+startPage :: ActionM ()
+startPage = do
+    setHeader "Content-Type" "text/html; charset=utf-8"
+    file $ "site" </> "index.html"
+
+serveFile :: FilePath -> Text -> FilePath -> ActionM ()
+serveFile resDir contentType requestedFile = do
+    setHeader "Content-Type" contentType
+    file $ "site" </> resDir </> requestedFile
 
 heightmapPng :: PerlinContext -> ActionM ()
 heightmapPng perlin = do
@@ -33,7 +54,7 @@ heightmapR16 perlin = do
 heightmapMesh :: PerlinContext -> ActionM ()
 heightmapMesh perlin = do
     worldQuery <- worldQueryWithScale
-    setHeader "Content-Type" "application/json"
+    setHeader "Content-Type" "application/json; charset=utf-8"
     raw $ encode (Perlin.asMesh perlin worldQuery)
 
 worldQueryConstantScale :: Int -> ActionM WorldQuery

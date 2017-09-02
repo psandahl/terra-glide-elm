@@ -36,6 +36,7 @@ executable terra-glide-server
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , aeson
+                     , easy-file
                      , http-types
                      , scotty
                      , terra-glide
@@ -52,7 +53,6 @@ test-suite terra-glide-test
                      , binary
                      , bytestring
                      , HUnit
-                     , HUnit-approx
                      , linear
                      , terra-glide
                      , test-framework
