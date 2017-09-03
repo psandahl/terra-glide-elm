@@ -12289,9 +12289,9 @@ var _psandahl$terra_glide$Types$init = {
 var _psandahl$terra_glide$Types$Model = function (a) {
 	return {canvasSize: a};
 };
-var _psandahl$terra_glide$Types$LoadMeshData = F3(
-	function (a, b, c) {
-		return {ctor: 'LoadMeshData', _0: a, _1: b, _2: c};
+var _psandahl$terra_glide$Types$FetchMeshData = F2(
+	function (a, b) {
+		return {ctor: 'FetchMeshData', _0: a, _1: b};
 	});
 var _psandahl$terra_glide$Types$WindowSize = function (a) {
 	return {ctor: 'WindowSize', _0: a};
@@ -12309,6 +12309,7 @@ var _psandahl$terra_glide$Update$update = F2(
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
+			var foo = A2(_elm_lang$core$Debug$log, 'Result: ', _p0._1);
 			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
@@ -12348,6 +12349,73 @@ var _psandahl$terra_glide$View$view = function (model) {
 		});
 };
 
+var _psandahl$terra_glide$Terrain_Fetch$service = '/terrain/heightmap/mesh';
+var _psandahl$terra_glide$Terrain_Fetch$asString = function (terrainQuery) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'xpos=',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(terrainQuery.xPos),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'&',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'zpos=',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(terrainQuery.zPos),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'&',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'width=',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(terrainQuery.worldWidth),
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'&',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'depth=',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(terrainQuery.worldDepth),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'&',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'yscale=',
+														_elm_lang$core$Basics$toString(terrainQuery.yScale))))))))))))));
+};
+var _psandahl$terra_glide$Terrain_Fetch$toUrl = function (terrainQuery) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		_psandahl$terra_glide$Terrain_Fetch$service,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'?',
+			_psandahl$terra_glide$Terrain_Fetch$asString(terrainQuery)));
+};
+var _psandahl$terra_glide$Terrain_Fetch$fetchMeshData = function (terrainQuery) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_psandahl$terra_glide$Types$FetchMeshData(
+			{ctor: '_Tuple2', _0: terrainQuery.xPos, _1: terrainQuery.zPos}),
+		A2(
+			_elm_lang$http$Http$get,
+			_psandahl$terra_glide$Terrain_Fetch$toUrl(terrainQuery),
+			_psandahl$terra_glide$Terrain_MeshData$decode));
+};
+var _psandahl$terra_glide$Terrain_Fetch$TerrainQuery = F5(
+	function (a, b, c, d, e) {
+		return {xPos: a, zPos: b, worldWidth: c, worldDepth: d, yScale: e};
+	});
+
 var _psandahl$terra_glide$Main$subscriptions = function (model) {
 	return _elm_lang$window$Window$resizes(_psandahl$terra_glide$Types$WindowSize);
 };
@@ -12356,7 +12424,17 @@ var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 		init: {
 			ctor: '_Tuple2',
 			_0: _psandahl$terra_glide$Types$init,
-			_1: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Types$WindowSize, _elm_lang$window$Window$size)
+			_1: _elm_lang$core$Platform_Cmd$batch(
+				{
+					ctor: '::',
+					_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Types$WindowSize, _elm_lang$window$Window$size),
+					_1: {
+						ctor: '::',
+						_0: _psandahl$terra_glide$Terrain_Fetch$fetchMeshData(
+							{xPos: 0, zPos: 0, worldWidth: 2, worldDepth: 2, yScale: 1}),
+						_1: {ctor: '[]'}
+					}
+				})
 		},
 		update: _psandahl$terra_glide$Update$update,
 		view: _psandahl$terra_glide$View$view,

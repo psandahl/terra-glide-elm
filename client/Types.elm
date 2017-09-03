@@ -12,7 +12,7 @@ type alias Model =
 
 type Msg
     = WindowSize Size
-    | LoadMeshData Int Int (Result Http.Error MeshData)
+    | FetchMeshData ( Int, Int ) (Result Http.Error MeshData)
 
 
 init : Model

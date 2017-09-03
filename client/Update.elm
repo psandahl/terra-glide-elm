@@ -1,5 +1,6 @@
 module Update exposing (update)
 
+import Debug
 import Types exposing (Model, Msg(..))
 
 
@@ -9,5 +10,9 @@ update msg model =
         WindowSize size ->
             ( { model | canvasSize = size }, Cmd.none )
 
-        LoadMeshData startX startZ result ->
-            ( model, Cmd.none )
+        FetchMeshData ( startX, startZ ) result ->
+            let
+                foo =
+                    Debug.log "Result: " result
+            in
+                ( model, Cmd.none )

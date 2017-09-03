@@ -7,12 +7,19 @@ import Types
 import Update
 import View
 import Window
+import Terrain.Fetch exposing (fetchMeshData)
 
 
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( Types.init, Task.perform WindowSize Window.size )
+        { init =
+            ( Types.init
+            , Cmd.batch
+                [ Task.perform WindowSize Window.size
+                , fetchMeshData { xPos = 0, zPos = 0, worldWidth = 2, worldDepth = 2, yScale = 1 }
+                ]
+            )
         , update = Update.update
         , view = View.view
         , subscriptions = subscriptions
