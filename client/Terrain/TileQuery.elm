@@ -1,4 +1,4 @@
-module Terrain.Fetch exposing (TileQuery, fetchTileData)
+module Terrain.TileQuery exposing (TileQuery, fetchTileData)
 
 import Http exposing (Request)
 import Http

@@ -7,7 +7,7 @@ import Types
 import Update
 import View
 import Window
-import Terrain.Fetch exposing (fetchTileData)
+import Terrain.TileQuery exposing (fetchTileData)
 
 
 main : Program Never Model Msg

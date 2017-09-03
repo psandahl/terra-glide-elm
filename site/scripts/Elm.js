@@ -12349,8 +12349,8 @@ var _psandahl$terra_glide$View$view = function (model) {
 		});
 };
 
-var _psandahl$terra_glide$Terrain_Fetch$service = '/terrain/heightmap/tile';
-var _psandahl$terra_glide$Terrain_Fetch$asString = function (tailQuery) {
+var _psandahl$terra_glide$Terrain_TileQuery$service = '/terrain/heightmap/tile';
+var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tailQuery) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		'xpos=',
@@ -12392,26 +12392,26 @@ var _psandahl$terra_glide$Terrain_Fetch$asString = function (tailQuery) {
 														'yscale=',
 														_elm_lang$core$Basics$toString(tailQuery.yScale))))))))))))));
 };
-var _psandahl$terra_glide$Terrain_Fetch$toUrl = function (tailQuery) {
+var _psandahl$terra_glide$Terrain_TileQuery$toUrl = function (tailQuery) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
-		_psandahl$terra_glide$Terrain_Fetch$service,
+		_psandahl$terra_glide$Terrain_TileQuery$service,
 		A2(
 			_elm_lang$core$Basics_ops['++'],
 			'?',
-			_psandahl$terra_glide$Terrain_Fetch$asString(tailQuery)));
+			_psandahl$terra_glide$Terrain_TileQuery$asString(tailQuery)));
 };
-var _psandahl$terra_glide$Terrain_Fetch$fetchTileData = function (tileQuery) {
+var _psandahl$terra_glide$Terrain_TileQuery$fetchTileData = function (tileQuery) {
 	return A2(
 		_elm_lang$http$Http$send,
 		_psandahl$terra_glide$Types$FetchTileData(
 			{ctor: '_Tuple2', _0: tileQuery.xPos, _1: tileQuery.zPos}),
 		A2(
 			_elm_lang$http$Http$get,
-			_psandahl$terra_glide$Terrain_Fetch$toUrl(tileQuery),
+			_psandahl$terra_glide$Terrain_TileQuery$toUrl(tileQuery),
 			_psandahl$terra_glide$Terrain_TileData$decode));
 };
-var _psandahl$terra_glide$Terrain_Fetch$TileQuery = F5(
+var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
 	function (a, b, c, d, e) {
 		return {xPos: a, zPos: b, worldWidth: c, worldDepth: d, yScale: e};
 	});
@@ -12430,7 +12430,7 @@ var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 					_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Types$WindowSize, _elm_lang$window$Window$size),
 					_1: {
 						ctor: '::',
-						_0: _psandahl$terra_glide$Terrain_Fetch$fetchTileData(
+						_0: _psandahl$terra_glide$Terrain_TileQuery$fetchTileData(
 							{xPos: 0, zPos: 0, worldWidth: 2, worldDepth: 2, yScale: 1}),
 						_1: {ctor: '[]'}
 					}
