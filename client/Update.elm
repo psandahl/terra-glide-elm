@@ -10,7 +10,7 @@ update msg model =
         WindowSize size ->
             ( { model | canvasSize = size }, Cmd.none )
 
-        FetchMeshData ( startX, startZ ) result ->
+        FetchTileData ( startX, startZ ) result ->
             let
                 foo =
                     Debug.log "Result: " result

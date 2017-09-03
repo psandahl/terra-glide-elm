@@ -12248,40 +12248,40 @@ var _elm_lang$window$Window$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
 
-var _psandahl$terra_glide$Terrain_MeshData$decodeVec3 = A4(
+var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
 	_elm_community$linear_algebra$Math_Vector3$vec3,
 	A2(_elm_lang$core$Json_Decode$field, 'x', _elm_lang$core$Json_Decode$float),
 	A2(_elm_lang$core$Json_Decode$field, 'y', _elm_lang$core$Json_Decode$float),
 	A2(_elm_lang$core$Json_Decode$field, 'z', _elm_lang$core$Json_Decode$float));
-var _psandahl$terra_glide$Terrain_MeshData$decodeVec2 = A3(
+var _psandahl$terra_glide$Terrain_TileData$decodeVec2 = A3(
 	_elm_lang$core$Json_Decode$map2,
 	_elm_community$linear_algebra$Math_Vector2$vec2,
 	A2(_elm_lang$core$Json_Decode$field, 's', _elm_lang$core$Json_Decode$float),
 	A2(_elm_lang$core$Json_Decode$field, 't', _elm_lang$core$Json_Decode$float));
-var _psandahl$terra_glide$Terrain_MeshData$MeshData = F3(
+var _psandahl$terra_glide$Terrain_TileData$TileData = F3(
 	function (a, b, c) {
 		return {width: a, depth: b, vertices: c};
 	});
-var _psandahl$terra_glide$Terrain_MeshData$Vertex = F3(
+var _psandahl$terra_glide$Terrain_TileData$Vertex = F3(
 	function (a, b, c) {
 		return {position: a, normal: b, texCoord: c};
 	});
-var _psandahl$terra_glide$Terrain_MeshData$decodeVertex = A4(
+var _psandahl$terra_glide$Terrain_TileData$decodeVertex = A4(
 	_elm_lang$core$Json_Decode$map3,
-	_psandahl$terra_glide$Terrain_MeshData$Vertex,
-	A2(_elm_lang$core$Json_Decode$field, 'position', _psandahl$terra_glide$Terrain_MeshData$decodeVec3),
-	A2(_elm_lang$core$Json_Decode$field, 'normal', _psandahl$terra_glide$Terrain_MeshData$decodeVec3),
-	A2(_elm_lang$core$Json_Decode$field, 'texCoord', _psandahl$terra_glide$Terrain_MeshData$decodeVec2));
-var _psandahl$terra_glide$Terrain_MeshData$decode = A4(
+	_psandahl$terra_glide$Terrain_TileData$Vertex,
+	A2(_elm_lang$core$Json_Decode$field, 'position', _psandahl$terra_glide$Terrain_TileData$decodeVec3),
+	A2(_elm_lang$core$Json_Decode$field, 'normal', _psandahl$terra_glide$Terrain_TileData$decodeVec3),
+	A2(_elm_lang$core$Json_Decode$field, 'texCoord', _psandahl$terra_glide$Terrain_TileData$decodeVec2));
+var _psandahl$terra_glide$Terrain_TileData$decode = A4(
 	_elm_lang$core$Json_Decode$map3,
-	_psandahl$terra_glide$Terrain_MeshData$MeshData,
+	_psandahl$terra_glide$Terrain_TileData$TileData,
 	A2(_elm_lang$core$Json_Decode$field, 'width', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'depth', _elm_lang$core$Json_Decode$int),
 	A2(
 		_elm_lang$core$Json_Decode$field,
 		'vertices',
-		_elm_lang$core$Json_Decode$list(_psandahl$terra_glide$Terrain_MeshData$decodeVertex)));
+		_elm_lang$core$Json_Decode$list(_psandahl$terra_glide$Terrain_TileData$decodeVertex)));
 
 var _psandahl$terra_glide$Types$init = {
 	canvasSize: {width: 30, height: 30}
@@ -12289,9 +12289,9 @@ var _psandahl$terra_glide$Types$init = {
 var _psandahl$terra_glide$Types$Model = function (a) {
 	return {canvasSize: a};
 };
-var _psandahl$terra_glide$Types$FetchMeshData = F2(
+var _psandahl$terra_glide$Types$FetchTileData = F2(
 	function (a, b) {
-		return {ctor: 'FetchMeshData', _0: a, _1: b};
+		return {ctor: 'FetchTileData', _0: a, _1: b};
 	});
 var _psandahl$terra_glide$Types$WindowSize = function (a) {
 	return {ctor: 'WindowSize', _0: a};
@@ -12349,14 +12349,14 @@ var _psandahl$terra_glide$View$view = function (model) {
 		});
 };
 
-var _psandahl$terra_glide$Terrain_Fetch$service = '/terrain/heightmap/mesh';
-var _psandahl$terra_glide$Terrain_Fetch$asString = function (terrainQuery) {
+var _psandahl$terra_glide$Terrain_Fetch$service = '/terrain/heightmap/tile';
+var _psandahl$terra_glide$Terrain_Fetch$asString = function (tailQuery) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		'xpos=',
 		A2(
 			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(terrainQuery.xPos),
+			_elm_lang$core$Basics$toString(tailQuery.xPos),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				'&',
@@ -12365,7 +12365,7 @@ var _psandahl$terra_glide$Terrain_Fetch$asString = function (terrainQuery) {
 					'zpos=',
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(terrainQuery.zPos),
+						_elm_lang$core$Basics$toString(tailQuery.zPos),
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'&',
@@ -12374,7 +12374,7 @@ var _psandahl$terra_glide$Terrain_Fetch$asString = function (terrainQuery) {
 								'width=',
 								A2(
 									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(terrainQuery.worldWidth),
+									_elm_lang$core$Basics$toString(tailQuery.worldWidth),
 									A2(
 										_elm_lang$core$Basics_ops['++'],
 										'&',
@@ -12383,35 +12383,35 @@ var _psandahl$terra_glide$Terrain_Fetch$asString = function (terrainQuery) {
 											'depth=',
 											A2(
 												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(terrainQuery.worldDepth),
+												_elm_lang$core$Basics$toString(tailQuery.worldDepth),
 												A2(
 													_elm_lang$core$Basics_ops['++'],
 													'&',
 													A2(
 														_elm_lang$core$Basics_ops['++'],
 														'yscale=',
-														_elm_lang$core$Basics$toString(terrainQuery.yScale))))))))))))));
+														_elm_lang$core$Basics$toString(tailQuery.yScale))))))))))))));
 };
-var _psandahl$terra_glide$Terrain_Fetch$toUrl = function (terrainQuery) {
+var _psandahl$terra_glide$Terrain_Fetch$toUrl = function (tailQuery) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		_psandahl$terra_glide$Terrain_Fetch$service,
 		A2(
 			_elm_lang$core$Basics_ops['++'],
 			'?',
-			_psandahl$terra_glide$Terrain_Fetch$asString(terrainQuery)));
+			_psandahl$terra_glide$Terrain_Fetch$asString(tailQuery)));
 };
-var _psandahl$terra_glide$Terrain_Fetch$fetchMeshData = function (terrainQuery) {
+var _psandahl$terra_glide$Terrain_Fetch$fetchTileData = function (tileQuery) {
 	return A2(
 		_elm_lang$http$Http$send,
-		_psandahl$terra_glide$Types$FetchMeshData(
-			{ctor: '_Tuple2', _0: terrainQuery.xPos, _1: terrainQuery.zPos}),
+		_psandahl$terra_glide$Types$FetchTileData(
+			{ctor: '_Tuple2', _0: tileQuery.xPos, _1: tileQuery.zPos}),
 		A2(
 			_elm_lang$http$Http$get,
-			_psandahl$terra_glide$Terrain_Fetch$toUrl(terrainQuery),
-			_psandahl$terra_glide$Terrain_MeshData$decode));
+			_psandahl$terra_glide$Terrain_Fetch$toUrl(tileQuery),
+			_psandahl$terra_glide$Terrain_TileData$decode));
 };
-var _psandahl$terra_glide$Terrain_Fetch$TerrainQuery = F5(
+var _psandahl$terra_glide$Terrain_Fetch$TileQuery = F5(
 	function (a, b, c, d, e) {
 		return {xPos: a, zPos: b, worldWidth: c, worldDepth: d, yScale: e};
 	});
@@ -12430,7 +12430,7 @@ var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 					_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Types$WindowSize, _elm_lang$window$Window$size),
 					_1: {
 						ctor: '::',
-						_0: _psandahl$terra_glide$Terrain_Fetch$fetchMeshData(
+						_0: _psandahl$terra_glide$Terrain_Fetch$fetchTileData(
 							{xPos: 0, zPos: 0, worldWidth: 2, worldDepth: 2, yScale: 1}),
 						_1: {ctor: '[]'}
 					}

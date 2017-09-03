@@ -1,12 +1,12 @@
-module Terrain.Fetch exposing (TerrainQuery, fetchMeshData)
+module Terrain.Fetch exposing (TileQuery, fetchTileData)
 
 import Http exposing (Request)
 import Http
-import Terrain.MeshData as MeshData
+import Terrain.TileData as TileData
 import Types exposing (Msg(..))
 
 
-type alias TerrainQuery =
+type alias TileQuery =
     { xPos : Int
     , zPos : Int
     , worldWidth : Int
@@ -15,35 +15,35 @@ type alias TerrainQuery =
     }
 
 
-fetchMeshData : TerrainQuery -> Cmd Msg
-fetchMeshData terrainQuery =
-    Http.send (FetchMeshData ( terrainQuery.xPos, terrainQuery.zPos )) <|
-        Http.get (toUrl terrainQuery) MeshData.decode
+fetchTileData : TileQuery -> Cmd Msg
+fetchTileData tileQuery =
+    Http.send (FetchTileData ( tileQuery.xPos, tileQuery.zPos )) <|
+        Http.get (toUrl tileQuery) TileData.decode
 
 
-toUrl : TerrainQuery -> String
-toUrl terrainQuery =
-    service ++ "?" ++ asString terrainQuery
+toUrl : TileQuery -> String
+toUrl tailQuery =
+    service ++ "?" ++ asString tailQuery
 
 
-asString : TerrainQuery -> String
-asString terrainQuery =
+asString : TileQuery -> String
+asString tailQuery =
     "xpos="
-        ++ toString terrainQuery.xPos
+        ++ toString tailQuery.xPos
         ++ "&"
         ++ "zpos="
-        ++ toString terrainQuery.zPos
+        ++ toString tailQuery.zPos
         ++ "&"
         ++ "width="
-        ++ toString terrainQuery.worldWidth
+        ++ toString tailQuery.worldWidth
         ++ "&"
         ++ "depth="
-        ++ toString terrainQuery.worldDepth
+        ++ toString tailQuery.worldDepth
         ++ "&"
         ++ "yscale="
-        ++ toString terrainQuery.yScale
+        ++ toString tailQuery.yScale
 
 
 service : String
 service =
-    "/terrain/heightmap/mesh"
+    "/terrain/heightmap/tile"

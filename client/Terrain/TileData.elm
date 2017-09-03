@@ -1,4 +1,4 @@
-module Terrain.MeshData exposing (MeshData, Vertex, decode)
+module Terrain.TileData exposing (TileData, Vertex, decode)
 
 import Json.Decode exposing (Decoder)
 import Json.Decode as Dec
@@ -8,7 +8,7 @@ import Math.Vector3 exposing (Vec3, vec3)
 
 {-| This record is the exact same type as produced by the server.
 -}
-type alias MeshData =
+type alias TileData =
     { width : Int
     , depth : Int
     , vertices : List Vertex
@@ -24,9 +24,9 @@ type alias Vertex =
     }
 
 
-decode : Decoder MeshData
+decode : Decoder TileData
 decode =
-    Dec.map3 MeshData
+    Dec.map3 TileData
         (Dec.field "width" Dec.int)
         (Dec.field "depth" Dec.int)
         (Dec.field "vertices" <| Dec.list decodeVertex)

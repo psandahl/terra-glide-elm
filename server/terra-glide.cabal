@@ -17,7 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Perlin
   other-modules:       Perlin.Algorithm
-                       Perlin.Mesh
+                       Perlin.Tile
                        Perlin.Raw16
   build-depends:       base >= 4.7 && < 5
                      , aeson

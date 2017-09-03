@@ -2,10 +2,10 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Perlin.Mesh
-    ( Mesh (..)
+module Perlin.Tile
+    ( TileData (..)
     , Vertex (..)
-    , generateMesh
+    , generateTileData
     , generateIndices
     ) where
 
@@ -21,8 +21,8 @@ import           Linear.Metric           (normalize)
 import           Linear.V2               (V2 (..))
 import           Linear.V3               (V3 (..), cross)
 
--- | Mesh definition. All vertices in the mesh will be in world space.
-data Mesh = Mesh
+-- | Tile data definition. All vertices in the mesh will be in world space.
+data TileData = TileData
     { width    :: !Int
     , depth    :: !Int
     , vertices :: !(Vector Vertex)
@@ -41,14 +41,14 @@ instance ToJSON a => ToJSON (V2 a) where
 instance ToJSON a => ToJSON (V3 a) where
     toJSON (V3 x y z) = object["x" .= x, "y" .= y, "z" .= z]
 
--- | Generate a Mesh of size w * d vertices.
-generateMesh :: (Int -> Int -> V3 Float) -> Int -> Int -> Mesh
-generateMesh g w d =
-    Mesh { width = w
-         , depth = d
-         , vertices = smoothNormals (generateIndices w d) $
-                          Vector.generate (w * d) mkVertex
-         }
+-- | Generate TileData with a Mesh of size w * d vertices.
+generateTileData :: (Int -> Int -> V3 Float) -> Int -> Int -> TileData
+generateTileData g w d =
+    TileData { width = w
+             , depth = d
+             , vertices = smoothNormals (generateIndices w d) $
+                            Vector.generate (w * d) mkVertex
+             }
     where
         mkVertex :: Int -> Vertex
         mkVertex index =

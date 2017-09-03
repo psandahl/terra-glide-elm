@@ -1,7 +1,7 @@
 module Types exposing (Model, Msg(..), init)
 
 import Http
-import Terrain.MeshData exposing (MeshData)
+import Terrain.TileData exposing (TileData)
 import Window exposing (Size)
 
 
@@ -12,7 +12,7 @@ type alias Model =
 
 type Msg
     = WindowSize Size
-    | FetchMeshData ( Int, Int ) (Result Http.Error MeshData)
+    | FetchTileData ( Int, Int ) (Result Http.Error TileData)
 
 
 init : Model
