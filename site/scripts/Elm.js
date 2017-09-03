@@ -12248,6 +12248,14 @@ var _elm_lang$window$Window$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
 
+var _psandahl$terra_glide$Terrain$entities = function (terrain) {
+	return {ctor: '[]'};
+};
+var _psandahl$terra_glide$Terrain$init = {dummy: 1};
+var _psandahl$terra_glide$Terrain$Terrain = function (a) {
+	return {dummy: a};
+};
+
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
 	_elm_community$linear_algebra$Math_Vector3$vec3,
@@ -12287,12 +12295,10 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
-var _psandahl$terra_glide$Types$init = {
-	canvasSize: {width: 30, height: 30}
-};
-var _psandahl$terra_glide$Types$Model = function (a) {
-	return {canvasSize: a};
-};
+var _psandahl$terra_glide$Types$Model = F2(
+	function (a, b) {
+		return {canvasSize: a, terrain: b};
+	});
 var _psandahl$terra_glide$Types$FetchTileData = F2(
 	function (a, b) {
 		return {ctor: 'FetchTileData', _0: a, _1: b};
@@ -12348,7 +12354,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 						_1: {ctor: '[]'}
 					}
 				},
-				{ctor: '[]'}),
+				_psandahl$terra_glide$Terrain$entities(model.terrain)),
 			_1: {ctor: '[]'}
 		});
 };
@@ -12423,11 +12429,15 @@ var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
 var _psandahl$terra_glide$Main$subscriptions = function (model) {
 	return _elm_lang$window$Window$resizes(_psandahl$terra_glide$Types$WindowSize);
 };
+var _psandahl$terra_glide$Main$init = {
+	canvasSize: {width: 800, height: 600},
+	terrain: _psandahl$terra_glide$Terrain$init
+};
 var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 	{
 		init: {
 			ctor: '_Tuple2',
-			_0: _psandahl$terra_glide$Types$init,
+			_0: _psandahl$terra_glide$Main$init,
 			_1: _elm_lang$core$Platform_Cmd$batch(
 				{
 					ctor: '::',

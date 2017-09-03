@@ -3,6 +3,7 @@ module View exposing (view)
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
+import Terrain
 import Types exposing (Model, Msg)
 import WebGL as GL
 
@@ -19,5 +20,6 @@ view model =
             [ Attr.height model.canvasSize.height
             , Attr.width model.canvasSize.width
             ]
-            []
+          <|
+            Terrain.entities model.terrain
         ]

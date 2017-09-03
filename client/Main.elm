@@ -7,6 +7,7 @@ import Types
 import Update
 import View
 import Window
+import Terrain
 import Terrain.TileQuery as TileQuery
 
 
@@ -14,7 +15,7 @@ main : Program Never Model Msg
 main =
     Html.program
         { init =
-            ( Types.init
+            ( init
             , Cmd.batch
                 [ Task.perform WindowSize Window.size
                 , TileQuery.execute
@@ -30,6 +31,13 @@ main =
         , view = View.view
         , subscriptions = subscriptions
         }
+
+
+init : Model
+init =
+    { canvasSize = { width = 800, height = 600 }
+    , terrain = Terrain.init
+    }
 
 
 subscriptions : Model -> Sub Msg
