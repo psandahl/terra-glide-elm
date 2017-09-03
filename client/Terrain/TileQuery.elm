@@ -1,4 +1,4 @@
-module Terrain.TileQuery exposing (TileQuery, fetchTileData)
+module Terrain.TileQuery exposing (TileQuery, execute)
 
 import Http exposing (Request)
 import Http
@@ -6,17 +6,21 @@ import Terrain.TileData as TileData
 import Types exposing (Msg(..))
 
 
+{-| A TileQuery using the parameters specified in the record.
+-}
 type alias TileQuery =
     { xPos : Int
     , zPos : Int
-    , worldWidth : Int
-    , worldDepth : Int
+    , tileWidth : Int
+    , tileDepth : Int
     , yScale : Int
     }
 
 
-fetchTileData : TileQuery -> Cmd Msg
-fetchTileData tileQuery =
+{-| Execute the TileQuery.
+-}
+execute : TileQuery -> Cmd Msg
+execute tileQuery =
     Http.send (FetchTileData ( tileQuery.xPos, tileQuery.zPos )) <|
         Http.get (toUrl tileQuery) TileData.decode
 
@@ -27,21 +31,21 @@ toUrl tailQuery =
 
 
 asString : TileQuery -> String
-asString tailQuery =
+asString tileQuery =
     "xpos="
-        ++ toString tailQuery.xPos
+        ++ toString tileQuery.xPos
         ++ "&"
         ++ "zpos="
-        ++ toString tailQuery.zPos
+        ++ toString tileQuery.zPos
         ++ "&"
         ++ "width="
-        ++ toString tailQuery.worldWidth
+        ++ toString tileQuery.tileWidth
         ++ "&"
         ++ "depth="
-        ++ toString tailQuery.worldDepth
+        ++ toString tileQuery.tileDepth
         ++ "&"
         ++ "yscale="
-        ++ toString tailQuery.yScale
+        ++ toString tileQuery.yScale
 
 
 service : String

@@ -12354,13 +12354,13 @@ var _psandahl$terra_glide$View$view = function (model) {
 };
 
 var _psandahl$terra_glide$Terrain_TileQuery$service = '/terrain/heightmap/tile';
-var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tailQuery) {
+var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tileQuery) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		'xpos=',
 		A2(
 			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(tailQuery.xPos),
+			_elm_lang$core$Basics$toString(tileQuery.xPos),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				'&',
@@ -12369,7 +12369,7 @@ var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tailQuery) {
 					'zpos=',
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(tailQuery.zPos),
+						_elm_lang$core$Basics$toString(tileQuery.zPos),
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'&',
@@ -12378,7 +12378,7 @@ var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tailQuery) {
 								'width=',
 								A2(
 									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(tailQuery.worldWidth),
+									_elm_lang$core$Basics$toString(tileQuery.tileWidth),
 									A2(
 										_elm_lang$core$Basics_ops['++'],
 										'&',
@@ -12387,14 +12387,14 @@ var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tailQuery) {
 											'depth=',
 											A2(
 												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(tailQuery.worldDepth),
+												_elm_lang$core$Basics$toString(tileQuery.tileDepth),
 												A2(
 													_elm_lang$core$Basics_ops['++'],
 													'&',
 													A2(
 														_elm_lang$core$Basics_ops['++'],
 														'yscale=',
-														_elm_lang$core$Basics$toString(tailQuery.yScale))))))))))))));
+														_elm_lang$core$Basics$toString(tileQuery.yScale))))))))))))));
 };
 var _psandahl$terra_glide$Terrain_TileQuery$toUrl = function (tailQuery) {
 	return A2(
@@ -12405,7 +12405,7 @@ var _psandahl$terra_glide$Terrain_TileQuery$toUrl = function (tailQuery) {
 			'?',
 			_psandahl$terra_glide$Terrain_TileQuery$asString(tailQuery)));
 };
-var _psandahl$terra_glide$Terrain_TileQuery$fetchTileData = function (tileQuery) {
+var _psandahl$terra_glide$Terrain_TileQuery$execute = function (tileQuery) {
 	return A2(
 		_elm_lang$http$Http$send,
 		_psandahl$terra_glide$Types$FetchTileData(
@@ -12417,7 +12417,7 @@ var _psandahl$terra_glide$Terrain_TileQuery$fetchTileData = function (tileQuery)
 };
 var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
 	function (a, b, c, d, e) {
-		return {xPos: a, zPos: b, worldWidth: c, worldDepth: d, yScale: e};
+		return {xPos: a, zPos: b, tileWidth: c, tileDepth: d, yScale: e};
 	});
 
 var _psandahl$terra_glide$Main$subscriptions = function (model) {
@@ -12434,8 +12434,8 @@ var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 					_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Types$WindowSize, _elm_lang$window$Window$size),
 					_1: {
 						ctor: '::',
-						_0: _psandahl$terra_glide$Terrain_TileQuery$fetchTileData(
-							{xPos: 0, zPos: 0, worldWidth: 2, worldDepth: 2, yScale: 1}),
+						_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
+							{xPos: 0, zPos: 0, tileWidth: 2, tileDepth: 2, yScale: 1}),
 						_1: {ctor: '[]'}
 					}
 				})

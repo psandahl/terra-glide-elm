@@ -7,7 +7,7 @@ import Types
 import Update
 import View
 import Window
-import Terrain.TileQuery exposing (fetchTileData)
+import Terrain.TileQuery as TileQuery
 
 
 main : Program Never Model Msg
@@ -17,7 +17,13 @@ main =
             ( Types.init
             , Cmd.batch
                 [ Task.perform WindowSize Window.size
-                , fetchTileData { xPos = 0, zPos = 0, worldWidth = 2, worldDepth = 2, yScale = 1 }
+                , TileQuery.execute
+                    { xPos = 0
+                    , zPos = 0
+                    , tileWidth = 2
+                    , tileDepth = 2
+                    , yScale = 1
+                    }
                 ]
             )
         , update = Update.update
