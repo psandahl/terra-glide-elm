@@ -12,6 +12,7 @@ type alias TileData =
     { width : Int
     , depth : Int
     , vertices : List Vertex
+    , indices : List Int
     }
 
 
@@ -26,10 +27,11 @@ type alias Vertex =
 
 decode : Decoder TileData
 decode =
-    Dec.map3 TileData
+    Dec.map4 TileData
         (Dec.field "width" Dec.int)
         (Dec.field "depth" Dec.int)
         (Dec.field "vertices" <| Dec.list decodeVertex)
+        (Dec.field "indices" <| Dec.list Dec.int)
 
 
 decodeVec2 : Decoder Vec2

@@ -13,8 +13,9 @@ import qualified Data.Vector          as Vector
 import           Data.Word            (Word16)
 import           Linear.V2            (V2 (..))
 import           Linear.V3            (V3 (..))
-import           Perlin               (Mesh (..), Vertex (..), generateIndices,
-                                       generateMesh, generateRaw16)
+import           Perlin               (TileData (..), Vertex (..),
+                                       generateIndices, generateRaw16,
+                                       generateTileData)
 import           Test.HUnit
 
 -- | Check that the generated raw file has the expected content and size.
@@ -26,7 +27,7 @@ rawFileGeneration =
 -- | Check that the generated Mesh have the expected dimensions.
 meshGenerationDimensions :: Assertion
 meshGenerationDimensions = do
-    let mesh = generateMesh writeCoordMesh w h
+    let mesh = generateTileData writeCoordMesh w h
     width mesh @=? w
     depth mesh @=? h
     (w * h) @=? Vector.length (vertices mesh)
@@ -34,7 +35,7 @@ meshGenerationDimensions = do
 -- | Check that the generated Mesh have the expected contents.
 meshGenerationContents :: Assertion
 meshGenerationContents = do
-    let mesh = generateMesh writeCoordMesh 2 2
+    let mesh = generateTileData writeCoordMesh 2 2
         v1 = vertices mesh ! 0
         v2 = vertices mesh ! 1
         v3 = vertices mesh ! 2

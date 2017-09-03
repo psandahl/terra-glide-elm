@@ -26,6 +26,7 @@ data TileData = TileData
     { width    :: !Int
     , depth    :: !Int
     , vertices :: !(Vector Vertex)
+    , indices  :: !(Vector Int)
     } deriving (Generic, Show, ToJSON)
 
 -- | Vertex definition.
@@ -44,11 +45,13 @@ instance ToJSON a => ToJSON (V3 a) where
 -- | Generate TileData with a Mesh of size w * d vertices.
 generateTileData :: (Int -> Int -> V3 Float) -> Int -> Int -> TileData
 generateTileData g w d =
-    TileData { width = w
-             , depth = d
-             , vertices = smoothNormals (generateIndices w d) $
-                            Vector.generate (w * d) mkVertex
-             }
+    let indices' = generateIndices w d
+    in TileData { width = w
+                , depth = d
+                , vertices = smoothNormals indices' $
+                                Vector.generate (w * d) mkVertex
+                , indices = indices'
+                }
     where
         mkVertex :: Int -> Vertex
         mkVertex index =
@@ -80,7 +83,7 @@ generateIndices w d =
 
 -- | Smooth all vertices.
 smoothNormals :: Vector Int -> Vector Vertex -> Vector Vertex
-smoothNormals indices inputVertices =
+smoothNormals indices' inputVertices =
     runST $ do
         mutableVertices <- Vector.unsafeThaw inputVertices
 
@@ -99,7 +102,7 @@ smoothNormals indices inputVertices =
                 MVector.write mutableVertices i1 $ v1 { normal = normal v1 + sn }
                 MVector.write mutableVertices i2 $ v2 { normal = normal v2 + sn }
                 MVector.write mutableVertices i3 $ v3 { normal = normal v3 + sn }
-            ) indices
+            ) indices'
 
         -- Traverse all vertices and normalize their normals.
         forM_ [0 .. MVector.length mutableVertices - 1] $
@@ -114,8 +117,8 @@ perSurface g indexVector = go 0
             case (,,) <$> indexVector !? baseIndex
                       <*> indexVector !? (baseIndex + 1)
                       <*> indexVector !? (baseIndex + 2) of
-                Just indices  -> do
-                    g indices
+                Just indices'  -> do
+                    g indices'
                     go (baseIndex + 3)
 
                 Nothing -> return ()
