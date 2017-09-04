@@ -12248,14 +12248,6 @@ var _elm_lang$window$Window$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
 
-var _psandahl$terra_glide$Terrain$entities = function (terrain) {
-	return {ctor: '[]'};
-};
-var _psandahl$terra_glide$Terrain$init = {dummy: 1};
-var _psandahl$terra_glide$Terrain$Terrain = function (a) {
-	return {dummy: a};
-};
-
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
 	_elm_community$linear_algebra$Math_Vector3$vec3,
@@ -12295,32 +12287,86 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
-var _psandahl$terra_glide$Types$Model = F2(
-	function (a, b) {
-		return {canvasSize: a, terrain: b};
+var _psandahl$terra_glide$Terrain$entities = function (terrain) {
+	return {ctor: '[]'};
+};
+var _psandahl$terra_glide$Terrain$addTile = F3(
+	function (pos, tileData, terrain) {
+		return terrain;
 	});
-var _psandahl$terra_glide$Types$FetchTileData = F2(
+var _psandahl$terra_glide$Terrain$init = {dummy: 1};
+var _psandahl$terra_glide$Terrain$Terrain = function (a) {
+	return {dummy: a};
+};
+
+var _psandahl$terra_glide$Types$Model = F3(
+	function (a, b, c) {
+		return {canvasSize: a, terrain: b, errorMessage: c};
+	});
+var _psandahl$terra_glide$Types$NewTileData = F2(
 	function (a, b) {
-		return {ctor: 'FetchTileData', _0: a, _1: b};
+		return {ctor: 'NewTileData', _0: a, _1: b};
 	});
 var _psandahl$terra_glide$Types$WindowSize = function (a) {
 	return {ctor: 'WindowSize', _0: a};
 };
 
+var _psandahl$terra_glide$Update$errorToString = function (err) {
+	var _p0 = err;
+	switch (_p0.ctor) {
+		case 'BadUrl':
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p0._0);
+		case 'Timeout':
+			return 'Time out. Request took too long time';
+		case 'NetworkError':
+			return 'Network Error';
+		case 'BadStatus':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Bad response status: ',
+				_elm_lang$core$Basics$toString(_p0._0.status));
+		default:
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad payload (JSON decode error): ', _p0._0);
+	}
+};
 var _psandahl$terra_glide$Update$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		if (_p0.ctor === 'WindowSize') {
+		var _p1 = msg;
+		if (_p1.ctor === 'WindowSize') {
 			return {
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
-					{canvasSize: _p0._0}),
+					{canvasSize: _p1._0}),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
-			var foo = A2(_elm_lang$core$Debug$log, 'Result: ', _p0._1);
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			var _p2 = _p1._1;
+			if (_p2.ctor === 'Ok') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p2._0, model.terrain)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			} else {
+				var errMsg = A2(
+					_elm_lang$core$Debug$log,
+					'NewTileData: ',
+					_psandahl$terra_glide$Update$errorToString(_p2._0));
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							errorMessage: _elm_lang$core$Maybe$Just(errMsg)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			}
 		}
 	});
 
@@ -12414,7 +12460,7 @@ var _psandahl$terra_glide$Terrain_TileQuery$toUrl = function (tailQuery) {
 var _psandahl$terra_glide$Terrain_TileQuery$execute = function (tileQuery) {
 	return A2(
 		_elm_lang$http$Http$send,
-		_psandahl$terra_glide$Types$FetchTileData(
+		_psandahl$terra_glide$Types$NewTileData(
 			{ctor: '_Tuple2', _0: tileQuery.xPos, _1: tileQuery.zPos}),
 		A2(
 			_elm_lang$http$Http$get,
@@ -12431,7 +12477,8 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 };
 var _psandahl$terra_glide$Main$init = {
 	canvasSize: {width: 800, height: 600},
-	terrain: _psandahl$terra_glide$Terrain$init
+	terrain: _psandahl$terra_glide$Terrain$init,
+	errorMessage: _elm_lang$core$Maybe$Nothing
 };
 var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 	{

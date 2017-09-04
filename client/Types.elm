@@ -6,12 +6,20 @@ import Terrain.TileData exposing (TileData)
 import Window exposing (Size)
 
 
+{-| Application state.
+-}
 type alias Model =
     { canvasSize : Size
     , terrain : Terrain
+    , errorMessage : Maybe String
     }
 
 
-type Msg
+{-| Application messages.
+-}
+type
+    Msg
+    -- The window size has changed.
     = WindowSize Size
-    | FetchTileData ( Int, Int ) (Result Http.Error TileData)
+      -- The execution of a TileQuery has resulted in new TileData.
+    | NewTileData ( Int, Int ) (Result Http.Error TileData)

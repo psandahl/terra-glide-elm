@@ -21,7 +21,7 @@ type alias TileQuery =
 -}
 execute : TileQuery -> Cmd Msg
 execute tileQuery =
-    Http.send (FetchTileData ( tileQuery.xPos, tileQuery.zPos )) <|
+    Http.send (NewTileData ( tileQuery.xPos, tileQuery.zPos )) <|
         Http.get (toUrl tileQuery) TileData.decode
 
 
