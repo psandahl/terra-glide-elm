@@ -1,5 +1,6 @@
 module Terrain exposing (Terrain, init, addTile, entities)
 
+import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (TileData)
 import WebGL exposing (Entity)
 
@@ -19,6 +20,6 @@ addTile pos tileData terrain =
     terrain
 
 
-entities : Terrain -> List Entity
-entities terrain =
+entities : Mat4 -> Mat4 -> Terrain -> List Entity
+entities projectionMatrix viewMatrix terrain =
     []

@@ -1,5 +1,6 @@
 module Types exposing (Model, Msg(..))
 
+import Camera exposing (Camera)
 import Http
 import Math.Matrix4 exposing (Mat4)
 import Terrain exposing (Terrain)
@@ -12,6 +13,7 @@ import Window exposing (Size)
 type alias Model =
     { canvasSize : Size
     , projectionMatrix : Mat4
+    , camera : Camera
     , terrain : Terrain
     , errorMessage : Maybe String
     }

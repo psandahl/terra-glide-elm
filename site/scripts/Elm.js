@@ -12276,6 +12276,19 @@ var _elm_lang$window$Window$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
 
+var _psandahl$terra_glide$Camera$viewMatrix = function (camera) {
+	return A3(
+		_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
+		camera.position,
+		A2(_elm_community$linear_algebra$Math_Vector3$add, camera.position, camera.heading),
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0));
+};
+var _psandahl$terra_glide$Camera$Camera = F2(
+	function (a, b) {
+		return {position: a, heading: b};
+	});
+var _psandahl$terra_glide$Camera$init = _psandahl$terra_glide$Camera$Camera;
+
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
 var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 	return A4(
@@ -12325,9 +12338,10 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
-var _psandahl$terra_glide$Terrain$entities = function (terrain) {
-	return {ctor: '[]'};
-};
+var _psandahl$terra_glide$Terrain$entities = F3(
+	function (projectionMatrix, viewMatrix, terrain) {
+		return {ctor: '[]'};
+	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
 	function (pos, tileData, terrain) {
 		return terrain;
@@ -12337,9 +12351,9 @@ var _psandahl$terra_glide$Terrain$Terrain = function (a) {
 	return {dummy: a};
 };
 
-var _psandahl$terra_glide$Types$Model = F4(
-	function (a, b, c, d) {
-		return {canvasSize: a, projectionMatrix: b, terrain: c, errorMessage: d};
+var _psandahl$terra_glide$Types$Model = F5(
+	function (a, b, c, d, e) {
+		return {canvasSize: a, projectionMatrix: b, camera: c, terrain: d, errorMessage: e};
 	});
 var _psandahl$terra_glide$Types$NewTileData = F2(
 	function (a, b) {
@@ -12413,6 +12427,7 @@ var _psandahl$terra_glide$Update$update = F2(
 	});
 
 var _psandahl$terra_glide$View$view = function (model) {
+	var viewMatrix = _psandahl$terra_glide$Camera$viewMatrix(model.camera);
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -12442,7 +12457,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 						_1: {ctor: '[]'}
 					}
 				},
-				_psandahl$terra_glide$Terrain$entities(model.terrain)),
+				A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain)),
 			_1: {ctor: '[]'}
 		});
 };
@@ -12520,6 +12535,10 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 var _psandahl$terra_glide$Main$init = {
 	canvasSize: _psandahl$terra_glide$Projection$defaultWindowSize,
 	projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
+	camera: A2(
+		_psandahl$terra_glide$Camera$init,
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 5, 10),
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, -1)),
 	terrain: _psandahl$terra_glide$Terrain$init,
 	errorMessage: _elm_lang$core$Maybe$Nothing
 };
