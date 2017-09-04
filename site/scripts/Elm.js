@@ -12338,14 +12338,48 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
-var _psandahl$terra_glide$Terrain_Tile$init = F2(
-	function (_p0, tileData) {
-		var _p1 = _p0;
-		return {startX: _p1._0, startZ: _p1._1, width: tileData.width, depth: tileData.depth};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        void main()\n        {\n            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 mvp;\n\n        void main()\n        {\n            gl_Position = mvp * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
+	function (tgt, src) {
+		tuplify:
+		while (true) {
+			var _p0 = A2(_elm_lang$core$List$take, 3, src);
+			if ((((_p0.ctor === '::') && (_p0._1.ctor === '::')) && (_p0._1._1.ctor === '::')) && (_p0._1._1._1.ctor === '[]')) {
+				var _v1 = {
+					ctor: '::',
+					_0: {ctor: '_Tuple3', _0: _p0._0, _1: _p0._1._0, _2: _p0._1._1._0},
+					_1: tgt
+				},
+					_v2 = A2(_elm_lang$core$List$drop, 3, src);
+				tgt = _v1;
+				src = _v2;
+				continue tuplify;
+			} else {
+				return _elm_lang$core$List$reverse(tgt);
+			}
+		}
 	});
-var _psandahl$terra_glide$Terrain_Tile$Tile = F4(
-	function (a, b, c, d) {
-		return {startX: a, startZ: b, width: c, depth: d};
+var _psandahl$terra_glide$Terrain_Tile$init = F2(
+	function (_p1, tileData) {
+		var _p2 = _p1;
+		return {
+			startX: _p2._0,
+			startZ: _p2._1,
+			width: tileData.width,
+			depth: tileData.depth,
+			mesh: A2(
+				_elm_community$webgl$WebGL$indexedTriangles,
+				tileData.vertices,
+				A2(
+					_psandahl$terra_glide$Terrain_Tile$tuplify,
+					{ctor: '[]'},
+					tileData.indices))
+		};
+	});
+var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
+	function (a, b, c, d, e) {
+		return {startX: a, startZ: b, width: c, depth: d, mesh: e};
 	});
 
 var _psandahl$terra_glide$Terrain$entities = F3(
