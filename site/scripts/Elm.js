@@ -12338,17 +12338,37 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
+var _psandahl$terra_glide$Terrain_Tile$init = F2(
+	function (_p0, tileData) {
+		var _p1 = _p0;
+		return {startX: _p1._0, startZ: _p1._1, width: tileData.width, depth: tileData.depth};
+	});
+var _psandahl$terra_glide$Terrain_Tile$Tile = F4(
+	function (a, b, c, d) {
+		return {startX: a, startZ: b, width: c, depth: d};
+	});
+
 var _psandahl$terra_glide$Terrain$entities = F3(
 	function (projectionMatrix, viewMatrix, terrain) {
 		return {ctor: '[]'};
 	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
 	function (pos, tileData, terrain) {
-		return terrain;
+		return _elm_lang$core$Native_Utils.update(
+			terrain,
+			{
+				tiles: {
+					ctor: '::',
+					_0: A2(_psandahl$terra_glide$Terrain_Tile$init, pos, tileData),
+					_1: terrain.tiles
+				}
+			});
 	});
-var _psandahl$terra_glide$Terrain$init = {dummy: 1};
+var _psandahl$terra_glide$Terrain$init = {
+	tiles: {ctor: '[]'}
+};
 var _psandahl$terra_glide$Terrain$Terrain = function (a) {
-	return {dummy: a};
+	return {tiles: a};
 };
 
 var _psandahl$terra_glide$Types$Model = F5(
