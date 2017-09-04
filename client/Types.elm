@@ -1,6 +1,7 @@
 module Types exposing (Model, Msg(..))
 
 import Http
+import Math.Matrix4 exposing (Mat4)
 import Terrain exposing (Terrain)
 import Terrain.TileData exposing (TileData)
 import Window exposing (Size)
@@ -10,6 +11,7 @@ import Window exposing (Size)
 -}
 type alias Model =
     { canvasSize : Size
+    , projectionMatrix : Mat4
     , terrain : Terrain
     , errorMessage : Maybe String
     }

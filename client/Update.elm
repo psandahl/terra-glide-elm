@@ -2,6 +2,7 @@ module Update exposing (update)
 
 import Debug
 import Http exposing (Error(..))
+import Projection
 import Terrain
 import Types exposing (Model, Msg(..))
 
@@ -12,7 +13,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         WindowSize size ->
-            ( { model | canvasSize = size }, Cmd.none )
+            ( { model
+                | canvasSize = size
+                , projectionMatrix = Projection.makeProjection size
+              }
+            , Cmd.none
+            )
 
         NewTileData startPosition result ->
             case result of

@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Html
+import Projection
 import Task
 import Types exposing (Model, Msg(..))
 import Types
@@ -35,7 +36,8 @@ main =
 
 init : Model
 init =
-    { canvasSize = { width = 800, height = 600 }
+    { canvasSize = Projection.defaultWindowSize
+    , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
     , terrain = Terrain.init
     , errorMessage = Nothing
     }

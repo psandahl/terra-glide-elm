@@ -5121,6 +5121,34 @@ var _elm_community$linear_algebra$Math_Vector3$i = A3(_elm_community$linear_alge
 var _elm_community$linear_algebra$Math_Vector3$vec3 = _elm_community$linear_algebra$Native_MJS.vec3;
 var _elm_community$linear_algebra$Math_Vector3$Vec3 = {ctor: 'Vec3'};
 
+var _elm_community$linear_algebra$Math_Matrix4$fromRecord = _elm_community$linear_algebra$Native_MJS.m4x4fromRecord;
+var _elm_community$linear_algebra$Math_Matrix4$toRecord = _elm_community$linear_algebra$Native_MJS.m4x4toRecord;
+var _elm_community$linear_algebra$Math_Matrix4$makeFromList = _elm_community$linear_algebra$Native_MJS.m4x4fromList;
+var _elm_community$linear_algebra$Math_Matrix4$makeBasis = _elm_community$linear_algebra$Native_MJS.m4x4makeBasis;
+var _elm_community$linear_algebra$Math_Matrix4$transpose = _elm_community$linear_algebra$Native_MJS.m4x4transpose;
+var _elm_community$linear_algebra$Math_Matrix4$makeLookAt = _elm_community$linear_algebra$Native_MJS.m4x4makeLookAt;
+var _elm_community$linear_algebra$Math_Matrix4$translate = _elm_community$linear_algebra$Native_MJS.m4x4translate;
+var _elm_community$linear_algebra$Math_Matrix4$translate3 = _elm_community$linear_algebra$Native_MJS.m4x4translate3;
+var _elm_community$linear_algebra$Math_Matrix4$makeTranslate = _elm_community$linear_algebra$Native_MJS.m4x4makeTranslate;
+var _elm_community$linear_algebra$Math_Matrix4$makeTranslate3 = _elm_community$linear_algebra$Native_MJS.m4x4makeTranslate3;
+var _elm_community$linear_algebra$Math_Matrix4$scale = _elm_community$linear_algebra$Native_MJS.m4x4scale;
+var _elm_community$linear_algebra$Math_Matrix4$scale3 = _elm_community$linear_algebra$Native_MJS.m4x4scale3;
+var _elm_community$linear_algebra$Math_Matrix4$makeScale = _elm_community$linear_algebra$Native_MJS.m4x4makeScale;
+var _elm_community$linear_algebra$Math_Matrix4$makeScale3 = _elm_community$linear_algebra$Native_MJS.m4x4makeScale3;
+var _elm_community$linear_algebra$Math_Matrix4$rotate = _elm_community$linear_algebra$Native_MJS.m4x4rotate;
+var _elm_community$linear_algebra$Math_Matrix4$makeRotate = _elm_community$linear_algebra$Native_MJS.m4x4makeRotate;
+var _elm_community$linear_algebra$Math_Matrix4$mulAffine = _elm_community$linear_algebra$Native_MJS.m4x4mulAffine;
+var _elm_community$linear_algebra$Math_Matrix4$mul = _elm_community$linear_algebra$Native_MJS.m4x4mul;
+var _elm_community$linear_algebra$Math_Matrix4$makeOrtho2D = _elm_community$linear_algebra$Native_MJS.m4x4makeOrtho2D;
+var _elm_community$linear_algebra$Math_Matrix4$makeOrtho = _elm_community$linear_algebra$Native_MJS.m4x4makeOrtho;
+var _elm_community$linear_algebra$Math_Matrix4$makePerspective = _elm_community$linear_algebra$Native_MJS.m4x4makePerspective;
+var _elm_community$linear_algebra$Math_Matrix4$makeFrustum = _elm_community$linear_algebra$Native_MJS.m4x4makeFrustum;
+var _elm_community$linear_algebra$Math_Matrix4$inverseOrthonormal = _elm_community$linear_algebra$Native_MJS.m4x4inverseOrthonormal;
+var _elm_community$linear_algebra$Math_Matrix4$inverse = _elm_community$linear_algebra$Native_MJS.m4x4inverse;
+var _elm_community$linear_algebra$Math_Matrix4$identity = _elm_community$linear_algebra$Native_MJS.m4x4identity;
+var _elm_community$linear_algebra$Math_Matrix4$transform = _elm_community$linear_algebra$Native_MJS.v3mul4x4;
+var _elm_community$linear_algebra$Math_Matrix4$Mat4 = {ctor: 'Mat4'};
+
 
 /*
  * Copyright (c) 2010 Mozilla Corporation
@@ -12248,6 +12276,16 @@ var _elm_lang$window$Window$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
 
+var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
+var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
+	return A4(
+		_elm_community$linear_algebra$Math_Matrix4$makePerspective,
+		45,
+		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
+		0.1,
+		100);
+};
+
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
 	_elm_community$linear_algebra$Math_Vector3$vec3,
@@ -12299,9 +12337,9 @@ var _psandahl$terra_glide$Terrain$Terrain = function (a) {
 	return {dummy: a};
 };
 
-var _psandahl$terra_glide$Types$Model = F3(
-	function (a, b, c) {
-		return {canvasSize: a, terrain: b, errorMessage: c};
+var _psandahl$terra_glide$Types$Model = F4(
+	function (a, b, c, d) {
+		return {canvasSize: a, projectionMatrix: b, terrain: c, errorMessage: d};
 	});
 var _psandahl$terra_glide$Types$NewTileData = F2(
 	function (a, b) {
@@ -12333,22 +12371,26 @@ var _psandahl$terra_glide$Update$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
 		if (_p1.ctor === 'WindowSize') {
+			var _p2 = _p1._0;
 			return {
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
-					{canvasSize: _p1._0}),
+					{
+						canvasSize: _p2,
+						projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p2)
+					}),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
-			var _p2 = _p1._1;
-			if (_p2.ctor === 'Ok') {
+			var _p3 = _p1._1;
+			if (_p3.ctor === 'Ok') {
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p2._0, model.terrain)
+							terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p3._0, model.terrain)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -12356,7 +12398,7 @@ var _psandahl$terra_glide$Update$update = F2(
 				var errMsg = A2(
 					_elm_lang$core$Debug$log,
 					'NewTileData: ',
-					_psandahl$terra_glide$Update$errorToString(_p2._0));
+					_psandahl$terra_glide$Update$errorToString(_p3._0));
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -12476,7 +12518,8 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 	return _elm_lang$window$Window$resizes(_psandahl$terra_glide$Types$WindowSize);
 };
 var _psandahl$terra_glide$Main$init = {
-	canvasSize: {width: 800, height: 600},
+	canvasSize: _psandahl$terra_glide$Projection$defaultWindowSize,
+	projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 	terrain: _psandahl$terra_glide$Terrain$init,
 	errorMessage: _elm_lang$core$Maybe$Nothing
 };
