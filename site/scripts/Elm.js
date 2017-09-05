@@ -12339,7 +12339,7 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
 var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Calculate the base color for the fragment.\n        vec3 baseColor();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() * calcAmbientLight();\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            return vec3(0.0, 1.0, 0.0);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n    '};
-var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 mvp;\n\n        void main()\n        {\n            gl_Position = mvp * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        void main()\n        {\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
 		tuplify:
@@ -12360,14 +12360,14 @@ var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 			}
 		}
 	});
-var _psandahl$terra_glide$Terrain_Tile$toEntity = F2(
-	function (mvp, tile) {
+var _psandahl$terra_glide$Terrain_Tile$toEntity = F3(
+	function (viewMatrix, mvpMatrix, tile) {
 		return A4(
 			_elm_community$webgl$WebGL$entity,
 			_psandahl$terra_glide$Terrain_Tile$vertexShader,
 			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
 			tile.mesh,
-			{mvp: mvp});
+			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix});
 	});
 var _psandahl$terra_glide$Terrain_Tile$init = F2(
 	function (_p1, tileData) {
@@ -12395,7 +12395,9 @@ var _psandahl$terra_glide$Terrain$entities = F3(
 	function (projectionMatrix, viewMatrix, terrain) {
 		return A2(
 			_elm_lang$core$List$map,
-			_psandahl$terra_glide$Terrain_Tile$toEntity(
+			A2(
+				_psandahl$terra_glide$Terrain_Tile$toEntity,
+				viewMatrix,
 				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
 			terrain.tiles);
 	});

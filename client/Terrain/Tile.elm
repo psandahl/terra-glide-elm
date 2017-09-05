@@ -29,9 +29,14 @@ init ( startX, startZ ) tileData =
     }
 
 
-toEntity : Mat4 -> Tile -> Entity
-toEntity mvp tile =
-    GL.entity vertexShader fragmentShader tile.mesh { mvp = mvp }
+toEntity : Mat4 -> Mat4 -> Tile -> Entity
+toEntity viewMatrix mvpMatrix tile =
+    GL.entity vertexShader
+        fragmentShader
+        tile.mesh
+        { viewMatrix = viewMatrix
+        , mvpMatrix = mvpMatrix
+        }
 
 
 tuplify : List ( Int, Int, Int ) -> List Int -> List ( Int, Int, Int )
@@ -44,18 +49,24 @@ tuplify tgt src =
             List.reverse tgt
 
 
-vertexShader : Shader Vertex { mvp : Mat4 } {}
+vertexShader :
+    Shader Vertex
+        { viewMatrix : Mat4
+        , mvpMatrix : Mat4
+        }
+        {}
 vertexShader =
     [glsl|
         attribute vec3 position;
         attribute vec3 normal;
         attribute vec2 texCoord;
 
-        uniform mat4 mvp;
+        uniform mat4 viewMatrix;
+        uniform mat4 mvpMatrix;
 
         void main()
         {
-            gl_Position = mvp * vec4(position, 1.0);
+            gl_Position = mvpMatrix * vec4(position, 1.0);
         }
     |]
 

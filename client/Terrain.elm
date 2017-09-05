@@ -26,4 +26,4 @@ addTile pos tileData terrain =
 
 entities : Mat4 -> Mat4 -> Terrain -> List Entity
 entities projectionMatrix viewMatrix terrain =
-    List.map (Tile.toEntity <| Mat.mul projectionMatrix viewMatrix) terrain.tiles
+    List.map (Tile.toEntity viewMatrix <| Mat.mul projectionMatrix viewMatrix) terrain.tiles
