@@ -1,8 +1,8 @@
-module Terrain.Tile exposing (Tile, init)
+module Terrain.Tile exposing (Tile, init, toEntity)
 
 import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (Vertex, TileData)
-import WebGL exposing (Mesh, Shader)
+import WebGL exposing (Entity, Mesh, Shader)
 import WebGL as GL
 
 
@@ -27,6 +27,11 @@ init ( startX, startZ ) tileData =
     , depth = tileData.depth
     , mesh = GL.indexedTriangles tileData.vertices <| tuplify [] tileData.indices
     }
+
+
+toEntity : Mat4 -> Tile -> Entity
+toEntity mvp tile =
+    GL.entity vertexShader fragmentShader tile.mesh { mvp = mvp }
 
 
 tuplify : List ( Int, Int, Int ) -> List Int -> List ( Int, Int, Int )

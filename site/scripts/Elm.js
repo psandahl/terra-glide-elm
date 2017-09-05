@@ -12360,6 +12360,15 @@ var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 			}
 		}
 	});
+var _psandahl$terra_glide$Terrain_Tile$toEntity = F2(
+	function (mvp, tile) {
+		return A4(
+			_elm_community$webgl$WebGL$entity,
+			_psandahl$terra_glide$Terrain_Tile$vertexShader,
+			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
+			tile.mesh,
+			{mvp: mvp});
+	});
 var _psandahl$terra_glide$Terrain_Tile$init = F2(
 	function (_p1, tileData) {
 		var _p2 = _p1;
@@ -12384,7 +12393,11 @@ var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
 
 var _psandahl$terra_glide$Terrain$entities = F3(
 	function (projectionMatrix, viewMatrix, terrain) {
-		return {ctor: '[]'};
+		return A2(
+			_elm_lang$core$List$map,
+			_psandahl$terra_glide$Terrain_Tile$toEntity(
+				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
+			terrain.tiles);
 	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
 	function (pos, tileData, terrain) {
@@ -12591,7 +12604,7 @@ var _psandahl$terra_glide$Main$init = {
 	projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 	camera: A2(
 		_psandahl$terra_glide$Camera$init,
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 5, 10),
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 2, 3),
 		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, -1)),
 	terrain: _psandahl$terra_glide$Terrain$init,
 	errorMessage: _elm_lang$core$Maybe$Nothing
