@@ -9,7 +9,7 @@ import Window exposing (Size)
 -}
 makeProjection : Size -> Mat4
 makeProjection windowSize =
-    Mat.makePerspective 45 (toFloat windowSize.width / toFloat windowSize.height) 0.1 100
+    Mat.makePerspective 45 (toFloat windowSize.width / toFloat windowSize.height) 0.1 200
 
 
 {-| Default window size to use before something is reported from Elm.

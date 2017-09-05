@@ -12296,7 +12296,7 @@ var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 		45,
 		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
 		0.1,
-		100);
+		200);
 };
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
@@ -12604,8 +12604,8 @@ var _psandahl$terra_glide$Main$init = {
 	projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 	camera: A2(
 		_psandahl$terra_glide$Camera$init,
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 2, 3),
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 0)),
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 150, 180),
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 0, 50)),
 	terrain: _psandahl$terra_glide$Terrain$init,
 	errorMessage: _elm_lang$core$Maybe$Nothing
 };
@@ -12621,7 +12621,7 @@ var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 					_1: {
 						ctor: '::',
 						_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
-							{xPos: 0, zPos: 0, tileWidth: 2, tileDepth: 2, yScale: 1}),
+							{xPos: 0, zPos: 0, tileWidth: 100, tileDepth: 100, yScale: 100}),
 						_1: {ctor: '[]'}
 					}
 				})

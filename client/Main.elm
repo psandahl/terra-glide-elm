@@ -24,9 +24,9 @@ main =
                 , TileQuery.execute
                     { xPos = 0
                     , zPos = 0
-                    , tileWidth = 2
-                    , tileDepth = 2
-                    , yScale = 1
+                    , tileWidth = 100
+                    , tileDepth = 100
+                    , yScale = 100
                     }
                 ]
             )
@@ -40,7 +40,7 @@ init : Model
 init =
     { canvasSize = Projection.defaultWindowSize
     , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-    , camera = Camera.init (vec3 0 2 3) (vec3 0 0 0)
+    , camera = Camera.init (vec3 50 150 180) (vec3 50 0 50)
     , terrain = Terrain.init
     , errorMessage = Nothing
     }
