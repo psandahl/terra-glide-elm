@@ -65,8 +65,29 @@ fragmentShader =
     [glsl|
         precision mediump float;
 
+        // Ambient color stuff. Hardcoded for now.
+        vec3 ambientColor = vec3(1.0, 1.0, 1.0);
+        float ambientStrength = 0.2;
+
+        // Calculate the base color for the fragment.
+        vec3 baseColor();
+
+        // Calculate the ambient light component.
+        vec3 calcAmbientLight();
+
         void main()
         {
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            vec3 fragmentColor = baseColor() * calcAmbientLight();
+            gl_FragColor = vec4(fragmentColor, 1.0);
+        }
+
+        vec3 baseColor()
+        {
+            return vec3(0.0, 1.0, 0.0);
+        }
+
+        vec3 calcAmbientLight()
+        {
+            return ambientColor * ambientStrength;
         }
     |]

@@ -12338,7 +12338,7 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        void main()\n        {\n            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Calculate the base color for the fragment.\n        vec3 baseColor();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() * calcAmbientLight();\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            return vec3(0.0, 1.0, 0.0);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 mvp;\n\n        void main()\n        {\n            gl_Position = mvp * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
