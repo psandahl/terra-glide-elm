@@ -12280,12 +12280,12 @@ var _psandahl$terra_glide$Camera$viewMatrix = function (camera) {
 	return A3(
 		_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
 		camera.position,
-		A2(_elm_community$linear_algebra$Math_Vector3$add, camera.position, camera.heading),
+		camera.lookAt,
 		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0));
 };
 var _psandahl$terra_glide$Camera$Camera = F2(
 	function (a, b) {
-		return {position: a, heading: b};
+		return {position: a, lookAt: b};
 	});
 var _psandahl$terra_glide$Camera$init = _psandahl$terra_glide$Camera$Camera;
 
@@ -12605,7 +12605,7 @@ var _psandahl$terra_glide$Main$init = {
 	camera: A2(
 		_psandahl$terra_glide$Camera$init,
 		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 2, 3),
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, -1)),
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 0)),
 	terrain: _psandahl$terra_glide$Terrain$init,
 	errorMessage: _elm_lang$core$Maybe$Nothing
 };

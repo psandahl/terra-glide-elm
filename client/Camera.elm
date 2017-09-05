@@ -7,7 +7,7 @@ import Math.Vector3 exposing (Vec3, vec3, add)
 
 type alias Camera =
     { position : Vec3
-    , heading : Vec3
+    , lookAt : Vec3
     }
 
 
@@ -18,4 +18,4 @@ init =
 
 viewMatrix : Camera -> Mat4
 viewMatrix camera =
-    Mat.makeLookAt camera.position (add camera.position camera.heading) (vec3 0 1 0)
+    Mat.makeLookAt camera.position camera.lookAt (vec3 0 1 0)

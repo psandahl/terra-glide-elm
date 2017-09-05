@@ -40,7 +40,7 @@ init : Model
 init =
     { canvasSize = Projection.defaultWindowSize
     , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-    , camera = Camera.init (vec3 0 2 3) (vec3 0 0 -1)
+    , camera = Camera.init (vec3 0 2 3) (vec3 0 0 0)
     , terrain = Terrain.init
     , errorMessage = Nothing
     }
