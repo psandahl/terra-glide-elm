@@ -12276,18 +12276,45 @@ var _elm_lang$window$Window$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
 
-var _psandahl$terra_glide$Camera$viewMatrix = function (camera) {
+var _psandahl$terra_glide$Camera$toNormalizedVec3 = function (vec) {
+	var vecNorm = _elm_community$linear_algebra$Math_Vector2$normalize(vec);
 	return A3(
-		_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
-		camera.position,
-		camera.lookAt,
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0));
+		_elm_community$linear_algebra$Math_Vector3$vec3,
+		_elm_community$linear_algebra$Math_Vector2$getX(vecNorm),
+		0,
+		_elm_community$linear_algebra$Math_Vector2$getY(vecNorm));
 };
-var _psandahl$terra_glide$Camera$Camera = F2(
-	function (a, b) {
-		return {position: a, lookAt: b};
+var _psandahl$terra_glide$Camera$makeMatrix = F2(
+	function (position, viewDirection) {
+		var height = _elm_community$linear_algebra$Math_Vector3$getY(
+			A2(_elm_lang$core$Debug$log, 'position: ', position));
+		var viewPointStraight = A2(
+			_elm_community$linear_algebra$Math_Vector3$add,
+			position,
+			A2(_elm_community$linear_algebra$Math_Vector3$scale, height, viewDirection));
+		var viewPointGround = A2(
+			_elm_lang$core$Debug$log,
+			'viewPointGround: ',
+			A2(_elm_community$linear_algebra$Math_Vector3$setY, 0, viewPointStraight));
+		return A3(
+			_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
+			position,
+			viewPointGround,
+			A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0));
 	});
-var _psandahl$terra_glide$Camera$init = _psandahl$terra_glide$Camera$Camera;
+var _psandahl$terra_glide$Camera$set = F2(
+	function (position, viewDirection) {
+		var viewDirection3 = _psandahl$terra_glide$Camera$toNormalizedVec3(viewDirection);
+		return {
+			position: position,
+			viewDirection: viewDirection3,
+			viewMatrix: A2(_psandahl$terra_glide$Camera$makeMatrix, position, viewDirection3)
+		};
+	});
+var _psandahl$terra_glide$Camera$Camera = F3(
+	function (a, b, c) {
+		return {position: a, viewDirection: b, viewMatrix: c};
+	});
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
 var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
@@ -12496,7 +12523,7 @@ var _psandahl$terra_glide$Update$update = F2(
 	});
 
 var _psandahl$terra_glide$View$view = function (model) {
-	var viewMatrix = _psandahl$terra_glide$Camera$viewMatrix(model.camera);
+	var viewMatrix = model.camera.viewMatrix;
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -12605,9 +12632,9 @@ var _psandahl$terra_glide$Main$init = {
 	canvasSize: _psandahl$terra_glide$Projection$defaultWindowSize,
 	projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 	camera: A2(
-		_psandahl$terra_glide$Camera$init,
+		_psandahl$terra_glide$Camera$set,
 		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 150, 180),
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 0, 50)),
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, -1)),
 	terrain: _psandahl$terra_glide$Terrain$init,
 	errorMessage: _elm_lang$core$Maybe$Nothing
 };

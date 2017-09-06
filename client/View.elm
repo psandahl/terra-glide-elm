@@ -1,6 +1,5 @@
 module View exposing (view)
 
-import Camera
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
@@ -13,7 +12,7 @@ view : Model -> Html Msg
 view model =
     let
         viewMatrix =
-            Camera.viewMatrix model.camera
+            model.camera.viewMatrix
     in
         Html.div
             []

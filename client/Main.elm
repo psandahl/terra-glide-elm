@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Camera
 import Html
+import Math.Vector2 exposing (vec2)
 import Math.Vector3 exposing (vec3)
 import Projection
 import Task
@@ -40,7 +41,7 @@ init : Model
 init =
     { canvasSize = Projection.defaultWindowSize
     , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-    , camera = Camera.init (vec3 50 150 180) (vec3 50 0 50)
+    , camera = Camera.set (vec3 50 150 180) (vec2 0 -1)
     , terrain = Terrain.init
     , errorMessage = Nothing
     }
