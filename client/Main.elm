@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Camera
+import Constants
 import Html
 import Math.Vector2 exposing (vec2)
 import Math.Vector3 exposing (vec3)
@@ -25,8 +26,8 @@ main =
                 , TileQuery.execute
                     { xPos = 0
                     , zPos = 0
-                    , tileWidth = 100
-                    , tileDepth = 100
+                    , tileWidth = Constants.tileSize
+                    , tileDepth = Constants.tileSize
                     , yScale = 100
                     }
                 ]

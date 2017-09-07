@@ -12316,6 +12316,9 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 		return {position: a, viewDirection: b, viewMatrix: c};
 	});
 
+var _psandahl$terra_glide$Constants$tileVista = 200;
+var _psandahl$terra_glide$Constants$tileSize = 100;
+
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
 var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 	return A4(
@@ -12650,7 +12653,7 @@ var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
 					_1: {
 						ctor: '::',
 						_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
-							{xPos: 0, zPos: 0, tileWidth: 100, tileDepth: 100, yScale: 100}),
+							{xPos: 0, zPos: 0, tileWidth: _psandahl$terra_glide$Constants$tileSize, tileDepth: _psandahl$terra_glide$Constants$tileSize, yScale: 100}),
 						_1: {ctor: '[]'}
 					}
 				})
