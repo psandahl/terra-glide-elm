@@ -1,4 +1,4 @@
-module Types exposing (Model)
+module Model exposing (Model)
 
 import Camera exposing (Camera)
 import Math.Matrix4 exposing (Mat4)

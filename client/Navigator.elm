@@ -23,7 +23,7 @@ init position =
             , zPos = 0
             , tileWidth = Constants.tileSize
             , tileDepth = Constants.tileSize
-            , yScale = 100
+            , yScale = floor Constants.terrainHeight
             }
         ]
     )

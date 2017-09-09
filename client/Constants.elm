@@ -1,4 +1,4 @@
-module Constants exposing (tileSize, tileVista)
+module Constants exposing (tileSize, tileVista, terrainHeight)
 
 {-| The length of the tile's side.
 -}
@@ -14,3 +14,10 @@ tileSize =
 tileVista : Float
 tileVista =
     200
+
+
+{-| The max height of the terrain.
+-}
+terrainHeight : Float
+terrainHeight =
+    100

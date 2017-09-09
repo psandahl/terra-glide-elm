@@ -12316,6 +12316,7 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 		return {position: a, viewDirection: b, viewMatrix: c};
 	});
 
+var _psandahl$terra_glide$Constants$terrainHeight = 100;
 var _psandahl$terra_glide$Constants$tileVista = 200;
 var _psandahl$terra_glide$Constants$tileSize = 100;
 
@@ -12441,23 +12442,19 @@ var _psandahl$terra_glide$Navigator$init = function (position) {
 			{
 				ctor: '::',
 				_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
-					{xPos: 0, zPos: 0, tileWidth: _psandahl$terra_glide$Constants$tileSize, tileDepth: _psandahl$terra_glide$Constants$tileSize, yScale: 100}),
+					{
+						xPos: 0,
+						zPos: 0,
+						tileWidth: _psandahl$terra_glide$Constants$tileSize,
+						tileDepth: _psandahl$terra_glide$Constants$tileSize,
+						yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
+					}),
 				_1: {ctor: '[]'}
 			})
 	};
 };
 var _psandahl$terra_glide$Navigator$Navigator = function (a) {
 	return {position: a};
-};
-
-var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
-var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
-	return A4(
-		_elm_community$linear_algebra$Math_Matrix4$makePerspective,
-		45,
-		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
-		0.1,
-		200);
 };
 
 var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n\n        varying vec3 vNormal;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);\n\n        // Calculate the base color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            return vec3(0.0, 1.0, 0.0);\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
@@ -12542,10 +12539,20 @@ var _psandahl$terra_glide$Terrain$Terrain = function (a) {
 	return {tiles: a};
 };
 
-var _psandahl$terra_glide$Types$Model = F5(
+var _psandahl$terra_glide$Model$Model = F5(
 	function (a, b, c, d, e) {
 		return {canvasSize: a, projectionMatrix: b, camera: c, terrain: d, errorMessage: e};
 	});
+
+var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
+var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
+	return A4(
+		_elm_community$linear_algebra$Math_Matrix4$makePerspective,
+		45,
+		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
+		0.1,
+		200);
+};
 
 var _psandahl$terra_glide$Update$errorToString = function (err) {
 	var _p0 = err;

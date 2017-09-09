@@ -5,11 +5,10 @@ import Html
 import Navigator
 import Math.Vector2 exposing (vec2)
 import Math.Vector3 exposing (vec3)
+import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Projection
 import Task
-import Types exposing (Model)
-import Types
 import Update
 import View
 import Window
