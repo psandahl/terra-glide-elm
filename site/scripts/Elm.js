@@ -12435,34 +12435,78 @@ var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
 		return {xPos: a, zPos: b, tileWidth: c, tileDepth: d, yScale: e};
 	});
 
+var _psandahl$terra_glide$Navigator_TileSelector$nearRight = function (p) {
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Constants$tileVista, _psandahl$terra_glide$Constants$tileVista);
+	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
+};
+var _psandahl$terra_glide$Navigator_TileSelector$nearLeft = function (p) {
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Constants$tileVista, _psandahl$terra_glide$Constants$tileVista);
+	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
+};
+var _psandahl$terra_glide$Navigator_TileSelector$farRight = function (p) {
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Constants$tileVista, 0 - _psandahl$terra_glide$Constants$tileVista);
+	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
+};
+var _psandahl$terra_glide$Navigator_TileSelector$farLeft = function (p) {
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Constants$tileVista, 0 - _psandahl$terra_glide$Constants$tileVista);
+	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
+};
+var _psandahl$terra_glide$Navigator_TileSelector$tileStartFor = function (p) {
+	return {
+		ctor: '_Tuple2',
+		_0: _psandahl$terra_glide$Constants$tileSize * ((_elm_lang$core$Basics$floor(
+			_elm_community$linear_algebra$Math_Vector2$getX(p)) / _psandahl$terra_glide$Constants$tileSize) | 0),
+		_1: _psandahl$terra_glide$Constants$tileSize * ((_elm_lang$core$Basics$floor(
+			_elm_community$linear_algebra$Math_Vector2$getY(p)) / _psandahl$terra_glide$Constants$tileSize) | 0)
+	};
+};
+var _psandahl$terra_glide$Navigator_TileSelector$tileRow = F3(
+	function (firstX, lastX, z) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (x) {
+				return {
+					xPos: x * _psandahl$terra_glide$Constants$tileSize,
+					zPos: z * _psandahl$terra_glide$Constants$tileSize,
+					tileWidth: _psandahl$terra_glide$Constants$tileSize,
+					tileDepth: _psandahl$terra_glide$Constants$tileSize,
+					yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
+				};
+			},
+			A2(_elm_lang$core$List$range, (firstX / _psandahl$terra_glide$Constants$tileSize) | 0, (lastX / _psandahl$terra_glide$Constants$tileSize) | 0));
+	});
+var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
+	var _p0 = _psandahl$terra_glide$Navigator_TileSelector$tileStartFor(
+		_psandahl$terra_glide$Navigator_TileSelector$nearRight(point));
+	var xNearRight = _p0._0;
+	var zNearRight = _p0._1;
+	var _p1 = _psandahl$terra_glide$Navigator_TileSelector$tileStartFor(
+		_psandahl$terra_glide$Navigator_TileSelector$nearLeft(point));
+	var xNearLeft = _p1._0;
+	var zNearLeft = _p1._1;
+	var _p2 = _psandahl$terra_glide$Navigator_TileSelector$tileStartFor(
+		_psandahl$terra_glide$Navigator_TileSelector$farRight(point));
+	var xFarRight = _p2._0;
+	var zFarRight = _p2._1;
+	var _p3 = _psandahl$terra_glide$Navigator_TileSelector$tileStartFor(
+		_psandahl$terra_glide$Navigator_TileSelector$farLeft(point));
+	var xFarLeft = _p3._0;
+	var zFarLeft = _p3._1;
+	return A2(
+		_elm_lang$core$List$concatMap,
+		A2(_psandahl$terra_glide$Navigator_TileSelector$tileRow, xFarLeft, xFarRight),
+		A2(_elm_lang$core$List$range, (zFarLeft / _psandahl$terra_glide$Constants$tileSize) | 0, (zNearLeft / _psandahl$terra_glide$Constants$tileSize) | 0));
+};
+
 var _psandahl$terra_glide$Navigator$init = function (position) {
 	return {
 		ctor: '_Tuple2',
 		_0: {position: position},
 		_1: _elm_lang$core$Platform_Cmd$batch(
-			{
-				ctor: '::',
-				_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
-					{
-						xPos: 0,
-						zPos: 0,
-						tileWidth: _psandahl$terra_glide$Constants$tileSize,
-						tileDepth: _psandahl$terra_glide$Constants$tileSize,
-						yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
-					}),
-				_1: {
-					ctor: '::',
-					_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
-						{
-							xPos: 100,
-							zPos: 0,
-							tileWidth: _psandahl$terra_glide$Constants$tileSize,
-							tileDepth: _psandahl$terra_glide$Constants$tileSize,
-							yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
-						}),
-					_1: {ctor: '[]'}
-				}
-			})
+			A2(
+				_elm_lang$core$List$map,
+				_psandahl$terra_glide$Terrain_TileQuery$execute,
+				_psandahl$terra_glide$Navigator_TileSelector$tiles(position)))
 	};
 };
 var _psandahl$terra_glide$Navigator$Navigator = function (a) {

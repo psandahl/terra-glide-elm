@@ -1,8 +1,8 @@
 module Navigator exposing (Navigator, init)
 
-import Constants
 import Math.Vector2 exposing (Vec2)
 import Msg exposing (Msg)
+import Navigator.TileSelector as TileSelector
 import Terrain.TileQuery as TileQuery
 
 
@@ -17,20 +17,5 @@ a command to be executed.
 init : Vec2 -> ( Navigator, Cmd Msg )
 init position =
     ( { position = position }
-    , Cmd.batch
-        [ TileQuery.execute
-            { xPos = 0
-            , zPos = 0
-            , tileWidth = Constants.tileSize
-            , tileDepth = Constants.tileSize
-            , yScale = floor Constants.terrainHeight
-            }
-        , TileQuery.execute
-            { xPos = 100
-            , zPos = 0
-            , tileWidth = Constants.tileSize
-            , tileDepth = Constants.tileSize
-            , yScale = floor Constants.terrainHeight
-            }
-        ]
+    , Cmd.batch <| List.map TileQuery.execute <| TileSelector.tiles position
     )
