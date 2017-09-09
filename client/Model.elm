@@ -12,6 +12,7 @@ type alias Model =
     { canvasSize : Size
     , projectionMatrix : Mat4
     , camera : Camera
+    , cameraRotation : Float
     , terrain : Terrain
     , errorMessage : Maybe String
     }

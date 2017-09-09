@@ -13,3 +13,6 @@ type
     = WindowSize Size
       -- The execution of a TileQuery has resulted in new TileData.
     | NewTileData ( Int, Int ) (Result Http.Error TileData)
+      -- Animation request, with the (fraction of) seconds since last
+      -- animation frame.
+    | Animate Float

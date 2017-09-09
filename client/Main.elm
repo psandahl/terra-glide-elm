@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import AnimationFrame
 import Camera
 import Html
 import Navigator
@@ -9,6 +10,7 @@ import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Projection
 import Task
+import Time
 import Update
 import View
 import Window
@@ -33,7 +35,8 @@ init =
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 100 150 180) (vec2 0 -1)
+          , camera = Camera.set (vec3 100 150 180) (vec2 (sin 0) (cos 0))
+          , cameraRotation = 0
           , terrain = Terrain.init
           , errorMessage = Nothing
           }
@@ -43,4 +46,7 @@ init =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Window.resizes WindowSize
+    Sub.batch
+        [ Window.resizes WindowSize
+        , AnimationFrame.diffs (Animate << Time.inSeconds)
+        ]

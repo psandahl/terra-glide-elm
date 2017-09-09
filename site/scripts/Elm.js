@@ -11038,6 +11038,29 @@ var _elm_lang$core$Task$cmdMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
 
+var _elm_lang$animation_frame$Native_AnimationFrame = function()
+{
+
+function create()
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		var id = requestAnimationFrame(function() {
+			callback(_elm_lang$core$Native_Scheduler.succeed(Date.now()));
+		});
+
+		return function() {
+			cancelAnimationFrame(id);
+		};
+	});
+}
+
+return {
+	create: create
+};
+
+}();
+
 //import Native.Scheduler //
 
 var _elm_lang$core$Native_Time = function() {
@@ -11256,6 +11279,148 @@ _elm_lang$core$Native_Platform.effectManagers['Time'] = {pkg: 'elm-lang/core', i
 var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
 var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
 var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
+var _elm_lang$animation_frame$AnimationFrame$rAF = _elm_lang$animation_frame$Native_AnimationFrame.create(
+	{ctor: '_Tuple0'});
+var _elm_lang$animation_frame$AnimationFrame$subscription = _elm_lang$core$Native_Platform.leaf('AnimationFrame');
+var _elm_lang$animation_frame$AnimationFrame$State = F3(
+	function (a, b, c) {
+		return {subs: a, request: b, oldTime: c};
+	});
+var _elm_lang$animation_frame$AnimationFrame$init = _elm_lang$core$Task$succeed(
+	A3(
+		_elm_lang$animation_frame$AnimationFrame$State,
+		{ctor: '[]'},
+		_elm_lang$core$Maybe$Nothing,
+		0));
+var _elm_lang$animation_frame$AnimationFrame$onEffects = F3(
+	function (router, subs, _p0) {
+		var _p1 = _p0;
+		var _p5 = _p1.request;
+		var _p4 = _p1.oldTime;
+		var _p2 = {ctor: '_Tuple2', _0: _p5, _1: subs};
+		if (_p2._0.ctor === 'Nothing') {
+			if (_p2._1.ctor === '[]') {
+				return _elm_lang$core$Task$succeed(
+					A3(
+						_elm_lang$animation_frame$AnimationFrame$State,
+						{ctor: '[]'},
+						_elm_lang$core$Maybe$Nothing,
+						_p4));
+			} else {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (pid) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (time) {
+								return _elm_lang$core$Task$succeed(
+									A3(
+										_elm_lang$animation_frame$AnimationFrame$State,
+										subs,
+										_elm_lang$core$Maybe$Just(pid),
+										time));
+							},
+							_elm_lang$core$Time$now);
+					},
+					_elm_lang$core$Process$spawn(
+						A2(
+							_elm_lang$core$Task$andThen,
+							_elm_lang$core$Platform$sendToSelf(router),
+							_elm_lang$animation_frame$AnimationFrame$rAF)));
+			}
+		} else {
+			if (_p2._1.ctor === '[]') {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (_p3) {
+						return _elm_lang$core$Task$succeed(
+							A3(
+								_elm_lang$animation_frame$AnimationFrame$State,
+								{ctor: '[]'},
+								_elm_lang$core$Maybe$Nothing,
+								_p4));
+					},
+					_elm_lang$core$Process$kill(_p2._0._0));
+			} else {
+				return _elm_lang$core$Task$succeed(
+					A3(_elm_lang$animation_frame$AnimationFrame$State, subs, _p5, _p4));
+			}
+		}
+	});
+var _elm_lang$animation_frame$AnimationFrame$onSelfMsg = F3(
+	function (router, newTime, _p6) {
+		var _p7 = _p6;
+		var _p10 = _p7.subs;
+		var diff = newTime - _p7.oldTime;
+		var send = function (sub) {
+			var _p8 = sub;
+			if (_p8.ctor === 'Time') {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					_p8._0(newTime));
+			} else {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					_p8._0(diff));
+			}
+		};
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (pid) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (_p9) {
+						return _elm_lang$core$Task$succeed(
+							A3(
+								_elm_lang$animation_frame$AnimationFrame$State,
+								_p10,
+								_elm_lang$core$Maybe$Just(pid),
+								newTime));
+					},
+					_elm_lang$core$Task$sequence(
+						A2(_elm_lang$core$List$map, send, _p10)));
+			},
+			_elm_lang$core$Process$spawn(
+				A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$core$Platform$sendToSelf(router),
+					_elm_lang$animation_frame$AnimationFrame$rAF)));
+	});
+var _elm_lang$animation_frame$AnimationFrame$Diff = function (a) {
+	return {ctor: 'Diff', _0: a};
+};
+var _elm_lang$animation_frame$AnimationFrame$diffs = function (tagger) {
+	return _elm_lang$animation_frame$AnimationFrame$subscription(
+		_elm_lang$animation_frame$AnimationFrame$Diff(tagger));
+};
+var _elm_lang$animation_frame$AnimationFrame$Time = function (a) {
+	return {ctor: 'Time', _0: a};
+};
+var _elm_lang$animation_frame$AnimationFrame$times = function (tagger) {
+	return _elm_lang$animation_frame$AnimationFrame$subscription(
+		_elm_lang$animation_frame$AnimationFrame$Time(tagger));
+};
+var _elm_lang$animation_frame$AnimationFrame$subMap = F2(
+	function (func, sub) {
+		var _p11 = sub;
+		if (_p11.ctor === 'Time') {
+			return _elm_lang$animation_frame$AnimationFrame$Time(
+				function (_p12) {
+					return func(
+						_p11._0(_p12));
+				});
+		} else {
+			return _elm_lang$animation_frame$AnimationFrame$Diff(
+				function (_p13) {
+					return func(
+						_p11._0(_p13));
+				});
+		}
+	});
+_elm_lang$core$Native_Platform.effectManagers['AnimationFrame'] = {pkg: 'elm-lang/animation-frame', init: _elm_lang$animation_frame$AnimationFrame$init, onEffects: _elm_lang$animation_frame$AnimationFrame$onEffects, onSelfMsg: _elm_lang$animation_frame$AnimationFrame$onSelfMsg, tag: 'sub', subMap: _elm_lang$animation_frame$AnimationFrame$subMap};
 
 var _elm_lang$dom$Native_Dom = function() {
 
@@ -12360,6 +12525,9 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
+var _psandahl$terra_glide$Msg$Animate = function (a) {
+	return {ctor: 'Animate', _0: a};
+};
 var _psandahl$terra_glide$Msg$NewTileData = F2(
 	function (a, b) {
 		return {ctor: 'NewTileData', _0: a, _1: b};
@@ -12595,9 +12763,9 @@ var _psandahl$terra_glide$Terrain$Terrain = function (a) {
 	return {tiles: a};
 };
 
-var _psandahl$terra_glide$Model$Model = F5(
-	function (a, b, c, d, e) {
-		return {canvasSize: a, projectionMatrix: b, camera: c, terrain: d, errorMessage: e};
+var _psandahl$terra_glide$Model$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, terrain: e, errorMessage: f};
 	});
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
@@ -12631,45 +12799,62 @@ var _psandahl$terra_glide$Update$errorToString = function (err) {
 var _psandahl$terra_glide$Update$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
-		if (_p1.ctor === 'WindowSize') {
-			var _p2 = _p1._0;
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						canvasSize: _p2,
-						projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p2)
-					}),
-				_1: _elm_lang$core$Platform_Cmd$none
-			};
-		} else {
-			var _p3 = _p1._1;
-			if (_p3.ctor === 'Ok') {
+		switch (_p1.ctor) {
+			case 'WindowSize':
+				var _p2 = _p1._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p3._0, model.terrain)
+							canvasSize: _p2,
+							projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p2)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			} else {
-				var errMsg = A2(
-					_elm_lang$core$Debug$log,
-					'NewTileData: ',
-					_psandahl$terra_glide$Update$errorToString(_p3._0));
+			case 'NewTileData':
+				var _p3 = _p1._1;
+				if (_p3.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p3._0, model.terrain)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					var errMsg = A2(
+						_elm_lang$core$Debug$log,
+						'NewTileData: ',
+						_psandahl$terra_glide$Update$errorToString(_p3._0));
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				var newRotation = (_p1._0 * 0.1) + model.cameraRotation;
+				var viewVector = A2(
+					_elm_community$linear_algebra$Math_Vector2$vec2,
+					_elm_lang$core$Basics$sin(newRotation),
+					_elm_lang$core$Basics$cos(newRotation));
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							errorMessage: _elm_lang$core$Maybe$Just(errMsg)
+							camera: A2(_psandahl$terra_glide$Camera$set, model.camera.position, viewVector),
+							cameraRotation: newRotation
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			}
 		}
 	});
 
@@ -12710,13 +12895,26 @@ var _psandahl$terra_glide$View$view = function (model) {
 };
 
 var _psandahl$terra_glide$Main$subscriptions = function (model) {
-	return _elm_lang$window$Window$resizes(_psandahl$terra_glide$Msg$WindowSize);
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: _elm_lang$window$Window$resizes(_psandahl$terra_glide$Msg$WindowSize),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$animation_frame$AnimationFrame$diffs(
+					function (_p0) {
+						return _psandahl$terra_glide$Msg$Animate(
+							_elm_lang$core$Time$inSeconds(_p0));
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
 };
 var _psandahl$terra_glide$Main$init = function () {
-	var _p0 = _psandahl$terra_glide$Navigator$init(
+	var _p1 = _psandahl$terra_glide$Navigator$init(
 		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, 0));
-	var navigator = _p0._0;
-	var navigatorCommands = _p0._1;
+	var navigator = _p1._0;
+	var navigatorCommands = _p1._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -12725,7 +12923,11 @@ var _psandahl$terra_glide$Main$init = function () {
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
 				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 100, 150, 180),
-				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, -1)),
+				A2(
+					_elm_community$linear_algebra$Math_Vector2$vec2,
+					_elm_lang$core$Basics$sin(0),
+					_elm_lang$core$Basics$cos(0))),
+			cameraRotation: 0,
 			terrain: _psandahl$terra_glide$Terrain$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing
 		},
