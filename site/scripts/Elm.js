@@ -12484,7 +12484,7 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 var _psandahl$terra_glide$Constants$terrainHeight = 300;
 var _psandahl$terra_glide$Constants$cameraHeight = _psandahl$terra_glide$Constants$terrainHeight + 50;
 var _psandahl$terra_glide$Constants$tileVista = 400;
-var _psandahl$terra_glide$Constants$tileSize = 100;
+var _psandahl$terra_glide$Constants$tileSize = 50;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
@@ -12884,7 +12884,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 						_0: _elm_community$webgl$WebGL$depth(1),
 						_1: {
 							ctor: '::',
-							_0: A4(_elm_community$webgl$WebGL$clearColor, 0, 0, 0, 0),
+							_0: A4(_elm_community$webgl$WebGL$clearColor, 161 / 255, 187 / 255, 251 / 255, 0),
 							_1: {ctor: '[]'}
 						}
 					}

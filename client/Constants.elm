@@ -6,7 +6,7 @@ module Constants exposing (tileSize, tileVista, terrainHeight, cameraHeight)
 
 tileSize : Int
 tileSize =
-    100
+    50
 
 
 {-| The radius how far tiles must be available from the view position.
