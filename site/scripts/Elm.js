@@ -12317,6 +12317,7 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 	});
 
 var _psandahl$terra_glide$Constants$terrainHeight = 100;
+var _psandahl$terra_glide$Constants$cameraHeight = _psandahl$terra_glide$Constants$terrainHeight + 50;
 var _psandahl$terra_glide$Constants$tileVista = 200;
 var _psandahl$terra_glide$Constants$tileSize = 100;
 
@@ -12449,7 +12450,18 @@ var _psandahl$terra_glide$Navigator$init = function (position) {
 						tileDepth: _psandahl$terra_glide$Constants$tileSize,
 						yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
+						{
+							xPos: 100,
+							zPos: 0,
+							tileWidth: _psandahl$terra_glide$Constants$tileSize,
+							tileDepth: _psandahl$terra_glide$Constants$tileSize,
+							yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
+						}),
+					_1: {ctor: '[]'}
+				}
 			})
 	};
 };
@@ -12668,7 +12680,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 150, 180),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 100, 150, 180),
 				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, -1)),
 			terrain: _psandahl$terra_glide$Terrain$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing

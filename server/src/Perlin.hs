@@ -86,8 +86,8 @@ asHeightMapR16 context tileQuery =
 asTileData :: PerlinContext -> TileQuery -> TileData
 asTileData context tileQuery =
     generateTileData (perlin context tileQuery)
-                     (tileWidth tileQuery)
-                     (tileDepth tileQuery)
+                     (1 + tileWidth tileQuery)
+                     (1 + tileDepth tileQuery)
 
 -- | Workhorse function. From the context and a pair of coordinates
 -- (starting at 0, 0) produce a V3, where x and z are moved using the offset

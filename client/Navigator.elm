@@ -25,5 +25,12 @@ init position =
             , tileDepth = Constants.tileSize
             , yScale = floor Constants.terrainHeight
             }
+        , TileQuery.execute
+            { xPos = 100
+            , zPos = 0
+            , tileWidth = Constants.tileSize
+            , tileDepth = Constants.tileSize
+            , yScale = floor Constants.terrainHeight
+            }
         ]
     )

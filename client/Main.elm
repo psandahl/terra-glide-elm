@@ -33,7 +33,7 @@ init =
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 50 150 180) (vec2 0 -1)
+          , camera = Camera.set (vec3 100 150 180) (vec2 0 -1)
           , terrain = Terrain.init
           , errorMessage = Nothing
           }

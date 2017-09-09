@@ -1,4 +1,4 @@
-module Constants exposing (tileSize, tileVista, terrainHeight)
+module Constants exposing (tileSize, tileVista, terrainHeight, cameraHeight)
 
 {-| The length of the tile's side.
 -}
@@ -21,3 +21,10 @@ tileVista =
 terrainHeight : Float
 terrainHeight =
     100
+
+
+{-| The camera's height. Always 50 units above of the heighest terrain.
+-}
+cameraHeight : Float
+cameraHeight =
+    terrainHeight + 50
