@@ -2,9 +2,10 @@ module Update exposing (update)
 
 import Debug
 import Http exposing (Error(..))
+import Msg exposing (Msg(..))
 import Projection
 import Terrain
-import Types exposing (Model, Msg(..))
+import Types exposing (Model)
 
 
 {-| The application's update function.

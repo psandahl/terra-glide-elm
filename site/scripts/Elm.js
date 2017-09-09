@@ -12319,16 +12319,6 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 var _psandahl$terra_glide$Constants$tileVista = 200;
 var _psandahl$terra_glide$Constants$tileSize = 100;
 
-var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
-var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
-	return A4(
-		_elm_community$linear_algebra$Math_Matrix4$makePerspective,
-		45,
-		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
-		0.1,
-		200);
-};
-
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
 	_elm_community$linear_algebra$Math_Vector3$vec3,
@@ -12367,6 +12357,108 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		_elm_lang$core$Json_Decode$field,
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
+
+var _psandahl$terra_glide$Msg$NewTileData = F2(
+	function (a, b) {
+		return {ctor: 'NewTileData', _0: a, _1: b};
+	});
+var _psandahl$terra_glide$Msg$WindowSize = function (a) {
+	return {ctor: 'WindowSize', _0: a};
+};
+
+var _psandahl$terra_glide$Terrain_TileQuery$service = '/terrain/heightmap/tile';
+var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tileQuery) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'xpos=',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(tileQuery.xPos),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'&',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'zpos=',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(tileQuery.zPos),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'&',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'width=',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(tileQuery.tileWidth),
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'&',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'depth=',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(tileQuery.tileDepth),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'&',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'yscale=',
+														_elm_lang$core$Basics$toString(tileQuery.yScale))))))))))))));
+};
+var _psandahl$terra_glide$Terrain_TileQuery$toUrl = function (tailQuery) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		_psandahl$terra_glide$Terrain_TileQuery$service,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'?',
+			_psandahl$terra_glide$Terrain_TileQuery$asString(tailQuery)));
+};
+var _psandahl$terra_glide$Terrain_TileQuery$execute = function (tileQuery) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_psandahl$terra_glide$Msg$NewTileData(
+			{ctor: '_Tuple2', _0: tileQuery.xPos, _1: tileQuery.zPos}),
+		A2(
+			_elm_lang$http$Http$get,
+			_psandahl$terra_glide$Terrain_TileQuery$toUrl(tileQuery),
+			_psandahl$terra_glide$Terrain_TileData$decode));
+};
+var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
+	function (a, b, c, d, e) {
+		return {xPos: a, zPos: b, tileWidth: c, tileDepth: d, yScale: e};
+	});
+
+var _psandahl$terra_glide$Navigator$init = function (position) {
+	return {
+		ctor: '_Tuple2',
+		_0: {position: position},
+		_1: _elm_lang$core$Platform_Cmd$batch(
+			{
+				ctor: '::',
+				_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
+					{xPos: 0, zPos: 0, tileWidth: _psandahl$terra_glide$Constants$tileSize, tileDepth: _psandahl$terra_glide$Constants$tileSize, yScale: 100}),
+				_1: {ctor: '[]'}
+			})
+	};
+};
+var _psandahl$terra_glide$Navigator$Navigator = function (a) {
+	return {position: a};
+};
+
+var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
+var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
+	return A4(
+		_elm_community$linear_algebra$Math_Matrix4$makePerspective,
+		45,
+		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
+		0.1,
+		200);
+};
 
 var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n\n        varying vec3 vNormal;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);\n\n        // Calculate the base color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            return vec3(0.0, 1.0, 0.0);\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vNormal;\n\n        void main()\n        {\n            vNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
@@ -12454,13 +12546,6 @@ var _psandahl$terra_glide$Types$Model = F5(
 	function (a, b, c, d, e) {
 		return {canvasSize: a, projectionMatrix: b, camera: c, terrain: d, errorMessage: e};
 	});
-var _psandahl$terra_glide$Types$NewTileData = F2(
-	function (a, b) {
-		return {ctor: 'NewTileData', _0: a, _1: b};
-	});
-var _psandahl$terra_glide$Types$WindowSize = function (a) {
-	return {ctor: 'WindowSize', _0: a};
-};
 
 var _psandahl$terra_glide$Update$errorToString = function (err) {
 	var _p0 = err;
@@ -12561,107 +12646,40 @@ var _psandahl$terra_glide$View$view = function (model) {
 		});
 };
 
-var _psandahl$terra_glide$Terrain_TileQuery$service = '/terrain/heightmap/tile';
-var _psandahl$terra_glide$Terrain_TileQuery$asString = function (tileQuery) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		'xpos=',
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(tileQuery.xPos),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'&',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'zpos=',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(tileQuery.zPos),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'&',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'width=',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(tileQuery.tileWidth),
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										'&',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											'depth=',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(tileQuery.tileDepth),
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													'&',
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'yscale=',
-														_elm_lang$core$Basics$toString(tileQuery.yScale))))))))))))));
-};
-var _psandahl$terra_glide$Terrain_TileQuery$toUrl = function (tailQuery) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		_psandahl$terra_glide$Terrain_TileQuery$service,
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			'?',
-			_psandahl$terra_glide$Terrain_TileQuery$asString(tailQuery)));
-};
-var _psandahl$terra_glide$Terrain_TileQuery$execute = function (tileQuery) {
-	return A2(
-		_elm_lang$http$Http$send,
-		_psandahl$terra_glide$Types$NewTileData(
-			{ctor: '_Tuple2', _0: tileQuery.xPos, _1: tileQuery.zPos}),
-		A2(
-			_elm_lang$http$Http$get,
-			_psandahl$terra_glide$Terrain_TileQuery$toUrl(tileQuery),
-			_psandahl$terra_glide$Terrain_TileData$decode));
-};
-var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
-	function (a, b, c, d, e) {
-		return {xPos: a, zPos: b, tileWidth: c, tileDepth: d, yScale: e};
-	});
-
 var _psandahl$terra_glide$Main$subscriptions = function (model) {
-	return _elm_lang$window$Window$resizes(_psandahl$terra_glide$Types$WindowSize);
+	return _elm_lang$window$Window$resizes(_psandahl$terra_glide$Msg$WindowSize);
 };
-var _psandahl$terra_glide$Main$init = {
-	canvasSize: _psandahl$terra_glide$Projection$defaultWindowSize,
-	projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
-	camera: A2(
-		_psandahl$terra_glide$Camera$set,
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 150, 180),
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, -1)),
-	terrain: _psandahl$terra_glide$Terrain$init,
-	errorMessage: _elm_lang$core$Maybe$Nothing
-};
-var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
-	{
-		init: {
-			ctor: '_Tuple2',
-			_0: _psandahl$terra_glide$Main$init,
-			_1: _elm_lang$core$Platform_Cmd$batch(
-				{
-					ctor: '::',
-					_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Types$WindowSize, _elm_lang$window$Window$size),
-					_1: {
-						ctor: '::',
-						_0: _psandahl$terra_glide$Terrain_TileQuery$execute(
-							{xPos: 0, zPos: 0, tileWidth: _psandahl$terra_glide$Constants$tileSize, tileDepth: _psandahl$terra_glide$Constants$tileSize, yScale: 100}),
-						_1: {ctor: '[]'}
-					}
-				})
+var _psandahl$terra_glide$Main$init = function () {
+	var _p0 = _psandahl$terra_glide$Navigator$init(
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, 0));
+	var navigator = _p0._0;
+	var navigatorCommands = _p0._1;
+	return {
+		ctor: '_Tuple2',
+		_0: {
+			canvasSize: _psandahl$terra_glide$Projection$defaultWindowSize,
+			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
+			camera: A2(
+				_psandahl$terra_glide$Camera$set,
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 50, 150, 180),
+				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, -1)),
+			terrain: _psandahl$terra_glide$Terrain$init,
+			errorMessage: _elm_lang$core$Maybe$Nothing
 		},
-		update: _psandahl$terra_glide$Update$update,
-		view: _psandahl$terra_glide$View$view,
-		subscriptions: _psandahl$terra_glide$Main$subscriptions
-	})();
+		_1: _elm_lang$core$Platform_Cmd$batch(
+			{
+				ctor: '::',
+				_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Msg$WindowSize, _elm_lang$window$Window$size),
+				_1: {
+					ctor: '::',
+					_0: navigatorCommands,
+					_1: {ctor: '[]'}
+				}
+			})
+	};
+}();
+var _psandahl$terra_glide$Main$main = _elm_lang$html$Html$program(
+	{init: _psandahl$terra_glide$Main$init, update: _psandahl$terra_glide$Update$update, view: _psandahl$terra_glide$View$view, subscriptions: _psandahl$terra_glide$Main$subscriptions})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};

@@ -1,51 +1,45 @@
 module Main exposing (main)
 
 import Camera
-import Constants
 import Html
+import Navigator
 import Math.Vector2 exposing (vec2)
 import Math.Vector3 exposing (vec3)
+import Msg exposing (Msg(..))
 import Projection
 import Task
-import Types exposing (Model, Msg(..))
+import Types exposing (Model)
 import Types
 import Update
 import View
 import Window
 import Terrain
-import Terrain.TileQuery as TileQuery
 
 
 main : Program Never Model Msg
 main =
     Html.program
-        { init =
-            ( init
-            , Cmd.batch
-                [ Task.perform WindowSize Window.size
-                , TileQuery.execute
-                    { xPos = 0
-                    , zPos = 0
-                    , tileWidth = Constants.tileSize
-                    , tileDepth = Constants.tileSize
-                    , yScale = 100
-                    }
-                ]
-            )
+        { init = init
         , update = Update.update
         , view = View.view
         , subscriptions = subscriptions
         }
 
 
-init : Model
+init : ( Model, Cmd Msg )
 init =
-    { canvasSize = Projection.defaultWindowSize
-    , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-    , camera = Camera.set (vec3 50 150 180) (vec2 0 -1)
-    , terrain = Terrain.init
-    , errorMessage = Nothing
-    }
+    let
+        ( navigator, navigatorCommands ) =
+            Navigator.init (vec2 0 0)
+    in
+        ( { canvasSize = Projection.defaultWindowSize
+          , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
+          , camera = Camera.set (vec3 50 150 180) (vec2 0 -1)
+          , terrain = Terrain.init
+          , errorMessage = Nothing
+          }
+        , Cmd.batch [ Task.perform WindowSize Window.size, navigatorCommands ]
+        )
 
 
 subscriptions : Model -> Sub Msg

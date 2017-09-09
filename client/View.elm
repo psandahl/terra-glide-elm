@@ -3,8 +3,9 @@ module View exposing (view)
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
+import Msg exposing (Msg)
 import Terrain
-import Types exposing (Model, Msg)
+import Types exposing (Model)
 import WebGL as GL
 
 

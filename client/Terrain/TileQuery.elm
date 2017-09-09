@@ -1,9 +1,9 @@
 module Terrain.TileQuery exposing (TileQuery, execute)
 
+import Msg exposing (Msg(..))
 import Http exposing (Request)
 import Http
 import Terrain.TileData as TileData
-import Types exposing (Msg(..))
 
 
 {-| A TileQuery using the parameters specified in the record.
