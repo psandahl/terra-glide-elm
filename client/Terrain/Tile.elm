@@ -5,6 +5,8 @@ import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (Vertex, TileData)
 import WebGL exposing (Entity, Mesh, Shader)
 import WebGL as GL
+import WebGL.Settings as Settings
+import WebGL.Settings.DepthTest as DepthTest
 
 
 {-| A terrain tile. Mesh with some metadata. The mesh is already in world space.
@@ -32,7 +34,11 @@ init ( startX, startZ ) tileData =
 
 toEntity : Mat4 -> Mat4 -> Tile -> Entity
 toEntity viewMatrix mvpMatrix tile =
-    GL.entity vertexShader
+    GL.entityWith
+        [ DepthTest.default
+        , Settings.cullFace Settings.back
+        ]
+        vertexShader
         fragmentShader
         tile.mesh
         { viewMatrix = viewMatrix

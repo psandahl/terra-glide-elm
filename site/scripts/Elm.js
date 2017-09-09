@@ -12705,8 +12705,17 @@ var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	});
 var _psandahl$terra_glide$Terrain_Tile$toEntity = F3(
 	function (viewMatrix, mvpMatrix, tile) {
-		return A4(
-			_elm_community$webgl$WebGL$entity,
+		return A5(
+			_elm_community$webgl$WebGL$entityWith,
+			{
+				ctor: '::',
+				_0: _elm_community$webgl$WebGL_Settings_DepthTest$default,
+				_1: {
+					ctor: '::',
+					_0: _elm_community$webgl$WebGL_Settings$cullFace(_elm_community$webgl$WebGL_Settings$back),
+					_1: {ctor: '[]'}
+				}
+			},
 			_psandahl$terra_glide$Terrain_Tile$vertexShader,
 			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
 			tile.mesh,
