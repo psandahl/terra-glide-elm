@@ -12456,7 +12456,7 @@ var _psandahl$terra_glide$Camera$makeMatrix = F2(
 		var viewPointStraight = A2(
 			_elm_community$linear_algebra$Math_Vector3$add,
 			position,
-			A2(_elm_community$linear_algebra$Math_Vector3$scale, height, viewDirection));
+			A2(_elm_community$linear_algebra$Math_Vector3$scale, height * 2, viewDirection));
 		var viewPointGround = A2(
 			_elm_lang$core$Debug$log,
 			'viewPointGround: ',

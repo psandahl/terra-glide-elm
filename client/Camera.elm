@@ -10,8 +10,7 @@ import Math.Vector3 exposing (Vec3)
 
 
 {-| The camera record. The camera is dead simple, it is placed somewhere
-in the world together with a view direction. The view angle towards the ground
-will always be 45 degrees.
+in the world together with a view direction.
 -}
 type alias Camera =
     { position : Vec3
@@ -42,7 +41,7 @@ makeMatrix position viewDirection =
             Vec3.getY <| Debug.log "position: " position
 
         viewPointStraight =
-            Vec3.add position <| Vec3.scale height viewDirection
+            Vec3.add position <| Vec3.scale (height * 2) viewDirection
 
         viewPointGround =
             Debug.log "viewPointGround: " <| Vec3.setY 0 viewPointStraight
