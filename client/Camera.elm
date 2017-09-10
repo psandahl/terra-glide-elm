@@ -1,6 +1,5 @@
 module Camera exposing (Camera, set)
 
-import Debug
 import Math.Matrix4 as Mat
 import Math.Matrix4 exposing (Mat4)
 import Math.Vector2 as Vec2
@@ -38,13 +37,13 @@ makeMatrix : Vec3 -> Vec3 -> Mat4
 makeMatrix position viewDirection =
     let
         height =
-            Vec3.getY <| Debug.log "position: " position
+            Vec3.getY position
 
         viewPointStraight =
             Vec3.add position <| Vec3.scale (height * 2) viewDirection
 
         viewPointGround =
-            Debug.log "viewPointGround: " <| Vec3.setY 0 viewPointStraight
+            Vec3.setY 0 viewPointStraight
     in
         Mat.makeLookAt position viewPointGround <| Vec3.vec3 0 1 0
 

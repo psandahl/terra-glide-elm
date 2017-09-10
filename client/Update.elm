@@ -2,12 +2,13 @@ module Update exposing (update)
 
 import Camera
 import Debug
-import Http exposing (Error(..))
+import Http
 import Math.Vector2 exposing (vec2)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Projection
 import Terrain
+import WebGL.Texture as Texture
 
 
 {-| The application's update function.
@@ -35,7 +36,7 @@ update msg model =
                 Err err ->
                     let
                         errMsg =
-                            Debug.log "NewTileData: " <| errorToString err
+                            Debug.log "NewTileData: " <| httpErrorToString err
                     in
                         ( { model | errorMessage = Just errMsg }, Cmd.none )
 
@@ -54,23 +55,51 @@ update msg model =
                 , Cmd.none
                 )
 
+        DirtTexture result ->
+            case result of
+                Ok dirt ->
+                    ( { model
+                        | terrain = Terrain.addDirt dirt model.terrain
+                      }
+                    , Cmd.none
+                    )
+
+                Err err ->
+                    let
+                        errMsg =
+                            Debug.log "DirtTexture: " <| textureErrorToString err
+                    in
+                        ( { model | errorMessage = Just errMsg }, Cmd.none )
+
 
 {-| Convert Http.Error to a string.
 -}
-errorToString : Error -> String
-errorToString err =
+httpErrorToString : Http.Error -> String
+httpErrorToString err =
     case err of
-        BadUrl str ->
+        Http.BadUrl str ->
             "Bad Url: " ++ str
 
-        Timeout ->
+        Http.Timeout ->
             "Time out. Request took too long time"
 
-        NetworkError ->
+        Http.NetworkError ->
             "Network Error"
 
-        BadStatus resp ->
+        Http.BadStatus resp ->
             "Bad response status: " ++ toString (resp.status)
 
-        BadPayload str resp ->
+        Http.BadPayload str resp ->
             "Bad payload (JSON decode error): " ++ str
+
+
+{-| Convert Texture.Error to a string.
+-}
+textureErrorToString : Texture.Error -> String
+textureErrorToString err =
+    case err of
+        Texture.LoadError ->
+            "Texture Load Error"
+
+        Texture.SizeError _ _ ->
+            "Texture Size Error (not power of 2)"

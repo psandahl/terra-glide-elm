@@ -5352,6 +5352,87 @@ var _elm_community$linear_algebra$Math_Vector2$vec2 = _elm_community$linear_alge
 var _elm_community$linear_algebra$Math_Vector2$Vec2 = {ctor: 'Vec2'};
 
 // eslint-disable-next-line no-unused-vars, camelcase
+var _elm_community$webgl$Native_Texture = function () {
+
+  var NEAREST = 9728;
+  var LINEAR = 9729;
+  var CLAMP_TO_EDGE = 33071;
+
+  function guid() {
+    // eslint-disable-next-line camelcase
+    return _elm_lang$core$Native_Utils.guid();
+  }
+
+  function load(magnify, mininify, horizontalWrap, verticalWrap, flipY, url) {
+    // eslint-disable-next-line camelcase
+    var Scheduler = _elm_lang$core$Native_Scheduler;
+    var isMipmap = mininify !== NEAREST && mininify !== LINEAR;
+    return Scheduler.nativeBinding(function (callback) {
+      var img = new Image();
+      function createTexture(gl) {
+        var tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magnify);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mininify);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, horizontalWrap);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, verticalWrap);
+        if (isMipmap) {
+          gl.generateMipmap(gl.TEXTURE_2D);
+        }
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        return tex;
+      }
+      img.onload = function () {
+        var width = img.width;
+        var height = img.height;
+        var widthPowerOfTwo = (width & (width - 1)) === 0;
+        var heightPowerOfTwo = (height & (height - 1)) === 0;
+        var isSizeValid = (widthPowerOfTwo && heightPowerOfTwo) || (
+          !isMipmap
+          && horizontalWrap === CLAMP_TO_EDGE
+          && verticalWrap === CLAMP_TO_EDGE
+        );
+        if (isSizeValid) {
+          callback(Scheduler.succeed({
+            ctor: 'Texture',
+            id: guid(),
+            createTexture: createTexture,
+            width: width,
+            height: height
+          }));
+        } else {
+          callback(Scheduler.fail({
+            ctor: 'SizeError',
+            _0: width,
+            _1: height
+          }));
+        }
+      };
+      img.onerror = function () {
+        callback(Scheduler.fail({ ctor: 'LoadError' }));
+      };
+      if (url.slice(0, 5) !== 'data:') {
+        img.crossOrigin = 'Anonymous';
+      }
+      img.src = url;
+    });
+  }
+
+  function size(texture) {
+    // eslint-disable-next-line camelcase
+    return _elm_lang$core$Native_Utils.Tuple2(texture.width, texture.height);
+  }
+
+  return {
+    size: size,
+    load: F6(load)
+  };
+
+}();
+
+// eslint-disable-next-line no-unused-vars, camelcase
 var _elm_community$webgl$Native_WebGL = function () {
 
   // setup logging
@@ -11038,6 +11119,50 @@ var _elm_lang$core$Task$cmdMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
 
+var _elm_community$webgl$WebGL_Texture$size = _elm_community$webgl$Native_Texture.size;
+var _elm_community$webgl$WebGL_Texture$loadWith = F2(
+	function (_p0, url) {
+		var _p1 = _p0;
+		var expand = F4(
+			function (_p5, _p4, _p3, _p2) {
+				var _p6 = _p5;
+				var _p7 = _p4;
+				var _p8 = _p3;
+				var _p9 = _p2;
+				return A6(_elm_community$webgl$Native_Texture.load, _p6._0, _p7._0, _p8._0, _p9._0, _p1.flipY, url);
+			});
+		return A4(expand, _p1.magnify, _p1.minify, _p1.horizontalWrap, _p1.verticalWrap);
+	});
+var _elm_community$webgl$WebGL_Texture$Options = F5(
+	function (a, b, c, d, e) {
+		return {magnify: a, minify: b, horizontalWrap: c, verticalWrap: d, flipY: e};
+	});
+var _elm_community$webgl$WebGL_Texture$SizeError = F2(
+	function (a, b) {
+		return {ctor: 'SizeError', _0: a, _1: b};
+	});
+var _elm_community$webgl$WebGL_Texture$LoadError = {ctor: 'LoadError'};
+var _elm_community$webgl$WebGL_Texture$Resize = function (a) {
+	return {ctor: 'Resize', _0: a};
+};
+var _elm_community$webgl$WebGL_Texture$linear = _elm_community$webgl$WebGL_Texture$Resize(9729);
+var _elm_community$webgl$WebGL_Texture$nearest = _elm_community$webgl$WebGL_Texture$Resize(9728);
+var _elm_community$webgl$WebGL_Texture$nearestMipmapNearest = _elm_community$webgl$WebGL_Texture$Resize(9984);
+var _elm_community$webgl$WebGL_Texture$linearMipmapNearest = _elm_community$webgl$WebGL_Texture$Resize(9985);
+var _elm_community$webgl$WebGL_Texture$nearestMipmapLinear = _elm_community$webgl$WebGL_Texture$Resize(9986);
+var _elm_community$webgl$WebGL_Texture$linearMipmapLinear = _elm_community$webgl$WebGL_Texture$Resize(9987);
+var _elm_community$webgl$WebGL_Texture$Bigger = {ctor: 'Bigger'};
+var _elm_community$webgl$WebGL_Texture$Smaller = {ctor: 'Smaller'};
+var _elm_community$webgl$WebGL_Texture$Wrap = function (a) {
+	return {ctor: 'Wrap', _0: a};
+};
+var _elm_community$webgl$WebGL_Texture$repeat = _elm_community$webgl$WebGL_Texture$Wrap(10497);
+var _elm_community$webgl$WebGL_Texture$defaultOptions = {magnify: _elm_community$webgl$WebGL_Texture$linear, minify: _elm_community$webgl$WebGL_Texture$nearestMipmapLinear, horizontalWrap: _elm_community$webgl$WebGL_Texture$repeat, verticalWrap: _elm_community$webgl$WebGL_Texture$repeat, flipY: true};
+var _elm_community$webgl$WebGL_Texture$load = _elm_community$webgl$WebGL_Texture$loadWith(_elm_community$webgl$WebGL_Texture$defaultOptions);
+var _elm_community$webgl$WebGL_Texture$clampToEdge = _elm_community$webgl$WebGL_Texture$Wrap(33071);
+var _elm_community$webgl$WebGL_Texture$nonPowerOfTwoOptions = {magnify: _elm_community$webgl$WebGL_Texture$linear, minify: _elm_community$webgl$WebGL_Texture$nearest, horizontalWrap: _elm_community$webgl$WebGL_Texture$clampToEdge, verticalWrap: _elm_community$webgl$WebGL_Texture$clampToEdge, flipY: true};
+var _elm_community$webgl$WebGL_Texture$mirroredRepeat = _elm_community$webgl$WebGL_Texture$Wrap(33648);
+
 var _elm_lang$animation_frame$Native_AnimationFrame = function()
 {
 
@@ -12451,16 +12576,12 @@ var _psandahl$terra_glide$Camera$toNormalizedVec3 = function (vec) {
 };
 var _psandahl$terra_glide$Camera$makeMatrix = F2(
 	function (position, viewDirection) {
-		var height = _elm_community$linear_algebra$Math_Vector3$getY(
-			A2(_elm_lang$core$Debug$log, 'position: ', position));
+		var height = _elm_community$linear_algebra$Math_Vector3$getY(position);
 		var viewPointStraight = A2(
 			_elm_community$linear_algebra$Math_Vector3$add,
 			position,
 			A2(_elm_community$linear_algebra$Math_Vector3$scale, height * 2, viewDirection));
-		var viewPointGround = A2(
-			_elm_lang$core$Debug$log,
-			'viewPointGround: ',
-			A2(_elm_community$linear_algebra$Math_Vector3$setY, 0, viewPointStraight));
+		var viewPointGround = A2(_elm_community$linear_algebra$Math_Vector3$setY, 0, viewPointStraight);
 		return A3(
 			_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
 			position,
@@ -12525,6 +12646,9 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
+var _psandahl$terra_glide$Msg$DirtTexture = function (a) {
+	return {ctor: 'DirtTexture', _0: a};
+};
 var _psandahl$terra_glide$Msg$Animate = function (a) {
 	return {ctor: 'Animate', _0: a};
 };
@@ -12745,13 +12869,26 @@ var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
 
 var _psandahl$terra_glide$Terrain$entities = F3(
 	function (projectionMatrix, viewMatrix, terrain) {
-		return A2(
-			_elm_lang$core$List$map,
-			A2(
-				_psandahl$terra_glide$Terrain_Tile$toEntity,
-				viewMatrix,
-				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
-			terrain.tiles);
+		var _p0 = terrain.dirt;
+		if (_p0.ctor === 'Just') {
+			return A2(
+				_elm_lang$core$List$map,
+				A2(
+					_psandahl$terra_glide$Terrain_Tile$toEntity,
+					viewMatrix,
+					A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
+				terrain.tiles);
+		} else {
+			return {ctor: '[]'};
+		}
+	});
+var _psandahl$terra_glide$Terrain$addDirt = F2(
+	function (dirt, terrain) {
+		return _elm_lang$core$Native_Utils.update(
+			terrain,
+			{
+				dirt: _elm_lang$core$Maybe$Just(dirt)
+			});
 	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
 	function (pos, tileData, terrain) {
@@ -12766,11 +12903,20 @@ var _psandahl$terra_glide$Terrain$addTile = F3(
 			});
 	});
 var _psandahl$terra_glide$Terrain$init = {
-	tiles: {ctor: '[]'}
+	ctor: '_Tuple2',
+	_0: {
+		tiles: {ctor: '[]'},
+		dirt: _elm_lang$core$Maybe$Nothing
+	},
+	_1: A2(
+		_elm_lang$core$Task$attempt,
+		_psandahl$terra_glide$Msg$DirtTexture,
+		_elm_community$webgl$WebGL_Texture$load('/textures/dirt.png'))
 };
-var _psandahl$terra_glide$Terrain$Terrain = function (a) {
-	return {tiles: a};
-};
+var _psandahl$terra_glide$Terrain$Terrain = F2(
+	function (a, b) {
+		return {tiles: a, dirt: b};
+	});
 
 var _psandahl$terra_glide$Model$Model = F6(
 	function (a, b, c, d, e, f) {
@@ -12787,11 +12933,19 @@ var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 		800);
 };
 
-var _psandahl$terra_glide$Update$errorToString = function (err) {
+var _psandahl$terra_glide$Update$textureErrorToString = function (err) {
 	var _p0 = err;
-	switch (_p0.ctor) {
+	if (_p0.ctor === 'LoadError') {
+		return 'Texture Load Error';
+	} else {
+		return 'Texture Size Error (not power of 2)';
+	}
+};
+var _psandahl$terra_glide$Update$httpErrorToString = function (err) {
+	var _p1 = err;
+	switch (_p1.ctor) {
 		case 'BadUrl':
-			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p0._0);
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p1._0);
 		case 'Timeout':
 			return 'Time out. Request took too long time';
 		case 'NetworkError':
@@ -12800,36 +12954,36 @@ var _psandahl$terra_glide$Update$errorToString = function (err) {
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
 				'Bad response status: ',
-				_elm_lang$core$Basics$toString(_p0._0.status));
+				_elm_lang$core$Basics$toString(_p1._0.status));
 		default:
-			return A2(_elm_lang$core$Basics_ops['++'], 'Bad payload (JSON decode error): ', _p0._0);
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad payload (JSON decode error): ', _p1._0);
 	}
 };
 var _psandahl$terra_glide$Update$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'WindowSize':
-				var _p2 = _p1._0;
+				var _p3 = _p2._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							canvasSize: _p2,
-							projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p2)
+							canvasSize: _p3,
+							projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p3)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'NewTileData':
-				var _p3 = _p1._1;
-				if (_p3.ctor === 'Ok') {
+				var _p4 = _p2._1;
+				if (_p4.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p3._0, model.terrain)
+								terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p2._0, _p4._0, model.terrain)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -12837,7 +12991,7 @@ var _psandahl$terra_glide$Update$update = F2(
 					var errMsg = A2(
 						_elm_lang$core$Debug$log,
 						'NewTileData: ',
-						_psandahl$terra_glide$Update$errorToString(_p3._0));
+						_psandahl$terra_glide$Update$httpErrorToString(_p4._0));
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -12848,8 +13002,8 @@ var _psandahl$terra_glide$Update$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			default:
-				var newRotation = (_p1._0 * 0.1) + model.cameraRotation;
+			case 'Animate':
+				var newRotation = (_p2._0 * 0.1) + model.cameraRotation;
 				var viewVector = A2(
 					_elm_community$linear_algebra$Math_Vector2$vec2,
 					_elm_lang$core$Basics$sin(newRotation),
@@ -12864,6 +13018,33 @@ var _psandahl$terra_glide$Update$update = F2(
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			default:
+				var _p5 = _p2._0;
+				if (_p5.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								terrain: A2(_psandahl$terra_glide$Terrain$addDirt, _p5._0, model.terrain)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					var errMsg = A2(
+						_elm_lang$core$Debug$log,
+						'DirtTexture: ',
+						_psandahl$terra_glide$Update$textureErrorToString(_p5._0));
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 		}
 	});
 
@@ -12920,10 +13101,13 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 		});
 };
 var _psandahl$terra_glide$Main$init = function () {
-	var _p1 = _psandahl$terra_glide$Navigator$init(
+	var _p1 = _psandahl$terra_glide$Terrain$init;
+	var terrain = _p1._0;
+	var terrainCommands = _p1._1;
+	var _p2 = _psandahl$terra_glide$Navigator$init(
 		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000));
-	var navigator = _p1._0;
-	var navigatorCommands = _p1._1;
+	var navigator = _p2._0;
+	var navigatorCommands = _p2._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -12937,7 +13121,7 @@ var _psandahl$terra_glide$Main$init = function () {
 					_elm_lang$core$Basics$sin(0),
 					_elm_lang$core$Basics$cos(0))),
 			cameraRotation: 0,
-			terrain: _psandahl$terra_glide$Terrain$init,
+			terrain: terrain,
 			errorMessage: _elm_lang$core$Maybe$Nothing
 		},
 		_1: _elm_lang$core$Platform_Cmd$batch(
@@ -12947,7 +13131,11 @@ var _psandahl$terra_glide$Main$init = function () {
 				_1: {
 					ctor: '::',
 					_0: navigatorCommands,
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: terrainCommands,
+						_1: {ctor: '[]'}
+					}
 				}
 			})
 	};

@@ -2,6 +2,8 @@ module Msg exposing (Msg(..))
 
 import Http
 import Terrain.TileData exposing (TileData)
+import WebGL.Texture as Texture
+import WebGL.Texture exposing (Texture)
 import Window exposing (Size)
 
 
@@ -16,3 +18,5 @@ type
       -- Animation request, with the (fraction of) seconds since last
       -- animation frame.
     | Animate Float
+      -- The Terrain's request for the dirt texture is done.
+    | DirtTexture (Result Texture.Error Texture)
