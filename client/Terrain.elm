@@ -1,4 +1,13 @@
-module Terrain exposing (Terrain, init, addTile, addDirt, addGrass, entities)
+module Terrain
+    exposing
+        ( Terrain
+        , init
+        , addTile
+        , addDirt
+        , addGrass
+        , addRock
+        , entities
+        )
 
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
@@ -16,6 +25,7 @@ type alias Terrain =
     { tiles : List Tile
     , dirt : Maybe Texture
     , grass : Maybe Texture
+    , rock : Maybe Texture
     }
 
 
@@ -24,10 +34,12 @@ init =
     ( { tiles = []
       , dirt = Nothing
       , grass = Nothing
+      , rock = Nothing
       }
     , Cmd.batch
         [ Task.attempt DirtTexture <| Texture.load "/textures/dirt.png"
         , Task.attempt GrassTexture <| Texture.load "/textures/grass.png"
+        , Task.attempt RockTexture <| Texture.load "/textures/rock.png"
         ]
     )
 
@@ -47,12 +59,17 @@ addGrass grass terrain =
     { terrain | grass = Just grass }
 
 
+addRock : Texture -> Terrain -> Terrain
+addRock rock terrain =
+    { terrain | rock = Just rock }
+
+
 entities : Mat4 -> Mat4 -> Terrain -> List Entity
 entities projectionMatrix viewMatrix terrain =
-    case Maybe.map2 (,) terrain.dirt terrain.grass of
-        Just ( dirt, grass ) ->
+    case Maybe.map3 (,,) terrain.dirt terrain.grass terrain.rock of
+        Just ( dirt, grass, rock ) ->
             List.map
-                (Tile.toEntity dirt grass viewMatrix <|
+                (Tile.toEntity dirt grass rock viewMatrix <|
                     Mat.mul projectionMatrix viewMatrix
                 )
                 terrain.tiles

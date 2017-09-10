@@ -87,6 +87,22 @@ update msg model =
                     in
                         ( { model | errorMessage = Just errMsg }, Cmd.none )
 
+        RockTexture result ->
+            case result of
+                Ok rock ->
+                    ( { model
+                        | terrain = Terrain.addRock rock model.terrain
+                      }
+                    , Cmd.none
+                    )
+
+                Err err ->
+                    let
+                        errMsg =
+                            Debug.log "RockTexture: " <| textureErrorToString err
+                    in
+                        ( { model | errorMessage = Just errMsg }, Cmd.none )
+
 
 {-| Convert Http.Error to a string.
 -}

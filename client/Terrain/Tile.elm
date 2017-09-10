@@ -36,8 +36,8 @@ init ( startX, startZ ) tileData =
 
 {-| Render the Tile.
 -}
-toEntity : Texture -> Texture -> Mat4 -> Mat4 -> Tile -> Entity
-toEntity dirt grass viewMatrix mvpMatrix tile =
+toEntity : Texture -> Texture -> Texture -> Mat4 -> Mat4 -> Tile -> Entity
+toEntity dirt grass rock viewMatrix mvpMatrix tile =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -49,6 +49,7 @@ toEntity dirt grass viewMatrix mvpMatrix tile =
         , mvpMatrix = mvpMatrix
         , dirt = dirt
         , grass = grass
+        , rock = rock
         }
 
 
@@ -70,6 +71,7 @@ vertexShader :
         }
         { vPosition : Vec3
         , vNormal : Vec3
+        , vTransformedNormal : Vec3
         , vTexCoord : Vec2
         }
 vertexShader =
@@ -85,12 +87,14 @@ vertexShader =
 
         varying vec3 vPosition;
         varying vec3 vNormal;
+        varying vec3 vTransformedNormal;
         varying vec2 vTexCoord;
 
         void main()
         {
             vPosition = position;
-            vNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
+            vNormal = normal;
+            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
             vTexCoord = texCoord;
             gl_Position = mvpMatrix * vec4(position, 1.0);
         }
@@ -103,9 +107,11 @@ fragmentShader :
             | viewMatrix : Mat4
             , dirt : Texture
             , grass : Texture
+            , rock : Texture
         }
         { vPosition : Vec3
         , vNormal : Vec3
+        , vTransformedNormal : Vec3
         , vTexCoord : Vec2
         }
 fragmentShader =
@@ -115,9 +121,11 @@ fragmentShader =
         uniform mat4 viewMatrix;
         uniform sampler2D dirt;
         uniform sampler2D grass;
+        uniform sampler2D rock;
 
         varying vec3 vPosition;
         varying vec3 vNormal;
+        varying vec3 vTransformedNormal;
         varying vec2 vTexCoord;
 
         // Ambient color stuff. Hardcoded for now.
@@ -150,7 +158,8 @@ fragmentShader =
         {
             if (vPosition.y > 100.0)
             {
-                return texture2D(grass, vTexCoord).rgb;
+                //return texture2D(grass, vTexCoord).rgb;
+                return vec3(101.0 / 255.0, 96.0 / 255.0, 94.0 / 255.0);
             }
             else
             {
@@ -172,7 +181,7 @@ fragmentShader =
 
         vec3 calcDiffuseLight()
         {
-            vec3 normal = normalize(vNormal);
+            vec3 normal = normalize(vTransformedNormal);
             float diffuse = max(dot(normal, sunDirection()), 0.0);
             return diffuseColor * diffuse;
         }
