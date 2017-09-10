@@ -42,7 +42,7 @@ entities projectionMatrix viewMatrix terrain =
     case terrain.dirt of
         Just dirt ->
             List.map
-                (Tile.toEntity viewMatrix <|
+                (Tile.toEntity dirt viewMatrix <|
                     Mat.mul projectionMatrix viewMatrix
                 )
                 terrain.tiles

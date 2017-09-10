@@ -1,5 +1,6 @@
 module Terrain.Tile exposing (Tile, init, toEntity)
 
+import Math.Vector2 exposing (Vec2)
 import Math.Vector3 exposing (Vec3)
 import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (Vertex, TileData)
@@ -7,6 +8,7 @@ import WebGL exposing (Entity, Mesh, Shader)
 import WebGL as GL
 import WebGL.Settings as Settings
 import WebGL.Settings.DepthTest as DepthTest
+import WebGL.Texture exposing (Texture)
 
 
 {-| A terrain tile. Mesh with some metadata. The mesh is already in world space.
@@ -32,8 +34,10 @@ init ( startX, startZ ) tileData =
     }
 
 
-toEntity : Mat4 -> Mat4 -> Tile -> Entity
-toEntity viewMatrix mvpMatrix tile =
+{-| Render the Tile.
+-}
+toEntity : Texture -> Mat4 -> Mat4 -> Tile -> Entity
+toEntity dirt viewMatrix mvpMatrix tile =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -43,6 +47,7 @@ toEntity viewMatrix mvpMatrix tile =
         tile.mesh
         { viewMatrix = viewMatrix
         , mvpMatrix = mvpMatrix
+        , dirt = dirt
         }
 
 
@@ -62,7 +67,9 @@ vertexShader :
             | viewMatrix : Mat4
             , mvpMatrix : Mat4
         }
-        { vNormal : Vec3 }
+        { vNormal : Vec3
+        , vTexCoord : Vec2
+        }
 vertexShader =
     [glsl|
         precision mediump float;
@@ -75,23 +82,35 @@ vertexShader =
         uniform mat4 mvpMatrix;
 
         varying vec3 vNormal;
+        varying vec2 vTexCoord;
 
         void main()
         {
             vNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
+            vTexCoord = texCoord;
             gl_Position = mvpMatrix * vec4(position, 1.0);
         }
     |]
 
 
-fragmentShader : Shader {} { unif | viewMatrix : Mat4 } { vNormal : Vec3 }
+fragmentShader :
+    Shader {}
+        { unif
+            | viewMatrix : Mat4
+            , dirt : Texture
+        }
+        { vNormal : Vec3
+        , vTexCoord : Vec2
+        }
 fragmentShader =
     [glsl|
         precision mediump float;
 
         uniform mat4 viewMatrix;
+        uniform sampler2D dirt;
 
         varying vec3 vNormal;
+        varying vec2 vTexCoord;
 
         // Ambient color stuff. Hardcoded for now.
         vec3 ambientColor = vec3(1.0, 1.0, 1.0);
@@ -100,8 +119,8 @@ fragmentShader =
         // Diffuse color stuff. Hardcoded for now.
         vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);
 
-        // Calculate the base color for the fragment.
-        vec3 baseColor();
+        // Calculate the texture color for the fragment.
+        vec3 textureColor();
 
         // Get the sun's direction. In view space.
         vec3 sunDirection();
@@ -114,14 +133,14 @@ fragmentShader =
 
         void main()
         {
-            vec3 fragmentColor = baseColor() *
+            vec3 fragmentColor = textureColor() *
                 (calcAmbientLight() + calcDiffuseLight());
             gl_FragColor = vec4(fragmentColor, 1.0);
         }
 
-        vec3 baseColor()
+        vec3 textureColor()
         {
-            return vec3(0.0, 1.0, 0.0);
+            return texture2D(dirt, vTexCoord).rgb;
         }
 
         vec3 sunDirection()
