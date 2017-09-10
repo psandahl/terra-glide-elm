@@ -1,4 +1,4 @@
-module Terrain exposing (Terrain, init, addTile, addDirt, entities)
+module Terrain exposing (Terrain, init, addTile, addDirt, addGrass, entities)
 
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
@@ -15,6 +15,7 @@ import WebGL.Texture exposing (Texture)
 type alias Terrain =
     { tiles : List Tile
     , dirt : Maybe Texture
+    , grass : Maybe Texture
     }
 
 
@@ -22,8 +23,12 @@ init : ( Terrain, Cmd Msg )
 init =
     ( { tiles = []
       , dirt = Nothing
+      , grass = Nothing
       }
-    , Task.attempt DirtTexture <| Texture.load "/textures/dirt.png"
+    , Cmd.batch
+        [ Task.attempt DirtTexture <| Texture.load "/textures/dirt.png"
+        , Task.attempt GrassTexture <| Texture.load "/textures/grass.png"
+        ]
     )
 
 
@@ -37,12 +42,17 @@ addDirt dirt terrain =
     { terrain | dirt = Just dirt }
 
 
+addGrass : Texture -> Terrain -> Terrain
+addGrass grass terrain =
+    { terrain | grass = Just grass }
+
+
 entities : Mat4 -> Mat4 -> Terrain -> List Entity
 entities projectionMatrix viewMatrix terrain =
-    case terrain.dirt of
-        Just dirt ->
+    case Maybe.map2 (,) terrain.dirt terrain.grass of
+        Just ( dirt, grass ) ->
             List.map
-                (Tile.toEntity dirt viewMatrix <|
+                (Tile.toEntity dirt grass viewMatrix <|
                     Mat.mul projectionMatrix viewMatrix
                 )
                 terrain.tiles

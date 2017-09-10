@@ -36,8 +36,8 @@ init ( startX, startZ ) tileData =
 
 {-| Render the Tile.
 -}
-toEntity : Texture -> Mat4 -> Mat4 -> Tile -> Entity
-toEntity dirt viewMatrix mvpMatrix tile =
+toEntity : Texture -> Texture -> Mat4 -> Mat4 -> Tile -> Entity
+toEntity dirt grass viewMatrix mvpMatrix tile =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -48,6 +48,7 @@ toEntity dirt viewMatrix mvpMatrix tile =
         { viewMatrix = viewMatrix
         , mvpMatrix = mvpMatrix
         , dirt = dirt
+        , grass = grass
         }
 
 
@@ -67,7 +68,8 @@ vertexShader :
             | viewMatrix : Mat4
             , mvpMatrix : Mat4
         }
-        { vNormal : Vec3
+        { vPosition : Vec3
+        , vNormal : Vec3
         , vTexCoord : Vec2
         }
 vertexShader =
@@ -81,11 +83,13 @@ vertexShader =
         uniform mat4 viewMatrix;
         uniform mat4 mvpMatrix;
 
+        varying vec3 vPosition;
         varying vec3 vNormal;
         varying vec2 vTexCoord;
 
         void main()
         {
+            vPosition = position;
             vNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
             vTexCoord = texCoord;
             gl_Position = mvpMatrix * vec4(position, 1.0);
@@ -98,8 +102,10 @@ fragmentShader :
         { unif
             | viewMatrix : Mat4
             , dirt : Texture
+            , grass : Texture
         }
-        { vNormal : Vec3
+        { vPosition : Vec3
+        , vNormal : Vec3
         , vTexCoord : Vec2
         }
 fragmentShader =
@@ -108,7 +114,9 @@ fragmentShader =
 
         uniform mat4 viewMatrix;
         uniform sampler2D dirt;
+        uniform sampler2D grass;
 
+        varying vec3 vPosition;
         varying vec3 vNormal;
         varying vec2 vTexCoord;
 
@@ -120,7 +128,7 @@ fragmentShader =
         vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);
 
         // Calculate the texture color for the fragment.
-        vec3 textureColor();
+        vec3 baseColor();
 
         // Get the sun's direction. In view space.
         vec3 sunDirection();
@@ -133,14 +141,21 @@ fragmentShader =
 
         void main()
         {
-            vec3 fragmentColor = textureColor() *
+            vec3 fragmentColor = baseColor() *
                 (calcAmbientLight() + calcDiffuseLight());
             gl_FragColor = vec4(fragmentColor, 1.0);
         }
 
-        vec3 textureColor()
+        vec3 baseColor()
         {
-            return texture2D(dirt, vTexCoord).rgb;
+            if (vPosition.y > 100.0)
+            {
+                return texture2D(grass, vTexCoord).rgb;
+            }
+            else
+            {
+                return texture2D(dirt, vTexCoord).rgb;
+            }
         }
 
         vec3 sunDirection()

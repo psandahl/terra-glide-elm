@@ -20,3 +20,5 @@ type
     | Animate Float
       -- The Terrain's request for the dirt texture is done.
     | DirtTexture (Result Texture.Error Texture)
+      -- The Terrain's request for the grass texture is done.
+    | GrassTexture (Result Texture.Error Texture)

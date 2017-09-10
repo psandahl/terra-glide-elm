@@ -12646,6 +12646,9 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
+var _psandahl$terra_glide$Msg$GrassTexture = function (a) {
+	return {ctor: 'GrassTexture', _0: a};
+};
 var _psandahl$terra_glide$Msg$DirtTexture = function (a) {
 	return {ctor: 'DirtTexture', _0: a};
 };
@@ -12805,8 +12808,8 @@ var _psandahl$terra_glide$Navigator$Navigator = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform sampler2D dirt;\n\n        varying vec3 vNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);\n\n        // Calculate the texture color for the fragment.\n        vec3 textureColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = textureColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 textureColor()\n        {\n            return texture2D(dirt, vTexCoord).rgb;\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
-var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform sampler2D dirt;\n        uniform sampler2D grass;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            if (vPosition.y > 100.0)\n            {\n                return texture2D(grass, vTexCoord).rgb;\n            }\n            else\n            {\n                return texture2D(dirt, vTexCoord).rgb;\n            }\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vPosition = position;\n            vNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
 		tuplify:
@@ -12827,8 +12830,8 @@ var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 			}
 		}
 	});
-var _psandahl$terra_glide$Terrain_Tile$toEntity = F4(
-	function (dirt, viewMatrix, mvpMatrix, tile) {
+var _psandahl$terra_glide$Terrain_Tile$toEntity = F5(
+	function (dirt, grass, viewMatrix, mvpMatrix, tile) {
 		return A5(
 			_elm_community$webgl$WebGL$entityWith,
 			{
@@ -12843,7 +12846,7 @@ var _psandahl$terra_glide$Terrain_Tile$toEntity = F4(
 			_psandahl$terra_glide$Terrain_Tile$vertexShader,
 			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
 			tile.mesh,
-			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, dirt: dirt});
+			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, dirt: dirt, grass: grass});
 	});
 var _psandahl$terra_glide$Terrain_Tile$init = F2(
 	function (_p1, tileData) {
@@ -12869,19 +12872,35 @@ var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
 
 var _psandahl$terra_glide$Terrain$entities = F3(
 	function (projectionMatrix, viewMatrix, terrain) {
-		var _p0 = terrain.dirt;
+		var _p0 = A3(
+			_elm_lang$core$Maybe$map2,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			terrain.dirt,
+			terrain.grass);
 		if (_p0.ctor === 'Just') {
 			return A2(
 				_elm_lang$core$List$map,
-				A3(
+				A4(
 					_psandahl$terra_glide$Terrain_Tile$toEntity,
-					_p0._0,
+					_p0._0._0,
+					_p0._0._1,
 					viewMatrix,
 					A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
 				terrain.tiles);
 		} else {
 			return {ctor: '[]'};
 		}
+	});
+var _psandahl$terra_glide$Terrain$addGrass = F2(
+	function (grass, terrain) {
+		return _elm_lang$core$Native_Utils.update(
+			terrain,
+			{
+				grass: _elm_lang$core$Maybe$Just(grass)
+			});
 	});
 var _psandahl$terra_glide$Terrain$addDirt = F2(
 	function (dirt, terrain) {
@@ -12907,16 +12926,29 @@ var _psandahl$terra_glide$Terrain$init = {
 	ctor: '_Tuple2',
 	_0: {
 		tiles: {ctor: '[]'},
-		dirt: _elm_lang$core$Maybe$Nothing
+		dirt: _elm_lang$core$Maybe$Nothing,
+		grass: _elm_lang$core$Maybe$Nothing
 	},
-	_1: A2(
-		_elm_lang$core$Task$attempt,
-		_psandahl$terra_glide$Msg$DirtTexture,
-		_elm_community$webgl$WebGL_Texture$load('/textures/dirt.png'))
+	_1: _elm_lang$core$Platform_Cmd$batch(
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$core$Task$attempt,
+				_psandahl$terra_glide$Msg$DirtTexture,
+				_elm_community$webgl$WebGL_Texture$load('/textures/dirt.png')),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$core$Task$attempt,
+					_psandahl$terra_glide$Msg$GrassTexture,
+					_elm_community$webgl$WebGL_Texture$load('/textures/grass.png')),
+				_1: {ctor: '[]'}
+			}
+		})
 };
-var _psandahl$terra_glide$Terrain$Terrain = F2(
-	function (a, b) {
-		return {tiles: a, dirt: b};
+var _psandahl$terra_glide$Terrain$Terrain = F3(
+	function (a, b, c) {
+		return {tiles: a, dirt: b, grass: c};
 	});
 
 var _psandahl$terra_glide$Model$Model = F6(
@@ -13019,7 +13051,7 @@ var _psandahl$terra_glide$Update$update = F2(
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'DirtTexture':
 				var _p5 = _p2._0;
 				if (_p5.ctor === 'Ok') {
 					return {
@@ -13036,6 +13068,33 @@ var _psandahl$terra_glide$Update$update = F2(
 						_elm_lang$core$Debug$log,
 						'DirtTexture: ',
 						_psandahl$terra_glide$Update$textureErrorToString(_p5._0));
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				var _p6 = _p2._0;
+				if (_p6.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								terrain: A2(_psandahl$terra_glide$Terrain$addGrass, _p6._0, model.terrain)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					var errMsg = A2(
+						_elm_lang$core$Debug$log,
+						'GrassTexture: ',
+						_psandahl$terra_glide$Update$textureErrorToString(_p6._0));
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -13102,13 +13161,13 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 		});
 };
 var _psandahl$terra_glide$Main$init = function () {
-	var _p1 = _psandahl$terra_glide$Terrain$init;
-	var terrain = _p1._0;
-	var terrainCommands = _p1._1;
-	var _p2 = _psandahl$terra_glide$Navigator$init(
+	var _p1 = _psandahl$terra_glide$Navigator$init(
 		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000));
-	var navigator = _p2._0;
-	var navigatorCommands = _p2._1;
+	var navigator = _p1._0;
+	var navigatorCommands = _p1._1;
+	var _p2 = _psandahl$terra_glide$Terrain$init;
+	var terrain = _p2._0;
+	var terrainCommands = _p2._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {

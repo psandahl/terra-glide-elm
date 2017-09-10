@@ -31,11 +31,11 @@ main =
 init : ( Model, Cmd Msg )
 init =
     let
-        ( navigator, navigatorCommands ) =
-            Navigator.init (vec2 1000 1000)
-
         ( terrain, terrainCommands ) =
             Terrain.init
+
+        ( navigator, navigatorCommands ) =
+            Navigator.init (vec2 1000 1000)
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
