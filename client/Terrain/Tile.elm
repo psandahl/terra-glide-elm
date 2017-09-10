@@ -36,8 +36,8 @@ init ( startX, startZ ) tileData =
 
 {-| Render the Tile.
 -}
-toEntity : Texture -> Texture -> Texture -> Mat4 -> Mat4 -> Tile -> Entity
-toEntity dirt grass rock viewMatrix mvpMatrix tile =
+toEntity : Texture -> Texture -> Texture -> Texture -> Mat4 -> Mat4 -> Tile -> Entity
+toEntity dirt grass rock snow viewMatrix mvpMatrix tile =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -50,6 +50,7 @@ toEntity dirt grass rock viewMatrix mvpMatrix tile =
         , dirt = dirt
         , grass = grass
         , rock = rock
+        , snow = snow
         }
 
 
@@ -108,6 +109,7 @@ fragmentShader :
             , dirt : Texture
             , grass : Texture
             , rock : Texture
+            , snow : Texture
         }
         { vPosition : Vec3
         , vNormal : Vec3
@@ -122,6 +124,7 @@ fragmentShader =
         uniform sampler2D dirt;
         uniform sampler2D grass;
         uniform sampler2D rock;
+        uniform sampler2D snow;
 
         varying vec3 vPosition;
         varying vec3 vNormal;
@@ -156,15 +159,25 @@ fragmentShader =
 
         vec3 baseColor()
         {
-            if (vPosition.y > 50.0)
+            if (vPosition.y > 200.0)
             {
-                if (vNormal.y > 0.9)
+                if (vNormal.y > 0.875)
+                {
+                    return texture2D(snow, vTexCoord).rgb;
+                }
+                else
+                {
+                    return texture2D(rock, vTexCoord).rgb;
+                }
+            }
+            else if (vPosition.y > 50.0)
+            {
+                if (vNormal.y > 0.875)
                 {
                     return texture2D(grass, vTexCoord).rgb;
                 }
                 else
                 {
-                    //return vec3(101.0 / 255.0, 96.0 / 255.0, 94.0 / 255.0);
                     return texture2D(rock, vTexCoord).rgb;
                 }
             }

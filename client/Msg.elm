@@ -24,3 +24,5 @@ type
     | GrassTexture (Result Texture.Error Texture)
       -- The Terrain's request for the rock texture is done.
     | RockTexture (Result Texture.Error Texture)
+      -- The Terrain's request for the snow texture is done.
+    | SnowTexture (Result Texture.Error Texture)

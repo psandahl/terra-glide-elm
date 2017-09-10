@@ -6,6 +6,7 @@ module Terrain
         , addDirt
         , addGrass
         , addRock
+        , addSnow
         , entities
         )
 
@@ -26,6 +27,7 @@ type alias Terrain =
     , dirt : Maybe Texture
     , grass : Maybe Texture
     , rock : Maybe Texture
+    , snow : Maybe Texture
     }
 
 
@@ -35,11 +37,13 @@ init =
       , dirt = Nothing
       , grass = Nothing
       , rock = Nothing
+      , snow = Nothing
       }
     , Cmd.batch
         [ Task.attempt DirtTexture <| Texture.load "/textures/dirt.png"
         , Task.attempt GrassTexture <| Texture.load "/textures/grass.png"
         , Task.attempt RockTexture <| Texture.load "/textures/rock.png"
+        , Task.attempt SnowTexture <| Texture.load "/textures/snow.png"
         ]
     )
 
@@ -64,12 +68,17 @@ addRock rock terrain =
     { terrain | rock = Just rock }
 
 
+addSnow : Texture -> Terrain -> Terrain
+addSnow snow terrain =
+    { terrain | snow = Just snow }
+
+
 entities : Mat4 -> Mat4 -> Terrain -> List Entity
 entities projectionMatrix viewMatrix terrain =
-    case Maybe.map3 (,,) terrain.dirt terrain.grass terrain.rock of
-        Just ( dirt, grass, rock ) ->
+    case Maybe.map4 (,,,) terrain.dirt terrain.grass terrain.rock terrain.snow of
+        Just ( dirt, grass, rock, snow ) ->
             List.map
-                (Tile.toEntity dirt grass rock viewMatrix <|
+                (Tile.toEntity dirt grass rock snow viewMatrix <|
                     Mat.mul projectionMatrix viewMatrix
                 )
                 terrain.tiles

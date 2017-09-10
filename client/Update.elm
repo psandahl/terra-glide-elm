@@ -103,6 +103,22 @@ update msg model =
                     in
                         ( { model | errorMessage = Just errMsg }, Cmd.none )
 
+        SnowTexture result ->
+            case result of
+                Ok snow ->
+                    ( { model
+                        | terrain = Terrain.addSnow snow model.terrain
+                      }
+                    , Cmd.none
+                    )
+
+                Err err ->
+                    let
+                        errMsg =
+                            Debug.log "SnowTexture: " <| textureErrorToString err
+                    in
+                        ( { model | errorMessage = Just errMsg }, Cmd.none )
+
 
 {-| Convert Http.Error to a string.
 -}
