@@ -41,6 +41,7 @@ executable terra-glide-server
                      , scotty
                      , terra-glide
                      , text
+                     , wai-extra
   default-language:    Haskell2010
 
 test-suite terra-glide-test

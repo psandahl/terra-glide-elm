@@ -3,18 +3,23 @@ module Main
     ( main
     ) where
 
-import           Data.Aeson         (encode)
-import           Data.Text.Lazy     (Text)
-import           Network.HTTP.Types (badRequest400)
-import           Perlin             (PerlinContext, TileQuery (..))
+import           Data.Aeson                           (encode)
+import           Data.Text.Lazy                       (Text)
+import           Network.HTTP.Types                   (badRequest400)
+import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import           Perlin                               (PerlinContext,
+                                                       TileQuery (..))
 import qualified Perlin
-import           System.EasyFile    ((</>))
+import           System.EasyFile                      ((</>))
 import           Web.Scotty
 
 main :: IO ()
 main = do
     let perlin = Perlin.defaultPerlinContext
     scotty 8000 $ do
+        -- Enabling the logger middleware.
+        middleware logStdoutDev
+
         -- Routes to the start page.
         get "/index.html" startPage
         get "/" $ redirect "/index.html"
