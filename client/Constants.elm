@@ -13,7 +13,7 @@ tileSize =
 -}
 tileVista : Float
 tileVista =
-    400
+    500
 
 
 {-| The max height of the terrain.
@@ -27,4 +27,4 @@ terrainHeight =
 -}
 cameraHeight : Float
 cameraHeight =
-    terrainHeight + 50
+    terrainHeight + 1

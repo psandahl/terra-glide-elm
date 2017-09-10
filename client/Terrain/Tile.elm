@@ -133,7 +133,7 @@ fragmentShader =
         float ambientStrength = 0.2;
 
         // Diffuse color stuff. Hardcoded for now.
-        vec3 diffuseColor = vec3(182.0/255.0, 126.0/255.0, 91.0/255.0);
+        vec3 diffuseColor = vec3(126.0/255.0, 126.0/255.0, 126.0/255.0);
 
         // Calculate the texture color for the fragment.
         vec3 baseColor();
@@ -156,10 +156,17 @@ fragmentShader =
 
         vec3 baseColor()
         {
-            if (vPosition.y > 100.0)
+            if (vPosition.y > 50.0)
             {
-                //return texture2D(grass, vTexCoord).rgb;
-                return vec3(101.0 / 255.0, 96.0 / 255.0, 94.0 / 255.0);
+                if (vNormal.y > 0.9)
+                {
+                    return texture2D(grass, vTexCoord).rgb;
+                }
+                else
+                {
+                    //return vec3(101.0 / 255.0, 96.0 / 255.0, 94.0 / 255.0);
+                    return texture2D(rock, vTexCoord).rgb;
+                }
             }
             else
             {
