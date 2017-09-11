@@ -27,7 +27,7 @@ view model =
             [ GL.toHtmlWith
                 [ GL.antialias
                 , GL.depth 1
-                , GL.clearColor (161 / 255) (187 / 255) (251 / 255) 0
+                , GL.clearColor (161 / 255) (187 / 255) (251 / 255) 1.0
                 ]
                 [ Attr.height model.canvasSize.height
                 , Attr.width model.canvasSize.width

@@ -183,7 +183,7 @@ fragmentShader =
             }
             else
             {
-                return texture2D(dirt, vTexCoord).rgb;
+                return texture2D(grass, vTexCoord).rgb;
             }
         }
 

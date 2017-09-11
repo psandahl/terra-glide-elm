@@ -6,6 +6,9 @@ import Math.Matrix4 as Mat
 import Math.Vector3 exposing (Vec3, vec3)
 import WebGL as GL
 import WebGL exposing (Mesh, Entity, Shader)
+import WebGL.Settings as Settings
+import WebGL.Settings.Blend as Blend
+import WebGL.Settings.DepthTest as DepthTest
 
 
 type alias Water =
@@ -25,7 +28,11 @@ init =
 
 entity : Mat4 -> Mat4 -> Water -> Entity
 entity projectionMatrix viewMatrix water =
-    GL.entity
+    GL.entityWith
+        [ DepthTest.default
+        , Settings.cullFace Settings.back
+        , Blend.add Blend.one Blend.one
+        ]
         vertexShader
         fragmentShader
         water.mesh

@@ -10922,6 +10922,93 @@ var _elm_community$webgl$WebGL$toHtml = _elm_community$webgl$WebGL$toHtmlWith(
 		}
 	});
 
+var _elm_community$webgl$WebGL_Settings_Blend$custom = function (_p0) {
+	var _p1 = _p0;
+	var expand = F2(
+		function (_p3, _p2) {
+			var _p4 = _p3;
+			var _p5 = _p2;
+			return _elm_community$webgl$WebGL_Settings_Internal$Blend(_p4._0)(_p4._1)(_p4._2)(_p5._0)(_p5._1)(_p5._2)(_p1.r)(_p1.g)(_p1.b)(_p1.a);
+		});
+	return A2(expand, _p1.color, _p1.alpha);
+};
+var _elm_community$webgl$WebGL_Settings_Blend$Factor = function (a) {
+	return {ctor: 'Factor', _0: a};
+};
+var _elm_community$webgl$WebGL_Settings_Blend$zero = _elm_community$webgl$WebGL_Settings_Blend$Factor(0);
+var _elm_community$webgl$WebGL_Settings_Blend$one = _elm_community$webgl$WebGL_Settings_Blend$Factor(1);
+var _elm_community$webgl$WebGL_Settings_Blend$srcColor = _elm_community$webgl$WebGL_Settings_Blend$Factor(768);
+var _elm_community$webgl$WebGL_Settings_Blend$oneMinusSrcColor = _elm_community$webgl$WebGL_Settings_Blend$Factor(769);
+var _elm_community$webgl$WebGL_Settings_Blend$dstColor = _elm_community$webgl$WebGL_Settings_Blend$Factor(774);
+var _elm_community$webgl$WebGL_Settings_Blend$oneMinusDstColor = _elm_community$webgl$WebGL_Settings_Blend$Factor(775);
+var _elm_community$webgl$WebGL_Settings_Blend$srcAlpha = _elm_community$webgl$WebGL_Settings_Blend$Factor(770);
+var _elm_community$webgl$WebGL_Settings_Blend$oneMinusSrcAlpha = _elm_community$webgl$WebGL_Settings_Blend$Factor(771);
+var _elm_community$webgl$WebGL_Settings_Blend$dstAlpha = _elm_community$webgl$WebGL_Settings_Blend$Factor(772);
+var _elm_community$webgl$WebGL_Settings_Blend$oneMinusDstAlpha = _elm_community$webgl$WebGL_Settings_Blend$Factor(773);
+var _elm_community$webgl$WebGL_Settings_Blend$srcAlphaSaturate = _elm_community$webgl$WebGL_Settings_Blend$Factor(776);
+var _elm_community$webgl$WebGL_Settings_Blend$constantColor = _elm_community$webgl$WebGL_Settings_Blend$Factor(32769);
+var _elm_community$webgl$WebGL_Settings_Blend$oneMinusConstantColor = _elm_community$webgl$WebGL_Settings_Blend$Factor(32770);
+var _elm_community$webgl$WebGL_Settings_Blend$constantAlpha = _elm_community$webgl$WebGL_Settings_Blend$Factor(32771);
+var _elm_community$webgl$WebGL_Settings_Blend$oneMinusConstantAlpha = _elm_community$webgl$WebGL_Settings_Blend$Factor(32772);
+var _elm_community$webgl$WebGL_Settings_Blend$Blender = F3(
+	function (a, b, c) {
+		return {ctor: 'Blender', _0: a, _1: b, _2: c};
+	});
+var _elm_community$webgl$WebGL_Settings_Blend$customAdd = F2(
+	function (_p7, _p6) {
+		var _p8 = _p7;
+		var _p9 = _p6;
+		return A3(_elm_community$webgl$WebGL_Settings_Blend$Blender, 32774, _p8._0, _p9._0);
+	});
+var _elm_community$webgl$WebGL_Settings_Blend$add = F2(
+	function (factor1, factor2) {
+		return _elm_community$webgl$WebGL_Settings_Blend$custom(
+			{
+				r: 0,
+				g: 0,
+				b: 0,
+				a: 0,
+				color: A2(_elm_community$webgl$WebGL_Settings_Blend$customAdd, factor1, factor2),
+				alpha: A2(_elm_community$webgl$WebGL_Settings_Blend$customAdd, factor1, factor2)
+			});
+	});
+var _elm_community$webgl$WebGL_Settings_Blend$customSubtract = F2(
+	function (_p11, _p10) {
+		var _p12 = _p11;
+		var _p13 = _p10;
+		return A3(_elm_community$webgl$WebGL_Settings_Blend$Blender, 32778, _p12._0, _p13._0);
+	});
+var _elm_community$webgl$WebGL_Settings_Blend$subtract = F2(
+	function (factor1, factor2) {
+		return _elm_community$webgl$WebGL_Settings_Blend$custom(
+			{
+				r: 0,
+				g: 0,
+				b: 0,
+				a: 0,
+				color: A2(_elm_community$webgl$WebGL_Settings_Blend$customSubtract, factor1, factor2),
+				alpha: A2(_elm_community$webgl$WebGL_Settings_Blend$customSubtract, factor1, factor2)
+			});
+	});
+var _elm_community$webgl$WebGL_Settings_Blend$customReverseSubtract = F2(
+	function (_p15, _p14) {
+		var _p16 = _p15;
+		var _p17 = _p14;
+		return A3(_elm_community$webgl$WebGL_Settings_Blend$Blender, 32779, _p16._0, _p17._0);
+	});
+var _elm_community$webgl$WebGL_Settings_Blend$reverseSubtract = F2(
+	function (factor1, factor2) {
+		return _elm_community$webgl$WebGL_Settings_Blend$custom(
+			{
+				r: 0,
+				g: 0,
+				b: 0,
+				a: 0,
+				color: A2(_elm_community$webgl$WebGL_Settings_Blend$customReverseSubtract, factor1, factor2),
+				alpha: A2(_elm_community$webgl$WebGL_Settings_Blend$customReverseSubtract, factor1, factor2)
+			});
+	});
+
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
 var _elm_lang$core$Task$spawnCmd = F2(
@@ -12816,7 +12903,7 @@ var _psandahl$terra_glide$Navigator$Navigator = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform sampler2D dirt;\n        uniform sampler2D grass;\n        uniform sampler2D rock;\n        uniform sampler2D snow;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(126.0/255.0, 126.0/255.0, 126.0/255.0);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            if (vPosition.y > 200.0)\n            {\n                if (vNormal.y > 0.875)\n                {\n                    return texture2D(snow, vTexCoord).rgb;\n                }\n                else\n                {\n                    return texture2D(rock, vTexCoord).rgb;\n                }\n            }\n            else if (vPosition.y > 50.0)\n            {\n                if (vNormal.y > 0.875)\n                {\n                    return texture2D(grass, vTexCoord).rgb;\n                }\n                else\n                {\n                    return texture2D(rock, vTexCoord).rgb;\n                }\n            }\n            else\n            {\n                return texture2D(dirt, vTexCoord).rgb;\n            }\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform sampler2D dirt;\n        uniform sampler2D grass;\n        uniform sampler2D rock;\n        uniform sampler2D snow;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(126.0/255.0, 126.0/255.0, 126.0/255.0);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            if (vPosition.y > 200.0)\n            {\n                if (vNormal.y > 0.875)\n                {\n                    return texture2D(snow, vTexCoord).rgb;\n                }\n                else\n                {\n                    return texture2D(rock, vTexCoord).rgb;\n                }\n            }\n            else if (vPosition.y > 50.0)\n            {\n                if (vNormal.y > 0.875)\n                {\n                    return texture2D(grass, vTexCoord).rgb;\n                }\n                else\n                {\n                    return texture2D(rock, vTexCoord).rgb;\n                }\n            }\n            else\n            {\n                return texture2D(grass, vTexCoord).rgb;\n            }\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vPosition = position;\n            vNormal = normal;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
@@ -13033,8 +13120,21 @@ var _psandahl$terra_glide$Water$vertices = {
 };
 var _psandahl$terra_glide$Water$entity = F3(
 	function (projectionMatrix, viewMatrix, water) {
-		return A4(
-			_elm_community$webgl$WebGL$entity,
+		return A5(
+			_elm_community$webgl$WebGL$entityWith,
+			{
+				ctor: '::',
+				_0: _elm_community$webgl$WebGL_Settings_DepthTest$default,
+				_1: {
+					ctor: '::',
+					_0: _elm_community$webgl$WebGL_Settings$cullFace(_elm_community$webgl$WebGL_Settings$back),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_community$webgl$WebGL_Settings_Blend$add, _elm_community$webgl$WebGL_Settings_Blend$one, _elm_community$webgl$WebGL_Settings_Blend$one),
+						_1: {ctor: '[]'}
+					}
+				}
+			},
 			_psandahl$terra_glide$Water$vertexShader,
 			_psandahl$terra_glide$Water$fragmentShader,
 			water.mesh,
@@ -13282,7 +13382,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 						_0: _elm_community$webgl$WebGL$depth(1),
 						_1: {
 							ctor: '::',
-							_0: A4(_elm_community$webgl$WebGL$clearColor, 161 / 255, 187 / 255, 251 / 255, 0),
+							_0: A4(_elm_community$webgl$WebGL$clearColor, 161 / 255, 187 / 255, 251 / 255, 1.0),
 							_1: {ctor: '[]'}
 						}
 					}
