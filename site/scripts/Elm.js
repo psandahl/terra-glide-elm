@@ -12602,6 +12602,8 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 		return {position: a, viewDirection: b, viewMatrix: c};
 	});
 
+var _psandahl$terra_glide$Constants$maxWorld = 1000000000;
+var _psandahl$terra_glide$Constants$waterHeight = 50;
 var _psandahl$terra_glide$Constants$terrainHeight = 300;
 var _psandahl$terra_glide$Constants$cameraHeight = _psandahl$terra_glide$Constants$terrainHeight + 1;
 var _psandahl$terra_glide$Constants$tileVista = 500;
@@ -12993,9 +12995,66 @@ var _psandahl$terra_glide$Terrain$Terrain = F5(
 		return {tiles: a, dirt: b, grass: c, rock: d, snow: e};
 	});
 
-var _psandahl$terra_glide$Model$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, terrain: e, errorMessage: f};
+var _psandahl$terra_glide$Water$fragmentShader = {'src': '\n        precision mediump float;\n\n        vec3 waterColor = vec3(0.0, 0.0, 1.0);\n\n        void main()\n        {\n            gl_FragColor = vec4(waterColor, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Water$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        void main()\n        {\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Water$indices = {
+	ctor: '::',
+	_0: {ctor: '_Tuple3', _0: 1, _1: 0, _2: 2},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple3', _0: 1, _1: 2, _2: 3},
+		_1: {ctor: '[]'}
+	}
+};
+var _psandahl$terra_glide$Water$vertices = {
+	ctor: '::',
+	_0: {
+		position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, _psandahl$terra_glide$Constants$waterHeight, 0)
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, _psandahl$terra_glide$Constants$maxWorld, _psandahl$terra_glide$Constants$waterHeight, 0)
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, _psandahl$terra_glide$Constants$waterHeight, _psandahl$terra_glide$Constants$maxWorld)
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, _psandahl$terra_glide$Constants$maxWorld, _psandahl$terra_glide$Constants$waterHeight, _psandahl$terra_glide$Constants$maxWorld)
+				},
+				_1: {ctor: '[]'}
+			}
+		}
+	}
+};
+var _psandahl$terra_glide$Water$entity = F3(
+	function (projectionMatrix, viewMatrix, water) {
+		return A4(
+			_elm_community$webgl$WebGL$entity,
+			_psandahl$terra_glide$Water$vertexShader,
+			_psandahl$terra_glide$Water$fragmentShader,
+			water.mesh,
+			{
+				mvpMatrix: A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)
+			});
+	});
+var _psandahl$terra_glide$Water$init = {
+	mesh: A2(_elm_community$webgl$WebGL$indexedTriangles, _psandahl$terra_glide$Water$vertices, _psandahl$terra_glide$Water$indices)
+};
+var _psandahl$terra_glide$Water$Water = function (a) {
+	return {mesh: a};
+};
+var _psandahl$terra_glide$Water$Vertex = function (a) {
+	return {position: a};
+};
+
+var _psandahl$terra_glide$Model$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, terrain: e, water: f, errorMessage: g};
 	});
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
@@ -13004,7 +13063,7 @@ var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 		_elm_community$linear_algebra$Math_Matrix4$makePerspective,
 		45,
 		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
-		0.1,
+		1,
 		800);
 };
 
@@ -13206,6 +13265,8 @@ var _psandahl$terra_glide$Update$update = F2(
 
 var _psandahl$terra_glide$View$view = function (model) {
 	var viewMatrix = model.camera.viewMatrix;
+	var terrainEntities = A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain);
+	var waterEntity = A3(_psandahl$terra_glide$Water$entity, model.projectionMatrix, viewMatrix, model.water);
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -13235,7 +13296,14 @@ var _psandahl$terra_glide$View$view = function (model) {
 						_1: {ctor: '[]'}
 					}
 				},
-				A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain)),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					terrainEntities,
+					{
+						ctor: '::',
+						_0: waterEntity,
+						_1: {ctor: '[]'}
+					})),
 			_1: {ctor: '[]'}
 		});
 };
@@ -13278,6 +13346,7 @@ var _psandahl$terra_glide$Main$init = function () {
 					_elm_lang$core$Basics$cos(0))),
 			cameraRotation: 0,
 			terrain: terrain,
+			water: _psandahl$terra_glide$Water$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing
 		},
 		_1: _elm_lang$core$Platform_Cmd$batch(

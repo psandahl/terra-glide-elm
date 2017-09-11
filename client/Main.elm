@@ -14,6 +14,7 @@ import Task
 import Time
 import Update
 import View
+import Water
 import Window
 import Terrain
 
@@ -42,6 +43,7 @@ init =
           , camera = Camera.set (vec3 10000 Constants.cameraHeight 10000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
           , terrain = terrain
+          , water = Water.init
           , errorMessage = Nothing
           }
         , Cmd.batch [ Task.perform WindowSize Window.size, navigatorCommands, terrainCommands ]

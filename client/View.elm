@@ -6,6 +6,7 @@ import Html.Attributes as Attr
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Terrain
+import Water
 import WebGL as GL
 
 
@@ -14,6 +15,12 @@ view model =
     let
         viewMatrix =
             model.camera.viewMatrix
+
+        terrainEntities =
+            Terrain.entities model.projectionMatrix viewMatrix model.terrain
+
+        waterEntity =
+            Water.entity model.projectionMatrix viewMatrix model.water
     in
         Html.div
             []
@@ -26,5 +33,6 @@ view model =
                 , Attr.width model.canvasSize.width
                 ]
               <|
-                Terrain.entities model.projectionMatrix viewMatrix model.terrain
+                terrainEntities
+                    ++ [ waterEntity ]
             ]
