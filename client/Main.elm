@@ -36,11 +36,11 @@ init =
             Terrain.init
 
         ( navigator, navigatorCommands ) =
-            Navigator.init (vec2 10000 10000)
+            Navigator.init (vec2 123456 123456)
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 10000 Constants.cameraHeight 10000) (vec2 (sin 0) (cos 0))
+          , camera = Camera.set (vec3 123456 Constants.cameraHeight 123456) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
           , terrain = terrain
           , water = Water.init

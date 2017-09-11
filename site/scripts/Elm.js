@@ -13426,7 +13426,7 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 };
 var _psandahl$terra_glide$Main$init = function () {
 	var _p1 = _psandahl$terra_glide$Navigator$init(
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 10000, 10000));
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 123456, 123456));
 	var navigator = _p1._0;
 	var navigatorCommands = _p1._1;
 	var _p2 = _psandahl$terra_glide$Terrain$init;
@@ -13439,7 +13439,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 10000, _psandahl$terra_glide$Constants$cameraHeight, 10000),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 123456, _psandahl$terra_glide$Constants$cameraHeight, 123456),
 				A2(
 					_elm_community$linear_algebra$Math_Vector2$vec2,
 					_elm_lang$core$Basics$sin(0),
