@@ -136,7 +136,7 @@ fragmentShader =
         float ambientStrength = 0.2;
 
         // Diffuse color stuff. Hardcoded for now.
-        vec3 diffuseColor = vec3(126.0/255.0, 126.0/255.0, 126.0/255.0);
+        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);
 
         // Calculate the texture color for the fragment.
         vec3 baseColor();
