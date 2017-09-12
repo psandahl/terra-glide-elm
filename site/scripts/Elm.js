@@ -12667,7 +12667,7 @@ var _psandahl$terra_glide$Camera$makeMatrix = F2(
 		var viewPointStraight = A2(
 			_elm_community$linear_algebra$Math_Vector3$add,
 			position,
-			A2(_elm_community$linear_algebra$Math_Vector3$scale, height * 2, viewDirection));
+			A2(_elm_community$linear_algebra$Math_Vector3$scale, height * 6, viewDirection));
 		var viewPointGround = A2(_elm_community$linear_algebra$Math_Vector3$setY, 0, viewPointStraight);
 		return A3(
 			_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
@@ -13075,6 +13075,15 @@ var _psandahl$terra_glide$SkySphere_IcoSphere$icosphere = function (subdivisions
 		A2(_psandahl$terra_glide$SkySphere_IcoSphere$subdivide, subdivisions, _psandahl$terra_glide$SkySphere_IcoSphere$icosahedron));
 };
 
+var _psandahl$terra_glide$SkySphere$fragmentShader = {'src': '\n        precision mediump float;\n\n        varying vec3 vPosition;\n\n        vec3 sky = vec3(12.0 / 255.0, 94.0 / 255.0, 170.0 / 255.0);\n        vec3 horizon = vec3(170.0 / 255.0, 204.0 / 255.0, 204.0 / 255.0);\n        vec3 fog = vec3(0.5, 0.5, 0.5);\n\n        void main()\n        {\n            float y = abs(vPosition.y);\n            vec3 skyColor = mix(horizon, sky, y);\n\n            if (y > 2.0)\n            {\n                gl_FragColor = vec4(skyColor, 1.0);\n            }\n            else\n            {\n                gl_FragColor = vec4(mix(fog, skyColor, smoothstep(0.0, 0.2, y)), 1.0);\n            }\n        }\n    '};
+var _psandahl$terra_glide$SkySphere$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n\n        void main()\n        {\n            vPosition = position;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$SkySphere$modifyViewMatrix = function (viewMatrix) {
+	var r = _elm_community$linear_algebra$Math_Matrix4$toRecord(viewMatrix);
+	return _elm_community$linear_algebra$Math_Matrix4$fromRecord(
+		_elm_lang$core$Native_Utils.update(
+			r,
+			{m14: 0, m24: 0, m34: 0}));
+};
 var _psandahl$terra_glide$SkySphere$toVertex = function (_p0) {
 	var _p1 = _p0;
 	return {
@@ -13084,16 +13093,40 @@ var _psandahl$terra_glide$SkySphere$toVertex = function (_p0) {
 		_2: {position: _p1._2}
 	};
 };
+var _psandahl$terra_glide$SkySphere$entity = F3(
+	function (projectionMatrix, viewMatrix, skySphere) {
+		var mvpMatrix = A2(
+			_elm_community$linear_algebra$Math_Matrix4$mul,
+			projectionMatrix,
+			A2(
+				_elm_community$linear_algebra$Math_Matrix4$mul,
+				_psandahl$terra_glide$SkySphere$modifyViewMatrix(viewMatrix),
+				skySphere.modelMatrix));
+		return A5(
+			_elm_community$webgl$WebGL$entityWith,
+			{
+				ctor: '::',
+				_0: _elm_community$webgl$WebGL_Settings_DepthTest$always(
+					{write: false, near: 0, far: 1}),
+				_1: {ctor: '[]'}
+			},
+			_psandahl$terra_glide$SkySphere$vertexShader,
+			_psandahl$terra_glide$SkySphere$fragmentShader,
+			skySphere.mesh,
+			{mvpMatrix: mvpMatrix});
+	});
 var _psandahl$terra_glide$SkySphere$init = {
 	mesh: _elm_community$webgl$WebGL$triangles(
 		A2(
 			_elm_lang$core$List$map,
 			_psandahl$terra_glide$SkySphere$toVertex,
-			_psandahl$terra_glide$SkySphere_IcoSphere$icosphere(3)))
+			_psandahl$terra_glide$SkySphere_IcoSphere$icosphere(3))),
+	modelMatrix: A3(_elm_community$linear_algebra$Math_Matrix4$makeScale3, 2, 2, 2)
 };
-var _psandahl$terra_glide$SkySphere$SkySphere = function (a) {
-	return {mesh: a};
-};
+var _psandahl$terra_glide$SkySphere$SkySphere = F2(
+	function (a, b) {
+		return {mesh: a, modelMatrix: b};
+	});
 var _psandahl$terra_glide$SkySphere$Vertex = function (a) {
 	return {position: a};
 };
@@ -13582,6 +13615,7 @@ var _psandahl$terra_glide$Update$update = F2(
 
 var _psandahl$terra_glide$View$view = function (model) {
 	var viewMatrix = model.camera.viewMatrix;
+	var skySphereEntity = A3(_psandahl$terra_glide$SkySphere$entity, model.projectionMatrix, viewMatrix, model.skySphere);
 	var terrainEntities = A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain);
 	var waterEntity = A3(_psandahl$terra_glide$Water$entity, model.projectionMatrix, viewMatrix, model.water);
 	return A2(
@@ -13597,11 +13631,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 					_1: {
 						ctor: '::',
 						_0: _elm_community$webgl$WebGL$depth(1),
-						_1: {
-							ctor: '::',
-							_0: A4(_elm_community$webgl$WebGL$clearColor, 161 / 255, 187 / 255, 251 / 255, 1.0),
-							_1: {ctor: '[]'}
-						}
+						_1: {ctor: '[]'}
 					}
 				},
 				{
@@ -13615,7 +13645,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 				},
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					terrainEntities,
+					{ctor: '::', _0: skySphereEntity, _1: terrainEntities},
 					{
 						ctor: '::',
 						_0: waterEntity,

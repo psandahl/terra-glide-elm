@@ -40,7 +40,7 @@ makeMatrix position viewDirection =
             Vec3.getY position
 
         viewPointStraight =
-            Vec3.add position <| Vec3.scale (height * 2) viewDirection
+            Vec3.add position <| Vec3.scale (height * 6) viewDirection
 
         viewPointGround =
             Vec3.setY 0 viewPointStraight
