@@ -12943,6 +12943,15 @@ var _psandahl$terra_glide$Terrain_Tile$toEntity = F7(
 			tile.mesh,
 			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, dirt: dirt, grass: grass, rock: rock, snow: snow});
 	});
+var _psandahl$terra_glide$Terrain_Tile$checkHeights = function (xs) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (v) {
+			var y = _elm_community$linear_algebra$Math_Vector3$getY(v.position);
+			return (_elm_lang$core$Native_Utils.cmp(y, _psandahl$terra_glide$Constants$terrainHeight) > 0) ? A2(_elm_lang$core$Debug$log, 'Error: > maxHeight', v) : v;
+		},
+		xs);
+};
 var _psandahl$terra_glide$Terrain_Tile$init = F2(
 	function (_p1, tileData) {
 		var _p2 = _p1;
@@ -12953,7 +12962,7 @@ var _psandahl$terra_glide$Terrain_Tile$init = F2(
 			depth: tileData.depth,
 			mesh: A2(
 				_elm_community$webgl$WebGL$indexedTriangles,
-				tileData.vertices,
+				_psandahl$terra_glide$Terrain_Tile$checkHeights(tileData.vertices),
 				A2(
 					_psandahl$terra_glide$Terrain_Tile$tuplify,
 					{ctor: '[]'},
@@ -13426,7 +13435,7 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 };
 var _psandahl$terra_glide$Main$init = function () {
 	var _p1 = _psandahl$terra_glide$Navigator$init(
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 123456, 123456));
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000));
 	var navigator = _p1._0;
 	var navigatorCommands = _p1._1;
 	var _p2 = _psandahl$terra_glide$Terrain$init;
@@ -13439,7 +13448,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 123456, _psandahl$terra_glide$Constants$cameraHeight, 123456),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1000, _psandahl$terra_glide$Constants$cameraHeight, 1000),
 				A2(
 					_elm_community$linear_algebra$Math_Vector2$vec2,
 					_elm_lang$core$Basics$sin(0),

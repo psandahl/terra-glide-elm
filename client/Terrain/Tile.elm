@@ -1,7 +1,9 @@
 module Terrain.Tile exposing (Tile, init, toEntity)
 
+import Constants
+import Debug
 import Math.Vector2 exposing (Vec2)
-import Math.Vector3 exposing (Vec3)
+import Math.Vector3 exposing (Vec3, getY)
 import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (Vertex, TileData)
 import WebGL exposing (Entity, Mesh, Shader)
@@ -30,8 +32,24 @@ init ( startX, startZ ) tileData =
     , startZ = startZ
     , width = tileData.width
     , depth = tileData.depth
-    , mesh = GL.indexedTriangles tileData.vertices <| tuplify [] tileData.indices
+    , mesh = GL.indexedTriangles (checkHeights tileData.vertices) <| tuplify [] tileData.indices
     }
+
+
+checkHeights : List Vertex -> List Vertex
+checkHeights xs =
+    List.map
+        (\v ->
+            let
+                y =
+                    getY <| v.position
+            in
+                if y > Constants.terrainHeight then
+                    Debug.log "Error: > maxHeight" v
+                else
+                    v
+        )
+        xs
 
 
 {-| Render the Tile.
