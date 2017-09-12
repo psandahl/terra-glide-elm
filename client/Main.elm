@@ -34,19 +34,17 @@ init =
     let
         ( terrain, terrainCommands ) =
             Terrain.init
-
-        ( navigator, navigatorCommands ) =
-            Navigator.init (vec2 1000 1000)
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
           , camera = Camera.set (vec3 1000 Constants.cameraHeight 1000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
+          , navigator = Navigator.init (vec2 1000 1000)
           , terrain = terrain
           , water = Water.init
           , errorMessage = Nothing
           }
-        , Cmd.batch [ Task.perform WindowSize Window.size, navigatorCommands, terrainCommands ]
+        , Cmd.batch [ Task.perform WindowSize Window.size, terrainCommands ]
         )
 
 

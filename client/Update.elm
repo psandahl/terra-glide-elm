@@ -6,6 +6,7 @@ import Http
 import Math.Vector2 exposing (vec2)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
+import Navigator
 import Projection
 import Terrain
 import WebGL.Texture as Texture
@@ -58,11 +59,18 @@ update msg model =
         DirtTexture result ->
             case result of
                 Ok dirt ->
-                    ( { model
-                        | terrain = Terrain.addDirt dirt model.terrain
-                      }
-                    , Cmd.none
-                    )
+                    let
+                        newTerrain =
+                            Terrain.addDirt dirt model.terrain
+                    in
+                        ( { model
+                            | terrain = newTerrain
+                          }
+                        , if Terrain.haveAllTextures newTerrain then
+                            Navigator.runTileQueries model.navigator
+                          else
+                            Cmd.none
+                        )
 
                 Err err ->
                     let
@@ -74,11 +82,18 @@ update msg model =
         GrassTexture result ->
             case result of
                 Ok grass ->
-                    ( { model
-                        | terrain = Terrain.addGrass grass model.terrain
-                      }
-                    , Cmd.none
-                    )
+                    let
+                        newTerrain =
+                            Terrain.addGrass grass model.terrain
+                    in
+                        ( { model
+                            | terrain = newTerrain
+                          }
+                        , if Terrain.haveAllTextures newTerrain then
+                            Navigator.runTileQueries model.navigator
+                          else
+                            Cmd.none
+                        )
 
                 Err err ->
                     let
@@ -90,11 +105,18 @@ update msg model =
         RockTexture result ->
             case result of
                 Ok rock ->
-                    ( { model
-                        | terrain = Terrain.addRock rock model.terrain
-                      }
-                    , Cmd.none
-                    )
+                    let
+                        newTerrain =
+                            Terrain.addRock rock model.terrain
+                    in
+                        ( { model
+                            | terrain = newTerrain
+                          }
+                        , if Terrain.haveAllTextures newTerrain then
+                            Navigator.runTileQueries model.navigator
+                          else
+                            Cmd.none
+                        )
 
                 Err err ->
                     let
@@ -106,11 +128,18 @@ update msg model =
         SnowTexture result ->
             case result of
                 Ok snow ->
-                    ( { model
-                        | terrain = Terrain.addSnow snow model.terrain
-                      }
-                    , Cmd.none
-                    )
+                    let
+                        newTerrain =
+                            Terrain.addSnow snow model.terrain
+                    in
+                        ( { model
+                            | terrain = newTerrain
+                          }
+                        , if Terrain.haveAllTextures newTerrain then
+                            Navigator.runTileQueries model.navigator
+                          else
+                            Cmd.none
+                        )
 
                 Err err ->
                     let

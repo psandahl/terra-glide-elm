@@ -12888,16 +12888,15 @@ var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 		A2(_elm_lang$core$List$range, (zFarLeft / _psandahl$terra_glide$Constants$tileSize) | 0, (zNearLeft / _psandahl$terra_glide$Constants$tileSize) | 0));
 };
 
+var _psandahl$terra_glide$Navigator$runTileQueries = function (navigator) {
+	return _elm_lang$core$Platform_Cmd$batch(
+		A2(
+			_elm_lang$core$List$map,
+			_psandahl$terra_glide$Terrain_TileQuery$execute,
+			_psandahl$terra_glide$Navigator_TileSelector$tiles(navigator.position)));
+};
 var _psandahl$terra_glide$Navigator$init = function (position) {
-	return {
-		ctor: '_Tuple2',
-		_0: {position: position},
-		_1: _elm_lang$core$Platform_Cmd$batch(
-			A2(
-				_elm_lang$core$List$map,
-				_psandahl$terra_glide$Terrain_TileQuery$execute,
-				_psandahl$terra_glide$Navigator_TileSelector$tiles(position)))
-	};
+	return {position: position};
 };
 var _psandahl$terra_glide$Navigator$Navigator = function (a) {
 	return {position: a};
@@ -13002,6 +13001,23 @@ var _psandahl$terra_glide$Terrain$entities = F3(
 			return {ctor: '[]'};
 		}
 	});
+var _psandahl$terra_glide$Terrain$haveAllTextures = function (terrain) {
+	var _p1 = A5(
+		_elm_lang$core$Maybe$map4,
+		F4(
+			function (v0, v1, v2, v3) {
+				return {ctor: '_Tuple4', _0: v0, _1: v1, _2: v2, _3: v3};
+			}),
+		terrain.dirt,
+		terrain.grass,
+		terrain.rock,
+		terrain.snow);
+	if (_p1.ctor === 'Just') {
+		return true;
+	} else {
+		return false;
+	}
+};
 var _psandahl$terra_glide$Terrain$addSnow = F2(
 	function (snow, terrain) {
 		return _elm_lang$core$Native_Utils.update(
@@ -13161,9 +13177,9 @@ var _psandahl$terra_glide$Water$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Model$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, terrain: e, water: f, errorMessage: g};
+var _psandahl$terra_glide$Model$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, navigator: e, terrain: f, water: g, errorMessage: h};
 	});
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
@@ -13264,14 +13280,13 @@ var _psandahl$terra_glide$Update$update = F2(
 			case 'DirtTexture':
 				var _p5 = _p2._0;
 				if (_p5.ctor === 'Ok') {
+					var newTerrain = A2(_psandahl$terra_glide$Terrain$addDirt, _p5._0, model.terrain);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{
-								terrain: A2(_psandahl$terra_glide$Terrain$addDirt, _p5._0, model.terrain)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+							{terrain: newTerrain}),
+						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					var errMsg = A2(
@@ -13291,14 +13306,13 @@ var _psandahl$terra_glide$Update$update = F2(
 			case 'GrassTexture':
 				var _p6 = _p2._0;
 				if (_p6.ctor === 'Ok') {
+					var newTerrain = A2(_psandahl$terra_glide$Terrain$addGrass, _p6._0, model.terrain);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{
-								terrain: A2(_psandahl$terra_glide$Terrain$addGrass, _p6._0, model.terrain)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+							{terrain: newTerrain}),
+						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					var errMsg = A2(
@@ -13318,14 +13332,13 @@ var _psandahl$terra_glide$Update$update = F2(
 			case 'RockTexture':
 				var _p7 = _p2._0;
 				if (_p7.ctor === 'Ok') {
+					var newTerrain = A2(_psandahl$terra_glide$Terrain$addRock, _p7._0, model.terrain);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{
-								terrain: A2(_psandahl$terra_glide$Terrain$addRock, _p7._0, model.terrain)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+							{terrain: newTerrain}),
+						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					var errMsg = A2(
@@ -13345,14 +13358,13 @@ var _psandahl$terra_glide$Update$update = F2(
 			default:
 				var _p8 = _p2._0;
 				if (_p8.ctor === 'Ok') {
+					var newTerrain = A2(_psandahl$terra_glide$Terrain$addSnow, _p8._0, model.terrain);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{
-								terrain: A2(_psandahl$terra_glide$Terrain$addSnow, _p8._0, model.terrain)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+							{terrain: newTerrain}),
+						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					var errMsg = A2(
@@ -13434,13 +13446,9 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 		});
 };
 var _psandahl$terra_glide$Main$init = function () {
-	var _p1 = _psandahl$terra_glide$Navigator$init(
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000));
-	var navigator = _p1._0;
-	var navigatorCommands = _p1._1;
-	var _p2 = _psandahl$terra_glide$Terrain$init;
-	var terrain = _p2._0;
-	var terrainCommands = _p2._1;
+	var _p1 = _psandahl$terra_glide$Terrain$init;
+	var terrain = _p1._0;
+	var terrainCommands = _p1._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -13454,6 +13462,8 @@ var _psandahl$terra_glide$Main$init = function () {
 					_elm_lang$core$Basics$sin(0),
 					_elm_lang$core$Basics$cos(0))),
 			cameraRotation: 0,
+			navigator: _psandahl$terra_glide$Navigator$init(
+				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000)),
 			terrain: terrain,
 			water: _psandahl$terra_glide$Water$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing
@@ -13464,12 +13474,8 @@ var _psandahl$terra_glide$Main$init = function () {
 				_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Msg$WindowSize, _elm_lang$window$Window$size),
 				_1: {
 					ctor: '::',
-					_0: navigatorCommands,
-					_1: {
-						ctor: '::',
-						_0: terrainCommands,
-						_1: {ctor: '[]'}
-					}
+					_0: terrainCommands,
+					_1: {ctor: '[]'}
 				}
 			})
 	};

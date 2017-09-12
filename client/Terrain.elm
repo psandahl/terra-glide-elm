@@ -7,6 +7,7 @@ module Terrain
         , addGrass
         , addRock
         , addSnow
+        , haveAllTextures
         , entities
         )
 
@@ -71,6 +72,16 @@ addRock rock terrain =
 addSnow : Texture -> Terrain -> Terrain
 addSnow snow terrain =
     { terrain | snow = Just snow }
+
+
+haveAllTextures : Terrain -> Bool
+haveAllTextures terrain =
+    case Maybe.map4 (,,,) terrain.dirt terrain.grass terrain.rock terrain.snow of
+        Just _ ->
+            True
+
+        Nothing ->
+            False
 
 
 entities : Mat4 -> Mat4 -> Terrain -> List Entity
