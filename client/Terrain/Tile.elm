@@ -177,9 +177,9 @@ fragmentShader =
 
         vec3 baseColor()
         {
-            if (vPosition.y > 200.0)
+            if (vPosition.y > 130.0)
             {
-                if (vNormal.y > 0.875)
+                if (vNormal.y > 0.9)
                 {
                     return texture2D(snow, vTexCoord).rgb;
                 }
@@ -188,9 +188,9 @@ fragmentShader =
                     return texture2D(rock, vTexCoord).rgb;
                 }
             }
-            else if (vPosition.y > 50.0)
+            else if (vPosition.y > 75.0)
             {
-                if (vNormal.y > 0.875)
+                if (vNormal.y > 0.9)
                 {
                     return texture2D(grass, vTexCoord).rgb;
                 }

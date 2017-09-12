@@ -21,21 +21,21 @@ tileSize =
 -}
 tileVista : Float
 tileVista =
-    500
+    300
 
 
 {-| The max height of the terrain.
 -}
 terrainHeight : Float
 terrainHeight =
-    300
+    200
 
 
 {-| The height of the water.
 -}
 waterHeight : Float
 waterHeight =
-    50
+    75
 
 
 {-| The camera's height. Always 50 units above of the heighest terrain.
@@ -50,7 +50,3 @@ cameraHeight =
 maxWorld : Float
 maxWorld =
     1000000000
-
-
-
---11000
