@@ -12902,6 +12902,202 @@ var _psandahl$terra_glide$Navigator$Navigator = function (a) {
 	return {position: a};
 };
 
+var _psandahl$terra_glide$SkySphere_IcoSphere$icosahedron = function () {
+	var t = (1.0 + _elm_lang$core$Basics$sqrt(5.0)) / 2.0;
+	var vertex_0 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, -1, t, 0);
+	var vertex_1 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, t, 0);
+	var vertex_2 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, -1, 0 - t, 0);
+	var vertex_3 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 0 - t, 0);
+	var vertex_4 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, -1, t);
+	var vertex_5 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, t);
+	var vertex_6 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, -1, 0 - t);
+	var vertex_7 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0 - t);
+	var vertex_8 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, t, 0, -1);
+	var vertex_9 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, t, 0, 1);
+	var vertex_10 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0 - t, 0, -1);
+	var vertex_11 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0 - t, 0, 1);
+	return {
+		ctor: '::',
+		_0: {ctor: '_Tuple3', _0: vertex_0, _1: vertex_11, _2: vertex_5},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple3', _0: vertex_0, _1: vertex_5, _2: vertex_1},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple3', _0: vertex_0, _1: vertex_1, _2: vertex_7},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple3', _0: vertex_0, _1: vertex_7, _2: vertex_10},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple3', _0: vertex_0, _1: vertex_10, _2: vertex_11},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple3', _0: vertex_1, _1: vertex_5, _2: vertex_9},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple3', _0: vertex_5, _1: vertex_11, _2: vertex_4},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple3', _0: vertex_11, _1: vertex_10, _2: vertex_2},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple3', _0: vertex_10, _1: vertex_7, _2: vertex_6},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple3', _0: vertex_7, _1: vertex_1, _2: vertex_8},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple3', _0: vertex_3, _1: vertex_9, _2: vertex_4},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple3', _0: vertex_3, _1: vertex_4, _2: vertex_2},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple3', _0: vertex_3, _1: vertex_2, _2: vertex_6},
+														_1: {
+															ctor: '::',
+															_0: {ctor: '_Tuple3', _0: vertex_3, _1: vertex_6, _2: vertex_8},
+															_1: {
+																ctor: '::',
+																_0: {ctor: '_Tuple3', _0: vertex_3, _1: vertex_8, _2: vertex_9},
+																_1: {
+																	ctor: '::',
+																	_0: {ctor: '_Tuple3', _0: vertex_4, _1: vertex_9, _2: vertex_5},
+																	_1: {
+																		ctor: '::',
+																		_0: {ctor: '_Tuple3', _0: vertex_2, _1: vertex_4, _2: vertex_11},
+																		_1: {
+																			ctor: '::',
+																			_0: {ctor: '_Tuple3', _0: vertex_6, _1: vertex_2, _2: vertex_10},
+																			_1: {
+																				ctor: '::',
+																				_0: {ctor: '_Tuple3', _0: vertex_8, _1: vertex_6, _2: vertex_7},
+																				_1: {
+																					ctor: '::',
+																					_0: {ctor: '_Tuple3', _0: vertex_9, _1: vertex_8, _2: vertex_1},
+																					_1: {ctor: '[]'}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	};
+}();
+var _psandahl$terra_glide$SkySphere_IcoSphere$midpoint = F2(
+	function (a, b) {
+		var _p0 = _elm_community$linear_algebra$Math_Vector3$toTuple(b);
+		var x_ = _p0._0;
+		var y_ = _p0._1;
+		var z_ = _p0._2;
+		var _p1 = _elm_community$linear_algebra$Math_Vector3$toTuple(a);
+		var x = _p1._0;
+		var y = _p1._1;
+		var z = _p1._2;
+		return A3(_elm_community$linear_algebra$Math_Vector3$vec3, (x + x_) / 2, (y + y_) / 2, (z + z_) / 2);
+	});
+var _psandahl$terra_glide$SkySphere_IcoSphere$subdivide = F2(
+	function (n, tris) {
+		subdivide:
+		while (true) {
+			var subdivideTri = function (_p2) {
+				var _p3 = _p2;
+				var _p6 = _p3._2;
+				var _p5 = _p3._1;
+				var _p4 = _p3._0;
+				var c = A2(_psandahl$terra_glide$SkySphere_IcoSphere$midpoint, _p6, _p4);
+				var b = A2(_psandahl$terra_glide$SkySphere_IcoSphere$midpoint, _p5, _p6);
+				var a = A2(_psandahl$terra_glide$SkySphere_IcoSphere$midpoint, _p4, _p5);
+				return {
+					ctor: '::',
+					_0: {ctor: '_Tuple3', _0: _p4, _1: a, _2: c},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple3', _0: _p5, _1: b, _2: a},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple3', _0: _p6, _1: c, _2: b},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple3', _0: a, _1: b, _2: c},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				};
+			};
+			if (_elm_lang$core$Native_Utils.cmp(n, 0) < 1) {
+				return tris;
+			} else {
+				var _v1 = n - 1,
+					_v2 = A2(_elm_lang$core$List$concatMap, subdivideTri, tris);
+				n = _v1;
+				tris = _v2;
+				continue subdivide;
+			}
+		}
+	});
+var _psandahl$terra_glide$SkySphere_IcoSphere$normalize = function (p) {
+	var _p7 = _elm_community$linear_algebra$Math_Vector3$toTuple(p);
+	var x = _p7._0;
+	var y = _p7._1;
+	var z = _p7._2;
+	var l = _elm_community$linear_algebra$Math_Vector3$length(p);
+	return A3(_elm_community$linear_algebra$Math_Vector3$vec3, x / l, y / l, z / l);
+};
+var _psandahl$terra_glide$SkySphere_IcoSphere$normalizeTri = function (_p8) {
+	var _p9 = _p8;
+	return {
+		ctor: '_Tuple3',
+		_0: _psandahl$terra_glide$SkySphere_IcoSphere$normalize(_p9._0),
+		_1: _psandahl$terra_glide$SkySphere_IcoSphere$normalize(_p9._1),
+		_2: _psandahl$terra_glide$SkySphere_IcoSphere$normalize(_p9._2)
+	};
+};
+var _psandahl$terra_glide$SkySphere_IcoSphere$icosphere = function (subdivisions) {
+	return A2(
+		_elm_lang$core$List$map,
+		_psandahl$terra_glide$SkySphere_IcoSphere$normalizeTri,
+		A2(_psandahl$terra_glide$SkySphere_IcoSphere$subdivide, subdivisions, _psandahl$terra_glide$SkySphere_IcoSphere$icosahedron));
+};
+
+var _psandahl$terra_glide$SkySphere$toVertex = function (_p0) {
+	var _p1 = _p0;
+	return {
+		ctor: '_Tuple3',
+		_0: {position: _p1._0},
+		_1: {position: _p1._1},
+		_2: {position: _p1._2}
+	};
+};
+var _psandahl$terra_glide$SkySphere$init = {
+	mesh: _elm_community$webgl$WebGL$triangles(
+		A2(
+			_elm_lang$core$List$map,
+			_psandahl$terra_glide$SkySphere$toVertex,
+			_psandahl$terra_glide$SkySphere_IcoSphere$icosphere(3)))
+};
+var _psandahl$terra_glide$SkySphere$SkySphere = function (a) {
+	return {mesh: a};
+};
+var _psandahl$terra_glide$SkySphere$Vertex = function (a) {
+	return {position: a};
+};
+
 var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform sampler2D dirt;\n        uniform sampler2D grass;\n        uniform sampler2D rock;\n        uniform sampler2D snow;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            if (vPosition.y > 130.0)\n            {\n                if (vNormal.y > 0.9)\n                {\n                    return texture2D(snow, vTexCoord).rgb;\n                }\n                else\n                {\n                    return texture2D(rock, vTexCoord).rgb;\n                }\n            }\n            else if (vPosition.y > 75.0)\n            {\n                if (vNormal.y > 0.9)\n                {\n                    return texture2D(grass, vTexCoord).rgb;\n                }\n                else\n                {\n                    return texture2D(rock, vTexCoord).rgb;\n                }\n            }\n            else\n            {\n                return texture2D(grass, vTexCoord).rgb;\n            }\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vPosition = position;\n            vNormal = normal;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
@@ -13177,9 +13373,9 @@ var _psandahl$terra_glide$Water$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Model$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, navigator: e, terrain: f, water: g, errorMessage: h};
+var _psandahl$terra_glide$Model$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, navigator: e, skySphere: f, terrain: g, water: h, errorMessage: i};
 	});
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
@@ -13464,6 +13660,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			cameraRotation: 0,
 			navigator: _psandahl$terra_glide$Navigator$init(
 				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000)),
+			skySphere: _psandahl$terra_glide$SkySphere$init,
 			terrain: terrain,
 			water: _psandahl$terra_glide$Water$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing

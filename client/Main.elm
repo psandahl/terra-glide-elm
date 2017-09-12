@@ -10,6 +10,7 @@ import Math.Vector3 exposing (vec3)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Projection
+import SkySphere
 import Task
 import Time
 import Update
@@ -40,6 +41,7 @@ init =
           , camera = Camera.set (vec3 1000 Constants.cameraHeight 1000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
           , navigator = Navigator.init (vec2 1000 1000)
+          , skySphere = SkySphere.init
           , terrain = terrain
           , water = Water.init
           , errorMessage = Nothing
