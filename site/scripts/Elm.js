@@ -13682,14 +13682,14 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1000, _psandahl$terra_glide$Constants$cameraHeight, 1000),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2000, _psandahl$terra_glide$Constants$cameraHeight, 2000),
 				A2(
 					_elm_community$linear_algebra$Math_Vector2$vec2,
 					_elm_lang$core$Basics$sin(0),
 					_elm_lang$core$Basics$cos(0))),
 			cameraRotation: 0,
 			navigator: _psandahl$terra_glide$Navigator$init(
-				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1000, 1000)),
+				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 2000, 2000)),
 			skySphere: _psandahl$terra_glide$SkySphere$init,
 			terrain: terrain,
 			water: _psandahl$terra_glide$Water$init,

@@ -38,9 +38,9 @@ init =
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 1000 Constants.cameraHeight 1000) (vec2 (sin 0) (cos 0))
+          , camera = Camera.set (vec3 2000 Constants.cameraHeight 2000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
-          , navigator = Navigator.init (vec2 1000 1000)
+          , navigator = Navigator.init (vec2 2000 2000)
           , skySphere = SkySphere.init
           , terrain = terrain
           , water = Water.init
