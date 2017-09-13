@@ -12735,18 +12735,6 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 		'indices',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
 
-var _psandahl$terra_glide$Msg$SnowTexture = function (a) {
-	return {ctor: 'SnowTexture', _0: a};
-};
-var _psandahl$terra_glide$Msg$RockTexture = function (a) {
-	return {ctor: 'RockTexture', _0: a};
-};
-var _psandahl$terra_glide$Msg$GrassTexture = function (a) {
-	return {ctor: 'GrassTexture', _0: a};
-};
-var _psandahl$terra_glide$Msg$DirtTexture = function (a) {
-	return {ctor: 'DirtTexture', _0: a};
-};
 var _psandahl$terra_glide$Msg$Animate = function (a) {
 	return {ctor: 'Animate', _0: a};
 };
@@ -13131,8 +13119,8 @@ var _psandahl$terra_glide$SkySphere$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform sampler2D dirt;\n        uniform sampler2D grass;\n        uniform sampler2D rock;\n        uniform sampler2D snow;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            // Assume 200 as max terrain height.\n            float y = vPosition.y / 200.0;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
-var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vPosition = position;\n            vNormal = normal;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            // Assume 200 as max terrain height.\n            float y = vPosition.y / 200.0;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
 		tuplify:
@@ -13153,8 +13141,8 @@ var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 			}
 		}
 	});
-var _psandahl$terra_glide$Terrain_Tile$toEntity = F7(
-	function (dirt, grass, rock, snow, viewMatrix, mvpMatrix, tile) {
+var _psandahl$terra_glide$Terrain_Tile$toEntity = F3(
+	function (viewMatrix, mvpMatrix, tile) {
 		return A5(
 			_elm_community$webgl$WebGL$entityWith,
 			{
@@ -13169,7 +13157,7 @@ var _psandahl$terra_glide$Terrain_Tile$toEntity = F7(
 			_psandahl$terra_glide$Terrain_Tile$vertexShader,
 			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
 			tile.mesh,
-			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, dirt: dirt, grass: grass, rock: rock, snow: snow});
+			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix});
 	});
 var _psandahl$terra_glide$Terrain_Tile$checkHeights = function (xs) {
 	return A2(
@@ -13204,80 +13192,13 @@ var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
 
 var _psandahl$terra_glide$Terrain$entities = F3(
 	function (projectionMatrix, viewMatrix, terrain) {
-		var _p0 = A5(
-			_elm_lang$core$Maybe$map4,
-			F4(
-				function (v0, v1, v2, v3) {
-					return {ctor: '_Tuple4', _0: v0, _1: v1, _2: v2, _3: v3};
-				}),
-			terrain.dirt,
-			terrain.grass,
-			terrain.rock,
-			terrain.snow);
-		if (_p0.ctor === 'Just') {
-			return A2(
-				_elm_lang$core$List$map,
-				A6(
-					_psandahl$terra_glide$Terrain_Tile$toEntity,
-					_p0._0._0,
-					_p0._0._1,
-					_p0._0._2,
-					_p0._0._3,
-					viewMatrix,
-					A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
-				terrain.tiles);
-		} else {
-			return {ctor: '[]'};
-		}
-	});
-var _psandahl$terra_glide$Terrain$haveAllTextures = function (terrain) {
-	var _p1 = A5(
-		_elm_lang$core$Maybe$map4,
-		F4(
-			function (v0, v1, v2, v3) {
-				return {ctor: '_Tuple4', _0: v0, _1: v1, _2: v2, _3: v3};
-			}),
-		terrain.dirt,
-		terrain.grass,
-		terrain.rock,
-		terrain.snow);
-	if (_p1.ctor === 'Just') {
-		return true;
-	} else {
-		return false;
-	}
-};
-var _psandahl$terra_glide$Terrain$addSnow = F2(
-	function (snow, terrain) {
-		return _elm_lang$core$Native_Utils.update(
-			terrain,
-			{
-				snow: _elm_lang$core$Maybe$Just(snow)
-			});
-	});
-var _psandahl$terra_glide$Terrain$addRock = F2(
-	function (rock, terrain) {
-		return _elm_lang$core$Native_Utils.update(
-			terrain,
-			{
-				rock: _elm_lang$core$Maybe$Just(rock)
-			});
-	});
-var _psandahl$terra_glide$Terrain$addGrass = F2(
-	function (grass, terrain) {
-		return _elm_lang$core$Native_Utils.update(
-			terrain,
-			{
-				grass: _elm_lang$core$Maybe$Just(grass)
-			});
-	});
-var _psandahl$terra_glide$Terrain$addDirt = F2(
-	function (dirt, terrain) {
-		return _elm_lang$core$Native_Utils.update(
-			terrain,
-			{
-				dirt: _elm_lang$core$Maybe$Just(dirt)
-			});
+		return A2(
+			_elm_lang$core$List$map,
+			A2(
+				_psandahl$terra_glide$Terrain_Tile$toEntity,
+				viewMatrix,
+				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
+			terrain.tiles);
 	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
 	function (pos, tileData, terrain) {
@@ -13292,49 +13213,11 @@ var _psandahl$terra_glide$Terrain$addTile = F3(
 			});
 	});
 var _psandahl$terra_glide$Terrain$init = {
-	ctor: '_Tuple2',
-	_0: {
-		tiles: {ctor: '[]'},
-		dirt: _elm_lang$core$Maybe$Nothing,
-		grass: _elm_lang$core$Maybe$Nothing,
-		rock: _elm_lang$core$Maybe$Nothing,
-		snow: _elm_lang$core$Maybe$Nothing
-	},
-	_1: _elm_lang$core$Platform_Cmd$batch(
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$core$Task$attempt,
-				_psandahl$terra_glide$Msg$DirtTexture,
-				_elm_community$webgl$WebGL_Texture$load('/textures/dirt.png')),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$core$Task$attempt,
-					_psandahl$terra_glide$Msg$GrassTexture,
-					_elm_community$webgl$WebGL_Texture$load('/textures/grass.png')),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$core$Task$attempt,
-						_psandahl$terra_glide$Msg$RockTexture,
-						_elm_community$webgl$WebGL_Texture$load('/textures/rock.png')),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$core$Task$attempt,
-							_psandahl$terra_glide$Msg$SnowTexture,
-							_elm_community$webgl$WebGL_Texture$load('/textures/snow.png')),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		})
+	tiles: {ctor: '[]'}
 };
-var _psandahl$terra_glide$Terrain$Terrain = F5(
-	function (a, b, c, d, e) {
-		return {tiles: a, dirt: b, grass: c, rock: d, snow: e};
-	});
+var _psandahl$terra_glide$Terrain$Terrain = function (a) {
+	return {tiles: a};
+};
 
 var _psandahl$terra_glide$Water$fragmentShader = {'src': '\n        precision mediump float;\n\n        vec3 waterColor = vec3(0.0, 0.0, 1.0);\n\n        void main()\n        {\n            gl_FragColor = vec4(waterColor, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Water$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        void main()\n        {\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
@@ -13421,19 +13304,11 @@ var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 		800);
 };
 
-var _psandahl$terra_glide$Update$textureErrorToString = function (err) {
-	var _p0 = err;
-	if (_p0.ctor === 'LoadError') {
-		return 'Texture Load Error';
-	} else {
-		return 'Texture Size Error (not power of 2)';
-	}
-};
 var _psandahl$terra_glide$Update$httpErrorToString = function (err) {
-	var _p1 = err;
-	switch (_p1.ctor) {
+	var _p0 = err;
+	switch (_p0.ctor) {
 		case 'BadUrl':
-			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p1._0);
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p0._0);
 		case 'Timeout':
 			return 'Time out. Request took too long time';
 		case 'NetworkError':
@@ -13442,36 +13317,36 @@ var _psandahl$terra_glide$Update$httpErrorToString = function (err) {
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
 				'Bad response status: ',
-				_elm_lang$core$Basics$toString(_p1._0.status));
+				_elm_lang$core$Basics$toString(_p0._0.status));
 		default:
-			return A2(_elm_lang$core$Basics_ops['++'], 'Bad payload (JSON decode error): ', _p1._0);
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad payload (JSON decode error): ', _p0._0);
 	}
 };
 var _psandahl$terra_glide$Update$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'WindowSize':
-				var _p3 = _p2._0;
+				var _p2 = _p1._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							canvasSize: _p3,
-							projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p3)
+							canvasSize: _p2,
+							projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_p2)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'NewTileData':
-				var _p4 = _p2._1;
-				if (_p4.ctor === 'Ok') {
+				var _p3 = _p1._1;
+				if (_p3.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p2._0, _p4._0, model.terrain)
+								terrain: A3(_psandahl$terra_glide$Terrain$addTile, _p1._0, _p3._0, model.terrain)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -13479,7 +13354,7 @@ var _psandahl$terra_glide$Update$update = F2(
 					var errMsg = A2(
 						_elm_lang$core$Debug$log,
 						'NewTileData: ',
-						_psandahl$terra_glide$Update$httpErrorToString(_p4._0));
+						_psandahl$terra_glide$Update$httpErrorToString(_p3._0));
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -13490,8 +13365,8 @@ var _psandahl$terra_glide$Update$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			case 'Animate':
-				var newRotation = (_p2._0 * 0.1) + model.cameraRotation;
+			default:
+				var newRotation = (_p1._0 * 0.1) + model.cameraRotation;
 				var viewVector = A2(
 					_elm_community$linear_algebra$Math_Vector2$vec2,
 					_elm_lang$core$Basics$sin(newRotation),
@@ -13506,110 +13381,6 @@ var _psandahl$terra_glide$Update$update = F2(
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'DirtTexture':
-				var _p5 = _p2._0;
-				if (_p5.ctor === 'Ok') {
-					var newTerrain = A2(_psandahl$terra_glide$Terrain$addDirt, _p5._0, model.terrain);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{terrain: newTerrain}),
-						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					var errMsg = A2(
-						_elm_lang$core$Debug$log,
-						'DirtTexture: ',
-						_psandahl$terra_glide$Update$textureErrorToString(_p5._0));
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'GrassTexture':
-				var _p6 = _p2._0;
-				if (_p6.ctor === 'Ok') {
-					var newTerrain = A2(_psandahl$terra_glide$Terrain$addGrass, _p6._0, model.terrain);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{terrain: newTerrain}),
-						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					var errMsg = A2(
-						_elm_lang$core$Debug$log,
-						'GrassTexture: ',
-						_psandahl$terra_glide$Update$textureErrorToString(_p6._0));
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'RockTexture':
-				var _p7 = _p2._0;
-				if (_p7.ctor === 'Ok') {
-					var newTerrain = A2(_psandahl$terra_glide$Terrain$addRock, _p7._0, model.terrain);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{terrain: newTerrain}),
-						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					var errMsg = A2(
-						_elm_lang$core$Debug$log,
-						'RockTexture: ',
-						_psandahl$terra_glide$Update$textureErrorToString(_p7._0));
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			default:
-				var _p8 = _p2._0;
-				if (_p8.ctor === 'Ok') {
-					var newTerrain = A2(_psandahl$terra_glide$Terrain$addSnow, _p8._0, model.terrain);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{terrain: newTerrain}),
-						_1: _psandahl$terra_glide$Terrain$haveAllTextures(newTerrain) ? _psandahl$terra_glide$Navigator$runTileQueries(model.navigator) : _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					var errMsg = A2(
-						_elm_lang$core$Debug$log,
-						'SnowTexture: ',
-						_psandahl$terra_glide$Update$textureErrorToString(_p8._0));
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								errorMessage: _elm_lang$core$Maybe$Just(errMsg)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
 		}
 	});
 
@@ -13665,9 +13436,8 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 		});
 };
 var _psandahl$terra_glide$Main$init = function () {
-	var _p1 = _psandahl$terra_glide$Terrain$init;
-	var terrain = _p1._0;
-	var terrainCommands = _p1._1;
+	var navigator = _psandahl$terra_glide$Navigator$init(
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 2000, 2000));
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -13681,10 +13451,9 @@ var _psandahl$terra_glide$Main$init = function () {
 					_elm_lang$core$Basics$sin(0),
 					_elm_lang$core$Basics$cos(0))),
 			cameraRotation: 0,
-			navigator: _psandahl$terra_glide$Navigator$init(
-				A2(_elm_community$linear_algebra$Math_Vector2$vec2, 2000, 2000)),
+			navigator: navigator,
 			skySphere: _psandahl$terra_glide$SkySphere$init,
-			terrain: terrain,
+			terrain: _psandahl$terra_glide$Terrain$init,
 			water: _psandahl$terra_glide$Water$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing
 		},
@@ -13694,7 +13463,7 @@ var _psandahl$terra_glide$Main$init = function () {
 				_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Msg$WindowSize, _elm_lang$window$Window$size),
 				_1: {
 					ctor: '::',
-					_0: terrainCommands,
+					_0: _psandahl$terra_glide$Navigator$runTileQueries(navigator),
 					_1: {ctor: '[]'}
 				}
 			})

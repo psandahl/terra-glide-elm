@@ -33,20 +33,23 @@ main =
 init : ( Model, Cmd Msg )
 init =
     let
-        ( terrain, terrainCommands ) =
-            Terrain.init
+        navigator =
+            Navigator.init (vec2 2000 2000)
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
           , camera = Camera.set (vec3 2000 Constants.cameraHeight 2000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
-          , navigator = Navigator.init (vec2 2000 2000)
+          , navigator = navigator
           , skySphere = SkySphere.init
-          , terrain = terrain
+          , terrain = Terrain.init
           , water = Water.init
           , errorMessage = Nothing
           }
-        , Cmd.batch [ Task.perform WindowSize Window.size, terrainCommands ]
+        , Cmd.batch
+            [ Task.perform WindowSize Window.size
+            , Navigator.runTileQueries navigator
+            ]
         )
 
 

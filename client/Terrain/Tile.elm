@@ -10,7 +10,6 @@ import WebGL exposing (Entity, Mesh, Shader)
 import WebGL as GL
 import WebGL.Settings as Settings
 import WebGL.Settings.DepthTest as DepthTest
-import WebGL.Texture exposing (Texture)
 
 
 {-| A terrain tile. Mesh with some metadata. The mesh is already in world space.
@@ -54,8 +53,8 @@ checkHeights xs =
 
 {-| Render the Tile.
 -}
-toEntity : Texture -> Texture -> Texture -> Texture -> Mat4 -> Mat4 -> Tile -> Entity
-toEntity dirt grass rock snow viewMatrix mvpMatrix tile =
+toEntity : Mat4 -> Mat4 -> Tile -> Entity
+toEntity viewMatrix mvpMatrix tile =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -65,10 +64,6 @@ toEntity dirt grass rock snow viewMatrix mvpMatrix tile =
         tile.mesh
         { viewMatrix = viewMatrix
         , mvpMatrix = mvpMatrix
-        , dirt = dirt
-        , grass = grass
-        , rock = rock
-        , snow = snow
         }
 
 
@@ -89,7 +84,6 @@ vertexShader :
             , mvpMatrix : Mat4
         }
         { vPosition : Vec3
-        , vNormal : Vec3
         , vTransformedNormal : Vec3
         , vTexCoord : Vec2
         }
@@ -105,14 +99,12 @@ vertexShader =
         uniform mat4 mvpMatrix;
 
         varying vec3 vPosition;
-        varying vec3 vNormal;
         varying vec3 vTransformedNormal;
         varying vec2 vTexCoord;
 
         void main()
         {
             vPosition = position;
-            vNormal = normal;
             vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
             vTexCoord = texCoord;
             gl_Position = mvpMatrix * vec4(position, 1.0);
@@ -124,13 +116,8 @@ fragmentShader :
     Shader {}
         { unif
             | viewMatrix : Mat4
-            , dirt : Texture
-            , grass : Texture
-            , rock : Texture
-            , snow : Texture
         }
         { vPosition : Vec3
-        , vNormal : Vec3
         , vTransformedNormal : Vec3
         , vTexCoord : Vec2
         }
@@ -139,13 +126,8 @@ fragmentShader =
         precision mediump float;
 
         uniform mat4 viewMatrix;
-        uniform sampler2D dirt;
-        uniform sampler2D grass;
-        uniform sampler2D rock;
-        uniform sampler2D snow;
 
         varying vec3 vPosition;
-        varying vec3 vNormal;
         varying vec3 vTransformedNormal;
         varying vec2 vTexCoord;
 
