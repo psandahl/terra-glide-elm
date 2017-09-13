@@ -37,5 +37,6 @@ view model =
                 ]
               <|
                 (skySphereEntity :: terrainEntities)
-                    ++ [ waterEntity ]
+
+            --    ++ [ waterEntity ]
             ]

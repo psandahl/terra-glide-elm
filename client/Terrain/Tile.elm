@@ -177,32 +177,18 @@ fragmentShader =
 
         vec3 baseColor()
         {
-            if (vPosition.y > 130.0)
-            {
-                if (vNormal.y > 0.9)
-                {
-                    return texture2D(snow, vTexCoord).rgb;
-                }
-                else
-                {
-                    return texture2D(rock, vTexCoord).rgb;
-                }
-            }
-            else if (vPosition.y > 75.0)
-            {
-                if (vNormal.y > 0.9)
-                {
-                    return texture2D(grass, vTexCoord).rgb;
-                }
-                else
-                {
-                    return texture2D(rock, vTexCoord).rgb;
-                }
-            }
-            else
-            {
-                return texture2D(grass, vTexCoord).rgb;
-            }
+            // Assume 200 as max terrain height.
+            float y = vPosition.y / 200.0;
+
+            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);
+            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);
+
+            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);
+            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);
+
+            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));
+            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));
+            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));
         }
 
         vec3 sunDirection()
