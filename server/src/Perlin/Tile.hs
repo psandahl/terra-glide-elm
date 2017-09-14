@@ -26,7 +26,6 @@ data TileData = TileData
     { width    :: !Int
     , depth    :: !Int
     , vertices :: !(Vector Vertex)
-    , indices  :: !(Vector Int)
     } deriving (Generic, Show, ToJSON)
 
 -- | Vertex definition.
@@ -44,12 +43,11 @@ instance ToJSON a => ToJSON (V3 a) where
 -- | Generate TileData with a Mesh of size w * d vertices.
 generateTileData :: (Int -> Int -> V3 Float) -> Int -> Int -> TileData
 generateTileData g w d =
-    let indices' = generateIndices w d
+    let indices = generateIndices w d
     in TileData { width = w
                 , depth = d
-                , vertices = smoothNormals indices' $
+                , vertices = smoothNormals indices $
                                 Vector.generate (w * d) mkVertex
-                , indices = indices'
                 }
     where
         mkVertex :: Int -> Vertex

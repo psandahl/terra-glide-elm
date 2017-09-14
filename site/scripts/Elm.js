@@ -12582,9 +12582,9 @@ var _psandahl$terra_glide$Terrain_TileData$decodeVec2 = A3(
 	_elm_community$linear_algebra$Math_Vector2$vec2,
 	A2(_elm_lang$core$Json_Decode$field, 's', _elm_lang$core$Json_Decode$float),
 	A2(_elm_lang$core$Json_Decode$field, 't', _elm_lang$core$Json_Decode$float));
-var _psandahl$terra_glide$Terrain_TileData$TileData = F4(
-	function (a, b, c, d) {
-		return {width: a, depth: b, vertices: c, indices: d};
+var _psandahl$terra_glide$Terrain_TileData$TileData = F3(
+	function (a, b, c) {
+		return {width: a, depth: b, vertices: c};
 	});
 var _psandahl$terra_glide$Terrain_TileData$Vertex = F2(
 	function (a, b) {
@@ -12595,19 +12595,15 @@ var _psandahl$terra_glide$Terrain_TileData$decodeVertex = A3(
 	_psandahl$terra_glide$Terrain_TileData$Vertex,
 	A2(_elm_lang$core$Json_Decode$field, 'position', _psandahl$terra_glide$Terrain_TileData$decodeVec3),
 	A2(_elm_lang$core$Json_Decode$field, 'normal', _psandahl$terra_glide$Terrain_TileData$decodeVec3));
-var _psandahl$terra_glide$Terrain_TileData$decode = A5(
-	_elm_lang$core$Json_Decode$map4,
+var _psandahl$terra_glide$Terrain_TileData$decode = A4(
+	_elm_lang$core$Json_Decode$map3,
 	_psandahl$terra_glide$Terrain_TileData$TileData,
 	A2(_elm_lang$core$Json_Decode$field, 'width', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'depth', _elm_lang$core$Json_Decode$int),
 	A2(
 		_elm_lang$core$Json_Decode$field,
 		'vertices',
-		_elm_lang$core$Json_Decode$list(_psandahl$terra_glide$Terrain_TileData$decodeVertex)),
-	A2(
-		_elm_lang$core$Json_Decode$field,
-		'indices',
-		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
+		_elm_lang$core$Json_Decode$list(_psandahl$terra_glide$Terrain_TileData$decodeVertex)));
 
 var _psandahl$terra_glide$Msg$Animate = function (a) {
 	return {ctor: 'Animate', _0: a};
