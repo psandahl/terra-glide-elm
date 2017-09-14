@@ -21,7 +21,6 @@ type alias TileData =
 type alias Vertex =
     { position : Vec3
     , normal : Vec3
-    , texCoord : Vec2
     }
 
 
@@ -51,7 +50,6 @@ decodeVec3 =
 
 decodeVertex : Decoder Vertex
 decodeVertex =
-    Dec.map3 Vertex
+    Dec.map2 Vertex
         (Dec.field "position" decodeVec3)
         (Dec.field "normal" decodeVec3)
-        (Dec.field "texCoord" decodeVec2)

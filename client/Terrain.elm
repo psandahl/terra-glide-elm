@@ -8,14 +8,10 @@ module Terrain
 
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
-import Msg exposing (Msg(..))
-import Task
 import Terrain.TileData exposing (TileData)
 import Terrain.Tile exposing (Tile)
 import Terrain.Tile as Tile
 import WebGL exposing (Entity)
-import WebGL.Texture as Texture
-import WebGL.Texture exposing (Texture)
 
 
 type alias Terrain =

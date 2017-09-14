@@ -2,7 +2,6 @@ module Terrain.Tile exposing (Tile, init, toEntity)
 
 import Constants
 import Debug
-import Math.Vector2 exposing (Vec2)
 import Math.Vector3 exposing (Vec3, getY)
 import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (Vertex, TileData)
@@ -85,7 +84,6 @@ vertexShader :
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
-        , vTexCoord : Vec2
         }
 vertexShader =
     [glsl|
@@ -93,20 +91,17 @@ vertexShader =
 
         attribute vec3 position;
         attribute vec3 normal;
-        attribute vec2 texCoord;
 
         uniform mat4 viewMatrix;
         uniform mat4 mvpMatrix;
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
-        varying vec2 vTexCoord;
 
         void main()
         {
             vPosition = position;
             vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
-            vTexCoord = texCoord;
             gl_Position = mvpMatrix * vec4(position, 1.0);
         }
     |]
@@ -119,7 +114,6 @@ fragmentShader :
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
-        , vTexCoord : Vec2
         }
 fragmentShader =
     [glsl|
@@ -129,7 +123,6 @@ fragmentShader =
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
-        varying vec2 vTexCoord;
 
         // Ambient color stuff. Hardcoded for now.
         vec3 ambientColor = vec3(1.0, 1.0, 1.0);

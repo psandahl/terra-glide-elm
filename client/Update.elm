@@ -6,10 +6,8 @@ import Http
 import Math.Vector2 exposing (vec2)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
-import Navigator
 import Projection
 import Terrain
-import WebGL.Texture as Texture
 
 
 {-| The application's update function.

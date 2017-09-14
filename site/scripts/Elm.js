@@ -5352,87 +5352,6 @@ var _elm_community$linear_algebra$Math_Vector2$vec2 = _elm_community$linear_alge
 var _elm_community$linear_algebra$Math_Vector2$Vec2 = {ctor: 'Vec2'};
 
 // eslint-disable-next-line no-unused-vars, camelcase
-var _elm_community$webgl$Native_Texture = function () {
-
-  var NEAREST = 9728;
-  var LINEAR = 9729;
-  var CLAMP_TO_EDGE = 33071;
-
-  function guid() {
-    // eslint-disable-next-line camelcase
-    return _elm_lang$core$Native_Utils.guid();
-  }
-
-  function load(magnify, mininify, horizontalWrap, verticalWrap, flipY, url) {
-    // eslint-disable-next-line camelcase
-    var Scheduler = _elm_lang$core$Native_Scheduler;
-    var isMipmap = mininify !== NEAREST && mininify !== LINEAR;
-    return Scheduler.nativeBinding(function (callback) {
-      var img = new Image();
-      function createTexture(gl) {
-        var tex = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magnify);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mininify);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, horizontalWrap);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, verticalWrap);
-        if (isMipmap) {
-          gl.generateMipmap(gl.TEXTURE_2D);
-        }
-        gl.bindTexture(gl.TEXTURE_2D, null);
-        return tex;
-      }
-      img.onload = function () {
-        var width = img.width;
-        var height = img.height;
-        var widthPowerOfTwo = (width & (width - 1)) === 0;
-        var heightPowerOfTwo = (height & (height - 1)) === 0;
-        var isSizeValid = (widthPowerOfTwo && heightPowerOfTwo) || (
-          !isMipmap
-          && horizontalWrap === CLAMP_TO_EDGE
-          && verticalWrap === CLAMP_TO_EDGE
-        );
-        if (isSizeValid) {
-          callback(Scheduler.succeed({
-            ctor: 'Texture',
-            id: guid(),
-            createTexture: createTexture,
-            width: width,
-            height: height
-          }));
-        } else {
-          callback(Scheduler.fail({
-            ctor: 'SizeError',
-            _0: width,
-            _1: height
-          }));
-        }
-      };
-      img.onerror = function () {
-        callback(Scheduler.fail({ ctor: 'LoadError' }));
-      };
-      if (url.slice(0, 5) !== 'data:') {
-        img.crossOrigin = 'Anonymous';
-      }
-      img.src = url;
-    });
-  }
-
-  function size(texture) {
-    // eslint-disable-next-line camelcase
-    return _elm_lang$core$Native_Utils.Tuple2(texture.width, texture.height);
-  }
-
-  return {
-    size: size,
-    load: F6(load)
-  };
-
-}();
-
-// eslint-disable-next-line no-unused-vars, camelcase
 var _elm_community$webgl$Native_WebGL = function () {
 
   // setup logging
@@ -11206,50 +11125,6 @@ var _elm_lang$core$Task$cmdMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
 
-var _elm_community$webgl$WebGL_Texture$size = _elm_community$webgl$Native_Texture.size;
-var _elm_community$webgl$WebGL_Texture$loadWith = F2(
-	function (_p0, url) {
-		var _p1 = _p0;
-		var expand = F4(
-			function (_p5, _p4, _p3, _p2) {
-				var _p6 = _p5;
-				var _p7 = _p4;
-				var _p8 = _p3;
-				var _p9 = _p2;
-				return A6(_elm_community$webgl$Native_Texture.load, _p6._0, _p7._0, _p8._0, _p9._0, _p1.flipY, url);
-			});
-		return A4(expand, _p1.magnify, _p1.minify, _p1.horizontalWrap, _p1.verticalWrap);
-	});
-var _elm_community$webgl$WebGL_Texture$Options = F5(
-	function (a, b, c, d, e) {
-		return {magnify: a, minify: b, horizontalWrap: c, verticalWrap: d, flipY: e};
-	});
-var _elm_community$webgl$WebGL_Texture$SizeError = F2(
-	function (a, b) {
-		return {ctor: 'SizeError', _0: a, _1: b};
-	});
-var _elm_community$webgl$WebGL_Texture$LoadError = {ctor: 'LoadError'};
-var _elm_community$webgl$WebGL_Texture$Resize = function (a) {
-	return {ctor: 'Resize', _0: a};
-};
-var _elm_community$webgl$WebGL_Texture$linear = _elm_community$webgl$WebGL_Texture$Resize(9729);
-var _elm_community$webgl$WebGL_Texture$nearest = _elm_community$webgl$WebGL_Texture$Resize(9728);
-var _elm_community$webgl$WebGL_Texture$nearestMipmapNearest = _elm_community$webgl$WebGL_Texture$Resize(9984);
-var _elm_community$webgl$WebGL_Texture$linearMipmapNearest = _elm_community$webgl$WebGL_Texture$Resize(9985);
-var _elm_community$webgl$WebGL_Texture$nearestMipmapLinear = _elm_community$webgl$WebGL_Texture$Resize(9986);
-var _elm_community$webgl$WebGL_Texture$linearMipmapLinear = _elm_community$webgl$WebGL_Texture$Resize(9987);
-var _elm_community$webgl$WebGL_Texture$Bigger = {ctor: 'Bigger'};
-var _elm_community$webgl$WebGL_Texture$Smaller = {ctor: 'Smaller'};
-var _elm_community$webgl$WebGL_Texture$Wrap = function (a) {
-	return {ctor: 'Wrap', _0: a};
-};
-var _elm_community$webgl$WebGL_Texture$repeat = _elm_community$webgl$WebGL_Texture$Wrap(10497);
-var _elm_community$webgl$WebGL_Texture$defaultOptions = {magnify: _elm_community$webgl$WebGL_Texture$linear, minify: _elm_community$webgl$WebGL_Texture$nearestMipmapLinear, horizontalWrap: _elm_community$webgl$WebGL_Texture$repeat, verticalWrap: _elm_community$webgl$WebGL_Texture$repeat, flipY: true};
-var _elm_community$webgl$WebGL_Texture$load = _elm_community$webgl$WebGL_Texture$loadWith(_elm_community$webgl$WebGL_Texture$defaultOptions);
-var _elm_community$webgl$WebGL_Texture$clampToEdge = _elm_community$webgl$WebGL_Texture$Wrap(33071);
-var _elm_community$webgl$WebGL_Texture$nonPowerOfTwoOptions = {magnify: _elm_community$webgl$WebGL_Texture$linear, minify: _elm_community$webgl$WebGL_Texture$nearest, horizontalWrap: _elm_community$webgl$WebGL_Texture$clampToEdge, verticalWrap: _elm_community$webgl$WebGL_Texture$clampToEdge, flipY: true};
-var _elm_community$webgl$WebGL_Texture$mirroredRepeat = _elm_community$webgl$WebGL_Texture$Wrap(33648);
-
 var _elm_lang$animation_frame$Native_AnimationFrame = function()
 {
 
@@ -12711,16 +12586,15 @@ var _psandahl$terra_glide$Terrain_TileData$TileData = F4(
 	function (a, b, c, d) {
 		return {width: a, depth: b, vertices: c, indices: d};
 	});
-var _psandahl$terra_glide$Terrain_TileData$Vertex = F3(
-	function (a, b, c) {
-		return {position: a, normal: b, texCoord: c};
+var _psandahl$terra_glide$Terrain_TileData$Vertex = F2(
+	function (a, b) {
+		return {position: a, normal: b};
 	});
-var _psandahl$terra_glide$Terrain_TileData$decodeVertex = A4(
-	_elm_lang$core$Json_Decode$map3,
+var _psandahl$terra_glide$Terrain_TileData$decodeVertex = A3(
+	_elm_lang$core$Json_Decode$map2,
 	_psandahl$terra_glide$Terrain_TileData$Vertex,
 	A2(_elm_lang$core$Json_Decode$field, 'position', _psandahl$terra_glide$Terrain_TileData$decodeVec3),
-	A2(_elm_lang$core$Json_Decode$field, 'normal', _psandahl$terra_glide$Terrain_TileData$decodeVec3),
-	A2(_elm_lang$core$Json_Decode$field, 'texCoord', _psandahl$terra_glide$Terrain_TileData$decodeVec2));
+	A2(_elm_lang$core$Json_Decode$field, 'normal', _psandahl$terra_glide$Terrain_TileData$decodeVec3));
 var _psandahl$terra_glide$Terrain_TileData$decode = A5(
 	_elm_lang$core$Json_Decode$map4,
 	_psandahl$terra_glide$Terrain_TileData$TileData,
@@ -13119,8 +12993,8 @@ var _psandahl$terra_glide$SkySphere$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            // Assume 200 as max terrain height.\n            float y = vPosition.y / 200.0;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
-var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n        attribute vec2 texCoord;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n        varying vec2 vTexCoord;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            vTexCoord = texCoord;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            // Assume 200 as max terrain height.\n            float y = vPosition.y / 200.0;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
 		tuplify:

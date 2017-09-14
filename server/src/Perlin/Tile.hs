@@ -33,7 +33,6 @@ data TileData = TileData
 data Vertex = Vertex
     { position :: !(V3 Float)
     , normal   :: !(V3 Float)
-    , texCoord :: !(V2 Float)
     } deriving (Generic, Show, ToJSON)
 
 instance ToJSON a => ToJSON (V2 a) where
@@ -59,7 +58,6 @@ generateTileData g w d =
             in Vertex
                  { position = g x z
                  , normal = V3 0 0 0
-                 , texCoord = V2 (fromIntegral x) (fromIntegral (d - 1 - z))
                  }
 
 -- | From a mesh width and a linear index, find its (x, z) coordinates.
