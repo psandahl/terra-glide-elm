@@ -24,13 +24,13 @@ type alias Tile =
 
 {-| Initialize a tile from start position and tile data.
 -}
-init : ( Int, Int ) -> TileData -> Tile
-init ( startX, startZ ) tileData =
+init : ( Int, Int ) -> List ( Int, Int, Int ) -> TileData -> Tile
+init ( startX, startZ ) indices tileData =
     { startX = startX
     , startZ = startZ
     , width = tileData.width
     , depth = tileData.depth
-    , mesh = GL.indexedTriangles (checkHeights tileData.vertices) <| tuplify [] tileData.indices
+    , mesh = GL.indexedTriangles tileData.vertices indices
     }
 
 
@@ -48,6 +48,15 @@ checkHeights xs =
                     v
         )
         xs
+
+
+checkIndices : List ( Int, Int, Int ) -> List ( Int, Int, Int ) -> List ( Int, Int, Int )
+checkIndices fromServer fromLocal =
+    let
+        deb =
+            Debug.log "(server, local): " ( List.length fromServer, List.length fromLocal )
+    in
+        fromLocal
 
 
 {-| Render the Tile.

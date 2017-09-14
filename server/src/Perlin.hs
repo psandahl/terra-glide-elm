@@ -82,7 +82,7 @@ asHeightMapR16 context tileQuery =
     generateRaw16 (\x -> toWord16 . perlin context tileQuery x)
                   (tileWidth tileQuery) (tileDepth tileQuery)
 
--- | Generate TileData. No encoding.
+-- | Generate TileData. No encoding. Add one to get the "glue" between tiles.
 asTileData :: PerlinContext -> TileQuery -> TileData
 asTileData context tileQuery =
     generateTileData (perlin context tileQuery)
