@@ -12569,11 +12569,13 @@ var _psandahl$terra_glide$Environment$init = {
 	horizonColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 170 / 255, 204 / 255, 204 / 255),
 	fogColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.5, 0.5, 0.5),
 	fogHeight: 0.2,
-	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1)
+	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1),
+	ambientColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 1),
+	ambientStrength: 0.2
 };
-var _psandahl$terra_glide$Environment$Environment = F5(
-	function (a, b, c, d, e) {
-		return {skyColor: a, horizonColor: b, fogColor: c, fogHeight: d, waterColor: e};
+var _psandahl$terra_glide$Environment$Environment = F7(
+	function (a, b, c, d, e, f, g) {
+		return {skyColor: a, horizonColor: b, fogColor: c, fogHeight: d, waterColor: e, ambientColor: f, ambientStrength: g};
 	});
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
@@ -13001,7 +13003,7 @@ var _psandahl$terra_glide$SkyDome$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform float terrainHeight;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Ambient color stuff. Hardcoded for now.\n        vec3 ambientColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.2;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            float y = vPosition.y / terrainHeight;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform float terrainHeight;\n        uniform vec3 ambientColor;\n        uniform float ambientStrength;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            float y = vPosition.y / terrainHeight;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
@@ -13023,8 +13025,8 @@ var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 			}
 		}
 	});
-var _psandahl$terra_glide$Terrain_Tile$toEntity = F3(
-	function (viewMatrix, mvpMatrix, tile) {
+var _psandahl$terra_glide$Terrain_Tile$toEntity = F4(
+	function (viewMatrix, mvpMatrix, environment, tile) {
 		return A5(
 			_elm_community$webgl$WebGL$entityWith,
 			{
@@ -13039,7 +13041,7 @@ var _psandahl$terra_glide$Terrain_Tile$toEntity = F3(
 			_psandahl$terra_glide$Terrain_Tile$vertexShader,
 			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
 			tile.mesh,
-			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, terrainHeight: _psandahl$terra_glide$Geometry$terrainHeight});
+			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, terrainHeight: _psandahl$terra_glide$Geometry$terrainHeight, ambientColor: environment.ambientColor, ambientStrength: environment.ambientStrength});
 	});
 var _psandahl$terra_glide$Terrain_Tile$checkIndices = F2(
 	function (fromServer, fromLocal) {
@@ -13103,14 +13105,15 @@ var _psandahl$terra_glide$Terrain$generateIndices = function (tileSize) {
 		},
 		A2(_elm_lang$core$List$range, 0, tileSize - 2));
 };
-var _psandahl$terra_glide$Terrain$entities = F3(
-	function (projectionMatrix, viewMatrix, terrain) {
+var _psandahl$terra_glide$Terrain$entities = F4(
+	function (projectionMatrix, viewMatrix, environment, terrain) {
 		return A2(
 			_elm_lang$core$List$map,
-			A2(
+			A3(
 				_psandahl$terra_glide$Terrain_Tile$toEntity,
 				viewMatrix,
-				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)),
+				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix),
+				environment),
 			terrain.tiles);
 	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
@@ -13320,7 +13323,7 @@ var _psandahl$terra_glide$Update$update = F2(
 var _psandahl$terra_glide$View$view = function (model) {
 	var viewMatrix = model.camera.viewMatrix;
 	var skyDomeEntity = A4(_psandahl$terra_glide$SkyDome$entity, model.projectionMatrix, viewMatrix, model.environment, model.skyDome);
-	var terrainEntities = A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain);
+	var terrainEntities = A4(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.environment, model.terrain);
 	var waterEntity = A4(_psandahl$terra_glide$Water$entity, model.projectionMatrix, viewMatrix, model.environment, model.water);
 	return A2(
 		_elm_lang$html$Html$div,

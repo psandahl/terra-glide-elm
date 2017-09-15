@@ -6,6 +6,7 @@ module Terrain
         , entities
         )
 
+import Environment exposing (Environment)
 import Geometry
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
@@ -33,11 +34,12 @@ addTile pos tileData terrain =
     { terrain | tiles = Tile.init pos terrain.indices tileData :: terrain.tiles }
 
 
-entities : Mat4 -> Mat4 -> Terrain -> List Entity
-entities projectionMatrix viewMatrix terrain =
+entities : Mat4 -> Mat4 -> Environment -> Terrain -> List Entity
+entities projectionMatrix viewMatrix environment terrain =
     List.map
-        (Tile.toEntity viewMatrix <|
-            Mat.mul projectionMatrix viewMatrix
+        (Tile.toEntity viewMatrix
+            (Mat.mul projectionMatrix viewMatrix)
+            environment
         )
         terrain.tiles
 

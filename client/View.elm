@@ -24,7 +24,7 @@ view model =
             SkyDome.entity model.projectionMatrix viewMatrix model.environment model.skyDome
 
         terrainEntities =
-            Terrain.entities model.projectionMatrix viewMatrix model.terrain
+            Terrain.entities model.projectionMatrix viewMatrix model.environment model.terrain
 
         waterEntity =
             Water.entity model.projectionMatrix viewMatrix model.environment model.water

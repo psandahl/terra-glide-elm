@@ -11,6 +11,8 @@ type alias Environment =
     , fogColor : Vec3
     , fogHeight : Float
     , waterColor : Vec3
+    , ambientColor : Vec3
+    , ambientStrength : Float
     }
 
 
@@ -21,4 +23,6 @@ init =
     , fogColor = vec3 0.5 0.5 0.5
     , fogHeight = 0.2
     , waterColor = vec3 0 0 1
+    , ambientColor = vec3 1 1 1
+    , ambientStrength = 0.2
     }

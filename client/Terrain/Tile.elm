@@ -1,6 +1,7 @@
 module Terrain.Tile exposing (Tile, init, toEntity)
 
 import Debug
+import Environment exposing (Environment)
 import Geometry
 import Math.Vector3 exposing (Vec3, getY)
 import Math.Matrix4 exposing (Mat4)
@@ -61,8 +62,8 @@ checkIndices fromServer fromLocal =
 
 {-| Render the Tile.
 -}
-toEntity : Mat4 -> Mat4 -> Tile -> Entity
-toEntity viewMatrix mvpMatrix tile =
+toEntity : Mat4 -> Mat4 -> Environment -> Tile -> Entity
+toEntity viewMatrix mvpMatrix environment tile =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -73,6 +74,8 @@ toEntity viewMatrix mvpMatrix tile =
         { viewMatrix = viewMatrix
         , mvpMatrix = mvpMatrix
         , terrainHeight = Geometry.terrainHeight
+        , ambientColor = environment.ambientColor
+        , ambientStrength = environment.ambientStrength
         }
 
 
@@ -122,6 +125,8 @@ fragmentShader :
         { unif
             | viewMatrix : Mat4
             , terrainHeight : Float
+            , ambientColor : Vec3
+            , ambientStrength : Float
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
@@ -132,13 +137,11 @@ fragmentShader =
 
         uniform mat4 viewMatrix;
         uniform float terrainHeight;
+        uniform vec3 ambientColor;
+        uniform float ambientStrength;
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
-
-        // Ambient color stuff. Hardcoded for now.
-        vec3 ambientColor = vec3(1.0, 1.0, 1.0);
-        float ambientStrength = 0.2;
 
         // Diffuse color stuff. Hardcoded for now.
         vec3 diffuseColor = vec3(0.8, 0.8, 0.8);
