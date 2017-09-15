@@ -76,6 +76,7 @@ toEntity viewMatrix mvpMatrix environment tile =
         , terrainHeight = Geometry.terrainHeight
         , ambientColor = environment.ambientColor
         , ambientStrength = environment.ambientStrength
+        , diffuseColor = environment.diffuseColor
         }
 
 
@@ -127,6 +128,7 @@ fragmentShader :
             , terrainHeight : Float
             , ambientColor : Vec3
             , ambientStrength : Float
+            , diffuseColor : Vec3
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
@@ -139,12 +141,10 @@ fragmentShader =
         uniform float terrainHeight;
         uniform vec3 ambientColor;
         uniform float ambientStrength;
+        uniform vec3 diffuseColor;
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
-
-        // Diffuse color stuff. Hardcoded for now.
-        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);
 
         // Calculate the texture color for the fragment.
         vec3 baseColor();

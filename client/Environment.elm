@@ -13,6 +13,7 @@ type alias Environment =
     , waterColor : Vec3
     , ambientColor : Vec3
     , ambientStrength : Float
+    , diffuseColor : Vec3
     }
 
 
@@ -25,4 +26,5 @@ init =
     , waterColor = vec3 0 0 1
     , ambientColor = vec3 1 1 1
     , ambientStrength = 0.2
+    , diffuseColor = vec3 0.8 0.8 0.8
     }

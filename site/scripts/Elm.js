@@ -12571,11 +12571,12 @@ var _psandahl$terra_glide$Environment$init = {
 	fogHeight: 0.2,
 	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1),
 	ambientColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 1),
-	ambientStrength: 0.2
+	ambientStrength: 0.2,
+	diffuseColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.8, 0.8, 0.8)
 };
-var _psandahl$terra_glide$Environment$Environment = F7(
-	function (a, b, c, d, e, f, g) {
-		return {skyColor: a, horizonColor: b, fogColor: c, fogHeight: d, waterColor: e, ambientColor: f, ambientStrength: g};
+var _psandahl$terra_glide$Environment$Environment = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {skyColor: a, horizonColor: b, fogColor: c, fogHeight: d, waterColor: e, ambientColor: f, ambientStrength: g, diffuseColor: h};
 	});
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
@@ -13003,7 +13004,7 @@ var _psandahl$terra_glide$SkyDome$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform float terrainHeight;\n        uniform vec3 ambientColor;\n        uniform float ambientStrength;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Diffuse color stuff. Hardcoded for now.\n        vec3 diffuseColor = vec3(0.8, 0.8, 0.8);\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            float y = vPosition.y / terrainHeight;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform float terrainHeight;\n        uniform vec3 ambientColor;\n        uniform float ambientStrength;\n        uniform vec3 diffuseColor;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the sun\'s direction. In view space.\n        vec3 sunDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            float y = vPosition.y / terrainHeight;\n\n            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);\n            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);\n\n            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);\n            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);\n\n            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));\n            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));\n            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 sunDirection()\n        {\n            // To the east.\n            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, sunDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
 	function (tgt, src) {
@@ -13041,7 +13042,7 @@ var _psandahl$terra_glide$Terrain_Tile$toEntity = F4(
 			_psandahl$terra_glide$Terrain_Tile$vertexShader,
 			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
 			tile.mesh,
-			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, terrainHeight: _psandahl$terra_glide$Geometry$terrainHeight, ambientColor: environment.ambientColor, ambientStrength: environment.ambientStrength});
+			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, terrainHeight: _psandahl$terra_glide$Geometry$terrainHeight, ambientColor: environment.ambientColor, ambientStrength: environment.ambientStrength, diffuseColor: environment.diffuseColor});
 	});
 var _psandahl$terra_glide$Terrain_Tile$checkIndices = F2(
 	function (fromServer, fromLocal) {
