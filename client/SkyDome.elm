@@ -44,6 +44,7 @@ entity projectionMatrix viewMatrix environment skyDome =
             , skyColor = environment.skyColor
             , horizonColor = environment.horizonColor
             , fogColor = environment.fogColor
+            , fogHeight = environment.fogHeight
             }
 
 
@@ -86,6 +87,7 @@ fragmentShader :
             | skyColor : Vec3
             , horizonColor : Vec3
             , fogColor : Vec3
+            , fogHeight : Float
         }
         { vPosition : Vec3 }
 fragmentShader =
@@ -95,6 +97,7 @@ fragmentShader =
         uniform vec3 skyColor;
         uniform vec3 horizonColor;
         uniform vec3 fogColor;
+        uniform float fogHeight;
 
         varying vec3 vPosition;
 
@@ -103,13 +106,13 @@ fragmentShader =
             float y = abs(vPosition.y);
             vec3 sky = mix(horizonColor, skyColor, y);
 
-            if (y > 0.2)
+            if (y > fogHeight)
             {
                 gl_FragColor = vec4(skyColor, 1.0);
             }
             else
             {
-                gl_FragColor = vec4(mix(fogColor, skyColor, smoothstep(0.0, 0.2, y)), 1.0);
+                gl_FragColor = vec4(mix(fogColor, skyColor, smoothstep(0.0, fogHeight, y)), 1.0);
             }
         }
     |]

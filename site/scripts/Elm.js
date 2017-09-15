@@ -12568,11 +12568,12 @@ var _psandahl$terra_glide$Environment$init = {
 	skyColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 12 / 255, 94 / 255, 170 / 255),
 	horizonColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 170 / 255, 204 / 255, 204 / 255),
 	fogColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.5, 0.5, 0.5),
+	fogHeight: 0.2,
 	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1)
 };
-var _psandahl$terra_glide$Environment$Environment = F4(
-	function (a, b, c, d) {
-		return {skyColor: a, horizonColor: b, fogColor: c, waterColor: d};
+var _psandahl$terra_glide$Environment$Environment = F5(
+	function (a, b, c, d, e) {
+		return {skyColor: a, horizonColor: b, fogColor: c, fogHeight: d, waterColor: e};
 	});
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
@@ -12944,7 +12945,7 @@ var _psandahl$terra_glide$SkyDome_IcoSphere$icosphere = function (subdivisions) 
 		A2(_psandahl$terra_glide$SkyDome_IcoSphere$subdivide, subdivisions, _psandahl$terra_glide$SkyDome_IcoSphere$icosahedron));
 };
 
-var _psandahl$terra_glide$SkyDome$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform vec3 skyColor;\n        uniform vec3 horizonColor;\n        uniform vec3 fogColor;\n\n        varying vec3 vPosition;\n\n        void main()\n        {\n            float y = abs(vPosition.y);\n            vec3 sky = mix(horizonColor, skyColor, y);\n\n            if (y > 0.2)\n            {\n                gl_FragColor = vec4(skyColor, 1.0);\n            }\n            else\n            {\n                gl_FragColor = vec4(mix(fogColor, skyColor, smoothstep(0.0, 0.2, y)), 1.0);\n            }\n        }\n    '};
+var _psandahl$terra_glide$SkyDome$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform vec3 skyColor;\n        uniform vec3 horizonColor;\n        uniform vec3 fogColor;\n        uniform float fogHeight;\n\n        varying vec3 vPosition;\n\n        void main()\n        {\n            float y = abs(vPosition.y);\n            vec3 sky = mix(horizonColor, skyColor, y);\n\n            if (y > fogHeight)\n            {\n                gl_FragColor = vec4(skyColor, 1.0);\n            }\n            else\n            {\n                gl_FragColor = vec4(mix(fogColor, skyColor, smoothstep(0.0, fogHeight, y)), 1.0);\n            }\n        }\n    '};
 var _psandahl$terra_glide$SkyDome$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n\n        void main()\n        {\n            vPosition = position;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$SkyDome$modifyViewMatrix = function (viewMatrix) {
 	var r = _elm_community$linear_algebra$Math_Matrix4$toRecord(viewMatrix);
@@ -12982,7 +12983,7 @@ var _psandahl$terra_glide$SkyDome$entity = F4(
 			_psandahl$terra_glide$SkyDome$vertexShader,
 			_psandahl$terra_glide$SkyDome$fragmentShader,
 			skyDome.mesh,
-			{mvpMatrix: mvpMatrix, skyColor: environment.skyColor, horizonColor: environment.horizonColor, fogColor: environment.fogColor});
+			{mvpMatrix: mvpMatrix, skyColor: environment.skyColor, horizonColor: environment.horizonColor, fogColor: environment.fogColor, fogHeight: environment.fogHeight});
 	});
 var _psandahl$terra_glide$SkyDome$init = {
 	mesh: _elm_community$webgl$WebGL$triangles(
