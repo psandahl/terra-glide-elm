@@ -78,6 +78,10 @@ toEntity viewMatrix mvpMatrix environment tile =
         , ambientStrength = environment.ambientStrength
         , diffuseColor = environment.diffuseColor
         , sunDirection = environment.sunDirection
+        , lowerTerrainLower = environment.lowerTerrain.lower
+        , lowerTerrainUpper = environment.lowerTerrain.upper
+        , upperTerrainLower = environment.upperTerrain.lower
+        , upperTerrainUpper = environment.upperTerrain.upper
         }
 
 
@@ -131,6 +135,10 @@ fragmentShader :
             , ambientStrength : Float
             , diffuseColor : Vec3
             , sunDirection : Vec3
+            , lowerTerrainLower : Vec3
+            , lowerTerrainUpper : Vec3
+            , upperTerrainLower : Vec3
+            , upperTerrainUpper : Vec3
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
@@ -145,6 +153,10 @@ fragmentShader =
         uniform float ambientStrength;
         uniform vec3 diffuseColor;
         uniform vec3 sunDirection;
+        uniform vec3 lowerTerrainLower;
+        uniform vec3 lowerTerrainUpper;
+        uniform vec3 upperTerrainLower;
+        uniform vec3 upperTerrainUpper;
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
@@ -172,15 +184,9 @@ fragmentShader =
         {
             float y = vPosition.y / terrainHeight;
 
-            vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);
-            vec3 upperBand1 = vec3(0.0, 1.0, 0.0);
-
-            vec3 lowerBand2 = vec3(55.0 / 255.0, 68.0 / 255.0, 71.0 / 255.0);
-            vec3 upperBand2 = vec3(1.0, 1.0, 1.0);
-
-            vec3 color = mix(lowerBand1, upperBand1, smoothstep(0.0, 0.33, y));
-            color = mix(color, lowerBand2, smoothstep(0.33, 0.66, y));
-            return mix(color, upperBand2, smoothstep(0.66, 1.0, y));
+            vec3 color = mix(lowerTerrainLower, lowerTerrainUpper, smoothstep(0.0, 0.33, y));
+            color = mix(color, upperTerrainLower, smoothstep(0.33, 0.66, y));
+            return mix(color, upperTerrainUpper, smoothstep(0.66, 1.0, y));
         }
 
         vec3 lightDirection()
