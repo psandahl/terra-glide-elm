@@ -2,56 +2,47 @@ module Camera exposing (Camera, set)
 
 import Math.Matrix4 as Mat
 import Math.Matrix4 exposing (Mat4)
-import Math.Vector2 as Vec2
-import Math.Vector2 exposing (Vec2)
 import Math.Vector3 as Vec3
 import Math.Vector3 exposing (Vec3)
 
 
 {-| The camera record. The camera is dead simple, it is placed somewhere
-in the world together with a view direction.
+in the world. Always pointing south (in position z), and with a pitch angle
+in degrees. Zero degrees is looking straight ahead, a positive pitch is looking
+down and a negative is looking up.
 -}
 type alias Camera =
     { position : Vec3
-    , viewDirection : Vec3
+    , pitch : Float
     , viewMatrix : Mat4
     }
 
 
-{-| Set the camera using position and view direction. The view direction is
-not assumed to be normalized by the user as the set function will normalize it.
+{-| Set the camera using position and pitch angle.
 -}
-set : Vec3 -> Vec2 -> Camera
-set position viewDirection =
+set : Vec3 -> Float -> Camera
+set position pitch =
+    { position = position
+    , pitch = pitch
+    , viewMatrix = makeMatrix position pitch
+    }
+
+
+makeMatrix : Vec3 -> Float -> Mat4
+makeMatrix position pitch =
     let
-        viewDirection3 =
-            toNormalizedVec3 viewDirection
+        pitchRotate =
+            Mat.makeRotate (degrees pitch) <| Vec3.vec3 1 0 0
+
+        viewVector =
+            Mat.transform pitchRotate viewDirection
+
+        lookAt =
+            Vec3.add position viewVector
     in
-        { position = position
-        , viewDirection = viewDirection3
-        , viewMatrix = makeMatrix position viewDirection3
-        }
+        Mat.makeLookAt position lookAt <| Vec3.vec3 0 1 0
 
 
-makeMatrix : Vec3 -> Vec3 -> Mat4
-makeMatrix position viewDirection =
-    let
-        height =
-            Vec3.getY position
-
-        viewPointStraight =
-            Vec3.add position <| Vec3.scale (height * 6) viewDirection
-
-        viewPointGround =
-            Vec3.setY 0 viewPointStraight
-    in
-        Mat.makeLookAt position viewPointGround <| Vec3.vec3 0 1 0
-
-
-toNormalizedVec3 : Vec2 -> Vec3
-toNormalizedVec3 vec =
-    let
-        vecNorm =
-            Vec2.normalize vec
-    in
-        Vec3.vec3 (Vec2.getX vecNorm) 0 (Vec2.getY vecNorm)
+viewDirection : Vec3
+viewDirection =
+    Vec3.vec3 0 0 1

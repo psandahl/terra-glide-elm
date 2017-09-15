@@ -1,9 +1,7 @@
 module Update exposing (update)
 
-import Camera
 import Debug
 import Http
-import Math.Vector2 exposing (vec2)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Projection
@@ -40,19 +38,7 @@ update msg model =
                         ( { model | errorMessage = Just errMsg }, Cmd.none )
 
         Animate diff ->
-            let
-                newRotation =
-                    (diff * 0.1) + model.cameraRotation
-
-                viewVector =
-                    vec2 (sin newRotation) (cos newRotation)
-            in
-                ( { model
-                    | camera = Camera.set model.camera.position viewVector
-                    , cameraRotation = newRotation
-                  }
-                , Cmd.none
-                )
+            ( model, Cmd.none )
 
 
 {-| Convert Http.Error to a string.
