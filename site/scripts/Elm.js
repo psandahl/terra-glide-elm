@@ -12567,11 +12567,12 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 var _psandahl$terra_glide$Environment$init = {
 	skyColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 12 / 255, 94 / 255, 170 / 255),
 	horizonColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 170 / 255, 204 / 255, 204 / 255),
-	fogColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.5, 0.5, 0.5)
+	fogColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.5, 0.5, 0.5),
+	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1)
 };
-var _psandahl$terra_glide$Environment$Environment = F3(
-	function (a, b, c) {
-		return {skyColor: a, horizonColor: b, fogColor: c};
+var _psandahl$terra_glide$Environment$Environment = F4(
+	function (a, b, c, d) {
+		return {skyColor: a, horizonColor: b, fogColor: c, waterColor: d};
 	});
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
@@ -13132,7 +13133,7 @@ var _psandahl$terra_glide$Terrain$Terrain = F2(
 		return {tiles: a, indices: b};
 	});
 
-var _psandahl$terra_glide$Water$fragmentShader = {'src': '\n        precision mediump float;\n\n        vec3 waterColor = vec3(0.0, 0.0, 1.0);\n\n        void main()\n        {\n            gl_FragColor = vec4(waterColor, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Water$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform vec3 waterColor;\n\n        void main()\n        {\n            gl_FragColor = vec4(waterColor, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Water$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        void main()\n        {\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Water$indices = {
 	ctor: '::',
@@ -13168,8 +13169,8 @@ var _psandahl$terra_glide$Water$vertices = {
 		}
 	}
 };
-var _psandahl$terra_glide$Water$entity = F3(
-	function (projectionMatrix, viewMatrix, water) {
+var _psandahl$terra_glide$Water$entity = F4(
+	function (projectionMatrix, viewMatrix, environment, water) {
 		return A5(
 			_elm_community$webgl$WebGL$entityWith,
 			{
@@ -13189,7 +13190,8 @@ var _psandahl$terra_glide$Water$entity = F3(
 			_psandahl$terra_glide$Water$fragmentShader,
 			water.mesh,
 			{
-				mvpMatrix: A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix)
+				mvpMatrix: A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix),
+				waterColor: environment.waterColor
 			});
 	});
 var _psandahl$terra_glide$Water$init = {
@@ -13318,7 +13320,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 	var viewMatrix = model.camera.viewMatrix;
 	var skyDomeEntity = A4(_psandahl$terra_glide$SkyDome$entity, model.projectionMatrix, viewMatrix, model.environment, model.skyDome);
 	var terrainEntities = A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain);
-	var waterEntity = A3(_psandahl$terra_glide$Water$entity, model.projectionMatrix, viewMatrix, model.water);
+	var waterEntity = A4(_psandahl$terra_glide$Water$entity, model.projectionMatrix, viewMatrix, model.environment, model.water);
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},

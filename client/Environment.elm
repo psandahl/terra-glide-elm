@@ -9,6 +9,7 @@ type alias Environment =
     { skyColor : Vec3
     , horizonColor : Vec3
     , fogColor : Vec3
+    , waterColor : Vec3
     }
 
 
@@ -17,4 +18,5 @@ init =
     { skyColor = vec3 (12 / 255) (94 / 255) (170 / 255)
     , horizonColor = vec3 (170 / 255) (204 / 255) (204 / 255)
     , fogColor = vec3 0.5 0.5 0.5
+    , waterColor = vec3 0 0 1
     }

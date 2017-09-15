@@ -1,5 +1,6 @@
 module Water exposing (Water, init, entity)
 
+import Environment exposing (Environment)
 import Geometry
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
@@ -26,8 +27,8 @@ init =
     { mesh = GL.indexedTriangles vertices indices }
 
 
-entity : Mat4 -> Mat4 -> Water -> Entity
-entity projectionMatrix viewMatrix water =
+entity : Mat4 -> Mat4 -> Environment -> Water -> Entity
+entity projectionMatrix viewMatrix environment water =
     GL.entityWith
         [ DepthTest.default
         , Settings.cullFace Settings.back
@@ -37,6 +38,7 @@ entity projectionMatrix viewMatrix water =
         fragmentShader
         water.mesh
         { mvpMatrix = Mat.mul projectionMatrix viewMatrix
+        , waterColor = environment.waterColor
         }
 
 
@@ -70,12 +72,12 @@ vertexShader =
     |]
 
 
-fragmentShader : Shader {} unif {}
+fragmentShader : Shader {} { unif | waterColor : Vec3 } {}
 fragmentShader =
     [glsl|
         precision mediump float;
 
-        vec3 waterColor = vec3(0.0, 0.0, 1.0);
+        uniform vec3 waterColor;
 
         void main()
         {

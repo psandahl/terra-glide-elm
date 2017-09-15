@@ -27,7 +27,7 @@ view model =
             Terrain.entities model.projectionMatrix viewMatrix model.terrain
 
         waterEntity =
-            Water.entity model.projectionMatrix viewMatrix model.water
+            Water.entity model.projectionMatrix viewMatrix model.environment model.water
     in
         Html.div
             []
