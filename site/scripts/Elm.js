@@ -12760,7 +12760,7 @@ var _psandahl$terra_glide$Navigator$Navigator = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$SkySphere_IcoSphere$icosahedron = function () {
+var _psandahl$terra_glide$SkyDome_IcoSphere$icosahedron = function () {
 	var t = (1.0 + _elm_lang$core$Basics$sqrt(5.0)) / 2.0;
 	var vertex_0 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, -1, t, 0);
 	var vertex_1 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, t, 0);
@@ -12856,7 +12856,7 @@ var _psandahl$terra_glide$SkySphere_IcoSphere$icosahedron = function () {
 		}
 	};
 }();
-var _psandahl$terra_glide$SkySphere_IcoSphere$midpoint = F2(
+var _psandahl$terra_glide$SkyDome_IcoSphere$midpoint = F2(
 	function (a, b) {
 		var _p0 = _elm_community$linear_algebra$Math_Vector3$toTuple(b);
 		var x_ = _p0._0;
@@ -12868,7 +12868,7 @@ var _psandahl$terra_glide$SkySphere_IcoSphere$midpoint = F2(
 		var z = _p1._2;
 		return A3(_elm_community$linear_algebra$Math_Vector3$vec3, (x + x_) / 2, (y + y_) / 2, (z + z_) / 2);
 	});
-var _psandahl$terra_glide$SkySphere_IcoSphere$subdivide = F2(
+var _psandahl$terra_glide$SkyDome_IcoSphere$subdivide = F2(
 	function (n, tris) {
 		subdivide:
 		while (true) {
@@ -12877,9 +12877,9 @@ var _psandahl$terra_glide$SkySphere_IcoSphere$subdivide = F2(
 				var _p6 = _p3._2;
 				var _p5 = _p3._1;
 				var _p4 = _p3._0;
-				var c = A2(_psandahl$terra_glide$SkySphere_IcoSphere$midpoint, _p6, _p4);
-				var b = A2(_psandahl$terra_glide$SkySphere_IcoSphere$midpoint, _p5, _p6);
-				var a = A2(_psandahl$terra_glide$SkySphere_IcoSphere$midpoint, _p4, _p5);
+				var c = A2(_psandahl$terra_glide$SkyDome_IcoSphere$midpoint, _p6, _p4);
+				var b = A2(_psandahl$terra_glide$SkyDome_IcoSphere$midpoint, _p5, _p6);
+				var a = A2(_psandahl$terra_glide$SkyDome_IcoSphere$midpoint, _p4, _p5);
 				return {
 					ctor: '::',
 					_0: {ctor: '_Tuple3', _0: _p4, _1: a, _2: c},
@@ -12909,7 +12909,7 @@ var _psandahl$terra_glide$SkySphere_IcoSphere$subdivide = F2(
 			}
 		}
 	});
-var _psandahl$terra_glide$SkySphere_IcoSphere$normalize = function (p) {
+var _psandahl$terra_glide$SkyDome_IcoSphere$normalize = function (p) {
 	var _p7 = _elm_community$linear_algebra$Math_Vector3$toTuple(p);
 	var x = _p7._0;
 	var y = _p7._1;
@@ -12917,32 +12917,32 @@ var _psandahl$terra_glide$SkySphere_IcoSphere$normalize = function (p) {
 	var l = _elm_community$linear_algebra$Math_Vector3$length(p);
 	return A3(_elm_community$linear_algebra$Math_Vector3$vec3, x / l, y / l, z / l);
 };
-var _psandahl$terra_glide$SkySphere_IcoSphere$normalizeTri = function (_p8) {
+var _psandahl$terra_glide$SkyDome_IcoSphere$normalizeTri = function (_p8) {
 	var _p9 = _p8;
 	return {
 		ctor: '_Tuple3',
-		_0: _psandahl$terra_glide$SkySphere_IcoSphere$normalize(_p9._0),
-		_1: _psandahl$terra_glide$SkySphere_IcoSphere$normalize(_p9._1),
-		_2: _psandahl$terra_glide$SkySphere_IcoSphere$normalize(_p9._2)
+		_0: _psandahl$terra_glide$SkyDome_IcoSphere$normalize(_p9._0),
+		_1: _psandahl$terra_glide$SkyDome_IcoSphere$normalize(_p9._1),
+		_2: _psandahl$terra_glide$SkyDome_IcoSphere$normalize(_p9._2)
 	};
 };
-var _psandahl$terra_glide$SkySphere_IcoSphere$icosphere = function (subdivisions) {
+var _psandahl$terra_glide$SkyDome_IcoSphere$icosphere = function (subdivisions) {
 	return A2(
 		_elm_lang$core$List$map,
-		_psandahl$terra_glide$SkySphere_IcoSphere$normalizeTri,
-		A2(_psandahl$terra_glide$SkySphere_IcoSphere$subdivide, subdivisions, _psandahl$terra_glide$SkySphere_IcoSphere$icosahedron));
+		_psandahl$terra_glide$SkyDome_IcoSphere$normalizeTri,
+		A2(_psandahl$terra_glide$SkyDome_IcoSphere$subdivide, subdivisions, _psandahl$terra_glide$SkyDome_IcoSphere$icosahedron));
 };
 
-var _psandahl$terra_glide$SkySphere$fragmentShader = {'src': '\n        precision mediump float;\n\n        varying vec3 vPosition;\n\n        vec3 sky = vec3(12.0 / 255.0, 94.0 / 255.0, 170.0 / 255.0);\n        vec3 horizon = vec3(170.0 / 255.0, 204.0 / 255.0, 204.0 / 255.0);\n        vec3 fog = vec3(0.5, 0.5, 0.5);\n\n        void main()\n        {\n            float y = abs(vPosition.y);\n            vec3 skyColor = mix(horizon, sky, y);\n\n            if (y > 2.0)\n            {\n                gl_FragColor = vec4(skyColor, 1.0);\n            }\n            else\n            {\n                gl_FragColor = vec4(mix(fog, skyColor, smoothstep(0.0, 0.2, y)), 1.0);\n            }\n        }\n    '};
-var _psandahl$terra_glide$SkySphere$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n\n        void main()\n        {\n            vPosition = position;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
-var _psandahl$terra_glide$SkySphere$modifyViewMatrix = function (viewMatrix) {
+var _psandahl$terra_glide$SkyDome$fragmentShader = {'src': '\n        precision mediump float;\n\n        varying vec3 vPosition;\n\n        vec3 sky = vec3(12.0 / 255.0, 94.0 / 255.0, 170.0 / 255.0);\n        vec3 horizon = vec3(170.0 / 255.0, 204.0 / 255.0, 204.0 / 255.0);\n        vec3 fog = vec3(0.5, 0.5, 0.5);\n\n        void main()\n        {\n            float y = abs(vPosition.y);\n            vec3 skyColor = mix(horizon, sky, y);\n\n            if (y > 2.0)\n            {\n                gl_FragColor = vec4(skyColor, 1.0);\n            }\n            else\n            {\n                gl_FragColor = vec4(mix(fog, skyColor, smoothstep(0.0, 0.2, y)), 1.0);\n            }\n        }\n    '};
+var _psandahl$terra_glide$SkyDome$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n\n        void main()\n        {\n            vPosition = position;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$SkyDome$modifyViewMatrix = function (viewMatrix) {
 	var r = _elm_community$linear_algebra$Math_Matrix4$toRecord(viewMatrix);
 	return _elm_community$linear_algebra$Math_Matrix4$fromRecord(
 		_elm_lang$core$Native_Utils.update(
 			r,
 			{m14: 0, m24: 0, m34: 0}));
 };
-var _psandahl$terra_glide$SkySphere$toVertex = function (_p0) {
+var _psandahl$terra_glide$SkyDome$toVertex = function (_p0) {
 	var _p1 = _p0;
 	return {
 		ctor: '_Tuple3',
@@ -12951,15 +12951,15 @@ var _psandahl$terra_glide$SkySphere$toVertex = function (_p0) {
 		_2: {position: _p1._2}
 	};
 };
-var _psandahl$terra_glide$SkySphere$entity = F3(
-	function (projectionMatrix, viewMatrix, skySphere) {
+var _psandahl$terra_glide$SkyDome$entity = F3(
+	function (projectionMatrix, viewMatrix, skyDome) {
 		var mvpMatrix = A2(
 			_elm_community$linear_algebra$Math_Matrix4$mul,
 			projectionMatrix,
 			A2(
 				_elm_community$linear_algebra$Math_Matrix4$mul,
-				_psandahl$terra_glide$SkySphere$modifyViewMatrix(viewMatrix),
-				skySphere.modelMatrix));
+				_psandahl$terra_glide$SkyDome$modifyViewMatrix(viewMatrix),
+				skyDome.modelMatrix));
 		return A5(
 			_elm_community$webgl$WebGL$entityWith,
 			{
@@ -12968,24 +12968,24 @@ var _psandahl$terra_glide$SkySphere$entity = F3(
 					{write: false, near: 0, far: 1}),
 				_1: {ctor: '[]'}
 			},
-			_psandahl$terra_glide$SkySphere$vertexShader,
-			_psandahl$terra_glide$SkySphere$fragmentShader,
-			skySphere.mesh,
+			_psandahl$terra_glide$SkyDome$vertexShader,
+			_psandahl$terra_glide$SkyDome$fragmentShader,
+			skyDome.mesh,
 			{mvpMatrix: mvpMatrix});
 	});
-var _psandahl$terra_glide$SkySphere$init = {
+var _psandahl$terra_glide$SkyDome$init = {
 	mesh: _elm_community$webgl$WebGL$triangles(
 		A2(
 			_elm_lang$core$List$map,
-			_psandahl$terra_glide$SkySphere$toVertex,
-			_psandahl$terra_glide$SkySphere_IcoSphere$icosphere(3))),
+			_psandahl$terra_glide$SkyDome$toVertex,
+			_psandahl$terra_glide$SkyDome_IcoSphere$icosphere(3))),
 	modelMatrix: A3(_elm_community$linear_algebra$Math_Matrix4$makeScale3, 2, 2, 2)
 };
-var _psandahl$terra_glide$SkySphere$SkySphere = F2(
+var _psandahl$terra_glide$SkyDome$SkyDome = F2(
 	function (a, b) {
 		return {mesh: a, modelMatrix: b};
 	});
-var _psandahl$terra_glide$SkySphere$Vertex = function (a) {
+var _psandahl$terra_glide$SkyDome$Vertex = function (a) {
 	return {position: a};
 };
 
@@ -13194,7 +13194,7 @@ var _psandahl$terra_glide$Water$Vertex = function (a) {
 
 var _psandahl$terra_glide$Model$Model = F9(
 	function (a, b, c, d, e, f, g, h, i) {
-		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, navigator: e, skySphere: f, terrain: g, water: h, errorMessage: i};
+		return {canvasSize: a, projectionMatrix: b, camera: c, cameraRotation: d, navigator: e, skyDome: f, terrain: g, water: h, errorMessage: i};
 	});
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
@@ -13289,7 +13289,7 @@ var _psandahl$terra_glide$Update$update = F2(
 
 var _psandahl$terra_glide$View$view = function (model) {
 	var viewMatrix = model.camera.viewMatrix;
-	var skySphereEntity = A3(_psandahl$terra_glide$SkySphere$entity, model.projectionMatrix, viewMatrix, model.skySphere);
+	var skyDomeEntity = A3(_psandahl$terra_glide$SkyDome$entity, model.projectionMatrix, viewMatrix, model.skyDome);
 	var terrainEntities = A3(_psandahl$terra_glide$Terrain$entities, model.projectionMatrix, viewMatrix, model.terrain);
 	var waterEntity = A3(_psandahl$terra_glide$Water$entity, model.projectionMatrix, viewMatrix, model.water);
 	return A2(
@@ -13319,7 +13319,7 @@ var _psandahl$terra_glide$View$view = function (model) {
 				},
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					{ctor: '::', _0: skySphereEntity, _1: terrainEntities},
+					{ctor: '::', _0: skyDomeEntity, _1: terrainEntities},
 					{
 						ctor: '::',
 						_0: waterEntity,
@@ -13362,7 +13362,7 @@ var _psandahl$terra_glide$Main$init = function () {
 					_elm_lang$core$Basics$cos(0))),
 			cameraRotation: 0,
 			navigator: navigator,
-			skySphere: _psandahl$terra_glide$SkySphere$init,
+			skyDome: _psandahl$terra_glide$SkyDome$init,
 			terrain: _psandahl$terra_glide$Terrain$init,
 			water: _psandahl$terra_glide$Water$init,
 			errorMessage: _elm_lang$core$Maybe$Nothing

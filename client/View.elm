@@ -5,7 +5,7 @@ import Html
 import Html.Attributes as Attr
 import Model exposing (Model)
 import Msg exposing (Msg)
-import SkySphere
+import SkyDome
 import Terrain
 import Water
 import WebGL as GL
@@ -20,8 +20,8 @@ view model =
         viewMatrix =
             model.camera.viewMatrix
 
-        skySphereEntity =
-            SkySphere.entity model.projectionMatrix viewMatrix model.skySphere
+        skyDomeEntity =
+            SkyDome.entity model.projectionMatrix viewMatrix model.skyDome
 
         terrainEntities =
             Terrain.entities model.projectionMatrix viewMatrix model.terrain
@@ -39,6 +39,6 @@ view model =
                 , Attr.width model.canvasSize.width
                 ]
               <|
-                (skySphereEntity :: terrainEntities)
+                (skyDomeEntity :: terrainEntities)
                     ++ [ waterEntity ]
             ]

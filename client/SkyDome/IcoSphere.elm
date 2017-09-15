@@ -1,4 +1,4 @@
-module SkySphere.IcoSphere
+module SkyDome.IcoSphere
     exposing
         ( icosphere
         )

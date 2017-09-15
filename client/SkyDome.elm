@@ -1,15 +1,15 @@
-module SkySphere exposing (SkySphere, init, entity)
+module SkyDome exposing (SkyDome, init, entity)
 
 import Math.Matrix4 as Mat
 import Math.Matrix4 exposing (Mat4)
 import Math.Vector3 exposing (Vec3)
-import SkySphere.IcoSphere as IS
+import SkyDome.IcoSphere as IS
 import WebGL as GL
 import WebGL.Settings.DepthTest as DepthTest
 import WebGL exposing (Mesh, Entity, Shader)
 
 
-type alias SkySphere =
+type alias SkyDome =
     { mesh : Mesh Vertex
     , modelMatrix : Mat4
     }
@@ -20,25 +20,25 @@ type alias Vertex =
     }
 
 
-init : SkySphere
+init : SkyDome
 init =
     { mesh = GL.triangles <| List.map toVertex <| IS.icosphere 3
     , modelMatrix = Mat.makeScale3 2 2 2
     }
 
 
-entity : Mat4 -> Mat4 -> SkySphere -> Entity
-entity projectionMatrix viewMatrix skySphere =
+entity : Mat4 -> Mat4 -> SkyDome -> Entity
+entity projectionMatrix viewMatrix skyDome =
     let
         mvpMatrix =
             Mat.mul projectionMatrix <|
-                Mat.mul (modifyViewMatrix viewMatrix) skySphere.modelMatrix
+                Mat.mul (modifyViewMatrix viewMatrix) skyDome.modelMatrix
     in
         GL.entityWith
             [ DepthTest.always { write = False, near = 0, far = 1 } ]
             vertexShader
             fragmentShader
-            skySphere.mesh
+            skyDome.mesh
             { mvpMatrix = mvpMatrix }
 
 
