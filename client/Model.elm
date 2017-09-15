@@ -1,6 +1,7 @@
 module Model exposing (Model)
 
 import Camera exposing (Camera)
+import Environment exposing (Environment)
 import Math.Matrix4 exposing (Mat4)
 import Navigator exposing (Navigator)
 import SkyDome exposing (SkyDome)
@@ -16,6 +17,7 @@ type alias Model =
     , projectionMatrix : Mat4
     , camera : Camera
     , cameraRotation : Float
+    , environment : Environment
     , navigator : Navigator
     , skyDome : SkyDome
     , terrain : Terrain

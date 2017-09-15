@@ -1,5 +1,6 @@
 module SkyDome exposing (SkyDome, init, entity)
 
+import Environment exposing (Environment)
 import Math.Matrix4 as Mat
 import Math.Matrix4 exposing (Mat4)
 import Math.Vector3 exposing (Vec3)
@@ -27,8 +28,8 @@ init =
     }
 
 
-entity : Mat4 -> Mat4 -> SkyDome -> Entity
-entity projectionMatrix viewMatrix skyDome =
+entity : Mat4 -> Mat4 -> Environment -> SkyDome -> Entity
+entity projectionMatrix viewMatrix environment skyDome =
     let
         mvpMatrix =
             Mat.mul projectionMatrix <|
@@ -39,7 +40,11 @@ entity projectionMatrix viewMatrix skyDome =
             vertexShader
             fragmentShader
             skyDome.mesh
-            { mvpMatrix = mvpMatrix }
+            { mvpMatrix = mvpMatrix
+            , skyColor = environment.skyColor
+            , horizonColor = environment.horizonColor
+            , fogColor = environment.fogColor
+            }
 
 
 toVertex : ( Vec3, Vec3, Vec3 ) -> ( Vertex, Vertex, Vertex )
@@ -75,29 +80,36 @@ vertexShader =
     |]
 
 
-fragmentShader : Shader {} unif { vPosition : Vec3 }
+fragmentShader :
+    Shader {}
+        { unif
+            | skyColor : Vec3
+            , horizonColor : Vec3
+            , fogColor : Vec3
+        }
+        { vPosition : Vec3 }
 fragmentShader =
     [glsl|
         precision mediump float;
 
-        varying vec3 vPosition;
+        uniform vec3 skyColor;
+        uniform vec3 horizonColor;
+        uniform vec3 fogColor;
 
-        vec3 sky = vec3(12.0 / 255.0, 94.0 / 255.0, 170.0 / 255.0);
-        vec3 horizon = vec3(170.0 / 255.0, 204.0 / 255.0, 204.0 / 255.0);
-        vec3 fog = vec3(0.5, 0.5, 0.5);
+        varying vec3 vPosition;
 
         void main()
         {
             float y = abs(vPosition.y);
-            vec3 skyColor = mix(horizon, sky, y);
+            vec3 sky = mix(horizonColor, skyColor, y);
 
-            if (y > 2.0)
+            if (y > 0.2)
             {
                 gl_FragColor = vec4(skyColor, 1.0);
             }
             else
             {
-                gl_FragColor = vec4(mix(fog, skyColor, smoothstep(0.0, 0.2, y)), 1.0);
+                gl_FragColor = vec4(mix(fogColor, skyColor, smoothstep(0.0, 0.2, y)), 1.0);
             }
         }
     |]

@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import AnimationFrame
 import Camera
+import Environment
 import Geometry
 import Html
 import Navigator
@@ -40,6 +41,7 @@ init =
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
           , camera = Camera.set (vec3 2000 Geometry.cameraHeight 2000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
+          , environment = Environment.init
           , navigator = navigator
           , skyDome = SkyDome.init
           , terrain = Terrain.init

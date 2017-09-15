@@ -21,7 +21,7 @@ view model =
             model.camera.viewMatrix
 
         skyDomeEntity =
-            SkyDome.entity model.projectionMatrix viewMatrix model.skyDome
+            SkyDome.entity model.projectionMatrix viewMatrix model.environment model.skyDome
 
         terrainEntities =
             Terrain.entities model.projectionMatrix viewMatrix model.terrain
