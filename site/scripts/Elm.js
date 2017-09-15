@@ -12565,11 +12565,11 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 	});
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
-var _psandahl$terra_glide$Geometry$waterHeight = 75;
+var _psandahl$terra_glide$Geometry$waterHeight = 50;
 var _psandahl$terra_glide$Geometry$terrainHeight = 200;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVista = 300;
-var _psandahl$terra_glide$Geometry$tileSize = 50;
+var _psandahl$terra_glide$Geometry$tileSize = 10;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
@@ -13317,7 +13317,14 @@ var _psandahl$terra_glide$View$view = function (model) {
 						_1: {ctor: '[]'}
 					}
 				},
-				{ctor: '::', _0: skySphereEntity, _1: terrainEntities}),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{ctor: '::', _0: skySphereEntity, _1: terrainEntities},
+					{
+						ctor: '::',
+						_0: waterEntity,
+						_1: {ctor: '[]'}
+					})),
 			_1: {ctor: '[]'}
 		});
 };

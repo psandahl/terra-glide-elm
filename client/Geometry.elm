@@ -12,11 +12,11 @@ module Geometry
 -}
 
 
-{-| The length of the tile's side.
+{-| The length of the tile's side, measured in vertices.
 -}
 tileSize : Int
 tileSize =
-    50
+    10
 
 
 {-| The radius how far tiles must be available from the view position.
@@ -37,7 +37,7 @@ terrainHeight =
 -}
 waterHeight : Float
 waterHeight =
-    75
+    50
 
 
 {-| The camera's height. Always 50 units above of the heighest terrain.

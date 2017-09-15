@@ -13,6 +13,9 @@ import WebGL as GL
 
 view : Model -> Html Msg
 view model =
+    -- The order in which stuff is rendered is important. First must the
+    -- sky dome be rendered, as it is rendered without depth information.
+    -- Then the terrain is rendered, and last the water.
     let
         viewMatrix =
             model.camera.viewMatrix
@@ -37,6 +40,5 @@ view model =
                 ]
               <|
                 (skySphereEntity :: terrainEntities)
-
-            --    ++ [ waterEntity ]
+                    ++ [ waterEntity ]
             ]
