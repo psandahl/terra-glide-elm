@@ -12565,8 +12565,10 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 	});
 
 var _psandahl$terra_glide$Environment$init = {
-	skyColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 12 / 255, 94 / 255, 170 / 255),
-	horizonColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 170 / 255, 204 / 255, 204 / 255),
+	skyGradient: {
+		lower: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 170 / 255, 204 / 255, 204 / 255),
+		upper: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 12 / 255, 94 / 255, 170 / 255)
+	},
 	fogColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.5, 0.5, 0.5),
 	fogHeight: 0.2,
 	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1),
@@ -12576,9 +12578,13 @@ var _psandahl$terra_glide$Environment$init = {
 	sunDirection: _elm_community$linear_algebra$Math_Vector3$normalize(
 		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 0))
 };
-var _psandahl$terra_glide$Environment$Environment = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {skyColor: a, horizonColor: b, fogColor: c, fogHeight: d, waterColor: e, ambientColor: f, ambientStrength: g, diffuseColor: h, sunDirection: i};
+var _psandahl$terra_glide$Environment$Environment = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {skyGradient: a, fogColor: b, fogHeight: c, waterColor: d, ambientColor: e, ambientStrength: f, diffuseColor: g, sunDirection: h};
+	});
+var _psandahl$terra_glide$Environment$Gradient = F2(
+	function (a, b) {
+		return {lower: a, upper: b};
 	});
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
@@ -12988,7 +12994,7 @@ var _psandahl$terra_glide$SkyDome$entity = F4(
 			_psandahl$terra_glide$SkyDome$vertexShader,
 			_psandahl$terra_glide$SkyDome$fragmentShader,
 			skyDome.mesh,
-			{mvpMatrix: mvpMatrix, skyColor: environment.skyColor, horizonColor: environment.horizonColor, fogColor: environment.fogColor, fogHeight: environment.fogHeight});
+			{mvpMatrix: mvpMatrix, skyColor: environment.skyGradient.upper, horizonColor: environment.skyGradient.lower, fogColor: environment.fogColor, fogHeight: environment.fogHeight});
 	});
 var _psandahl$terra_glide$SkyDome$init = {
 	mesh: _elm_community$webgl$WebGL$triangles(

@@ -41,8 +41,8 @@ entity projectionMatrix viewMatrix environment skyDome =
             fragmentShader
             skyDome.mesh
             { mvpMatrix = mvpMatrix
-            , skyColor = environment.skyColor
-            , horizonColor = environment.horizonColor
+            , skyColor = environment.skyGradient.upper
+            , horizonColor = environment.skyGradient.lower
             , fogColor = environment.fogColor
             , fogHeight = environment.fogHeight
             }
