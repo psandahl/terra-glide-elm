@@ -1,4 +1,4 @@
-module Constants
+module Geometry
     exposing
         ( tileSize
         , tileVista
@@ -8,10 +8,12 @@ module Constants
         , maxWorld
         )
 
-{-| The length of the tile's side.
+{-| The Geometry module presents constants for definition of geometry.
 -}
 
 
+{-| The length of the tile's side.
+-}
 tileSize : Int
 tileSize =
     50

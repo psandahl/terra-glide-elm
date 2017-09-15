@@ -1,7 +1,7 @@
 module Terrain.Tile exposing (Tile, init, toEntity)
 
-import Constants
 import Debug
+import Geometry
 import Math.Vector3 exposing (Vec3, getY)
 import Math.Matrix4 exposing (Mat4)
 import Terrain.TileData exposing (Vertex, TileData)
@@ -42,7 +42,7 @@ checkHeights xs =
                 y =
                     getY <| v.position
             in
-                if y > Constants.terrainHeight then
+                if y > Geometry.terrainHeight then
                     Debug.log "Error: > maxHeight" v
                 else
                     v

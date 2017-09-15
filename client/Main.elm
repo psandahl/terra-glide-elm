@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import AnimationFrame
 import Camera
-import Constants
+import Geometry
 import Html
 import Navigator
 import Math.Vector2 exposing (vec2)
@@ -38,7 +38,7 @@ init =
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 2000 Constants.cameraHeight 2000) (vec2 (sin 0) (cos 0))
+          , camera = Camera.set (vec3 2000 Geometry.cameraHeight 2000) (vec2 (sin 0) (cos 0))
           , cameraRotation = 0
           , navigator = navigator
           , skySphere = SkySphere.init

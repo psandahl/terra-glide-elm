@@ -6,7 +6,7 @@ module Terrain
         , entities
         )
 
-import Constants
+import Geometry
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Terrain.TileData exposing (TileData)
@@ -24,7 +24,7 @@ type alias Terrain =
 init : Terrain
 init =
     { tiles = []
-    , indices = generateIndices (Constants.tileSize + 1) -- +1 is glue between tiles
+    , indices = generateIndices (Geometry.tileSize + 1) -- +1 is glue between tiles
     }
 
 

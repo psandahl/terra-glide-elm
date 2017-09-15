@@ -12564,12 +12564,12 @@ var _psandahl$terra_glide$Camera$Camera = F3(
 		return {position: a, viewDirection: b, viewMatrix: c};
 	});
 
-var _psandahl$terra_glide$Constants$maxWorld = 1000000000;
-var _psandahl$terra_glide$Constants$waterHeight = 75;
-var _psandahl$terra_glide$Constants$terrainHeight = 200;
-var _psandahl$terra_glide$Constants$cameraHeight = _psandahl$terra_glide$Constants$terrainHeight + 1;
-var _psandahl$terra_glide$Constants$tileVista = 300;
-var _psandahl$terra_glide$Constants$tileSize = 50;
+var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
+var _psandahl$terra_glide$Geometry$waterHeight = 75;
+var _psandahl$terra_glide$Geometry$terrainHeight = 200;
+var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
+var _psandahl$terra_glide$Geometry$tileVista = 300;
+var _psandahl$terra_glide$Geometry$tileSize = 50;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
@@ -12684,28 +12684,28 @@ var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
 	});
 
 var _psandahl$terra_glide$Navigator_TileSelector$nearRight = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Constants$tileVista, _psandahl$terra_glide$Constants$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Geometry$tileVista, _psandahl$terra_glide$Geometry$tileVista);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$nearLeft = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Constants$tileVista, _psandahl$terra_glide$Constants$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Geometry$tileVista, _psandahl$terra_glide$Geometry$tileVista);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$farRight = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Constants$tileVista, 0 - _psandahl$terra_glide$Constants$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Geometry$tileVista, 0 - _psandahl$terra_glide$Geometry$tileVista);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$farLeft = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Constants$tileVista, 0 - _psandahl$terra_glide$Constants$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Geometry$tileVista, 0 - _psandahl$terra_glide$Geometry$tileVista);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$tileStartFor = function (p) {
 	return {
 		ctor: '_Tuple2',
-		_0: _psandahl$terra_glide$Constants$tileSize * ((_elm_lang$core$Basics$floor(
-			_elm_community$linear_algebra$Math_Vector2$getX(p)) / _psandahl$terra_glide$Constants$tileSize) | 0),
-		_1: _psandahl$terra_glide$Constants$tileSize * ((_elm_lang$core$Basics$floor(
-			_elm_community$linear_algebra$Math_Vector2$getY(p)) / _psandahl$terra_glide$Constants$tileSize) | 0)
+		_0: _psandahl$terra_glide$Geometry$tileSize * ((_elm_lang$core$Basics$floor(
+			_elm_community$linear_algebra$Math_Vector2$getX(p)) / _psandahl$terra_glide$Geometry$tileSize) | 0),
+		_1: _psandahl$terra_glide$Geometry$tileSize * ((_elm_lang$core$Basics$floor(
+			_elm_community$linear_algebra$Math_Vector2$getY(p)) / _psandahl$terra_glide$Geometry$tileSize) | 0)
 	};
 };
 var _psandahl$terra_glide$Navigator_TileSelector$tileRow = F3(
@@ -12714,14 +12714,14 @@ var _psandahl$terra_glide$Navigator_TileSelector$tileRow = F3(
 			_elm_lang$core$List$map,
 			function (x) {
 				return {
-					xPos: x * _psandahl$terra_glide$Constants$tileSize,
-					zPos: z * _psandahl$terra_glide$Constants$tileSize,
-					tileWidth: _psandahl$terra_glide$Constants$tileSize,
-					tileDepth: _psandahl$terra_glide$Constants$tileSize,
-					yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Constants$terrainHeight)
+					xPos: x * _psandahl$terra_glide$Geometry$tileSize,
+					zPos: z * _psandahl$terra_glide$Geometry$tileSize,
+					tileWidth: _psandahl$terra_glide$Geometry$tileSize,
+					tileDepth: _psandahl$terra_glide$Geometry$tileSize,
+					yScale: _elm_lang$core$Basics$floor(_psandahl$terra_glide$Geometry$terrainHeight)
 				};
 			},
-			A2(_elm_lang$core$List$range, (firstX / _psandahl$terra_glide$Constants$tileSize) | 0, (lastX / _psandahl$terra_glide$Constants$tileSize) | 0));
+			A2(_elm_lang$core$List$range, (firstX / _psandahl$terra_glide$Geometry$tileSize) | 0, (lastX / _psandahl$terra_glide$Geometry$tileSize) | 0));
 	});
 var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 	var _p0 = _psandahl$terra_glide$Navigator_TileSelector$tileStartFor(
@@ -12743,7 +12743,7 @@ var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 	return A2(
 		_elm_lang$core$List$concatMap,
 		A2(_psandahl$terra_glide$Navigator_TileSelector$tileRow, xFarLeft, xFarRight),
-		A2(_elm_lang$core$List$range, (zFarLeft / _psandahl$terra_glide$Constants$tileSize) | 0, (zNearLeft / _psandahl$terra_glide$Constants$tileSize) | 0));
+		A2(_elm_lang$core$List$range, (zFarLeft / _psandahl$terra_glide$Geometry$tileSize) | 0, (zNearLeft / _psandahl$terra_glide$Geometry$tileSize) | 0));
 };
 
 var _psandahl$terra_glide$Navigator$runTileQueries = function (navigator) {
@@ -13046,7 +13046,7 @@ var _psandahl$terra_glide$Terrain_Tile$checkHeights = function (xs) {
 		_elm_lang$core$List$map,
 		function (v) {
 			var y = _elm_community$linear_algebra$Math_Vector3$getY(v.position);
-			return (_elm_lang$core$Native_Utils.cmp(y, _psandahl$terra_glide$Constants$terrainHeight) > 0) ? A2(_elm_lang$core$Debug$log, 'Error: > maxHeight', v) : v;
+			return (_elm_lang$core$Native_Utils.cmp(y, _psandahl$terra_glide$Geometry$terrainHeight) > 0) ? A2(_elm_lang$core$Debug$log, 'Error: > maxHeight', v) : v;
 		},
 		xs);
 };
@@ -13115,7 +13115,7 @@ var _psandahl$terra_glide$Terrain$addTile = F3(
 	});
 var _psandahl$terra_glide$Terrain$init = {
 	tiles: {ctor: '[]'},
-	indices: _psandahl$terra_glide$Terrain$generateIndices(_psandahl$terra_glide$Constants$tileSize + 1)
+	indices: _psandahl$terra_glide$Terrain$generateIndices(_psandahl$terra_glide$Geometry$tileSize + 1)
 };
 var _psandahl$terra_glide$Terrain$Terrain = F2(
 	function (a, b) {
@@ -13136,22 +13136,22 @@ var _psandahl$terra_glide$Water$indices = {
 var _psandahl$terra_glide$Water$vertices = {
 	ctor: '::',
 	_0: {
-		position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, _psandahl$terra_glide$Constants$waterHeight, 0)
+		position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, _psandahl$terra_glide$Geometry$waterHeight, 0)
 	},
 	_1: {
 		ctor: '::',
 		_0: {
-			position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, _psandahl$terra_glide$Constants$maxWorld, _psandahl$terra_glide$Constants$waterHeight, 0)
+			position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, _psandahl$terra_glide$Geometry$maxWorld, _psandahl$terra_glide$Geometry$waterHeight, 0)
 		},
 		_1: {
 			ctor: '::',
 			_0: {
-				position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, _psandahl$terra_glide$Constants$waterHeight, _psandahl$terra_glide$Constants$maxWorld)
+				position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, _psandahl$terra_glide$Geometry$waterHeight, _psandahl$terra_glide$Geometry$maxWorld)
 			},
 			_1: {
 				ctor: '::',
 				_0: {
-					position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, _psandahl$terra_glide$Constants$maxWorld, _psandahl$terra_glide$Constants$waterHeight, _psandahl$terra_glide$Constants$maxWorld)
+					position: A3(_elm_community$linear_algebra$Math_Vector3$vec3, _psandahl$terra_glide$Geometry$maxWorld, _psandahl$terra_glide$Geometry$waterHeight, _psandahl$terra_glide$Geometry$maxWorld)
 				},
 				_1: {ctor: '[]'}
 			}
@@ -13348,7 +13348,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2000, _psandahl$terra_glide$Constants$cameraHeight, 2000),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2000, _psandahl$terra_glide$Geometry$cameraHeight, 2000),
 				A2(
 					_elm_community$linear_algebra$Math_Vector2$vec2,
 					_elm_lang$core$Basics$sin(0),

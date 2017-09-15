@@ -1,6 +1,6 @@
 module Water exposing (Water, init, entity)
 
-import Constants
+import Geometry
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Math.Vector3 exposing (Vec3, vec3)
@@ -42,10 +42,10 @@ entity projectionMatrix viewMatrix water =
 
 vertices : List Vertex
 vertices =
-    [ { position = vec3 0 Constants.waterHeight 0 }
-    , { position = vec3 Constants.maxWorld Constants.waterHeight 0 }
-    , { position = vec3 0 Constants.waterHeight Constants.maxWorld }
-    , { position = vec3 Constants.maxWorld Constants.waterHeight Constants.maxWorld }
+    [ { position = vec3 0 Geometry.waterHeight 0 }
+    , { position = vec3 Geometry.maxWorld Geometry.waterHeight 0 }
+    , { position = vec3 0 Geometry.waterHeight Geometry.maxWorld }
+    , { position = vec3 Geometry.maxWorld Geometry.waterHeight Geometry.maxWorld }
     ]
 
 

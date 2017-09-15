@@ -1,6 +1,6 @@
 module Navigator.TileSelector exposing (tiles)
 
-import Constants
+import Geometry
 import Math.Vector2 exposing (Vec2, vec2)
 import Math.Vector2 as Vec2
 import Terrain.TileQuery exposing (TileQuery)
@@ -22,28 +22,28 @@ tiles point =
             tileStartFor <| nearRight point
     in
         List.concatMap (tileRow xFarLeft xFarRight) <|
-            List.range (zFarLeft // Constants.tileSize) (zNearLeft // Constants.tileSize)
+            List.range (zFarLeft // Geometry.tileSize) (zNearLeft // Geometry.tileSize)
 
 
 tileRow : Int -> Int -> Int -> List TileQuery
 tileRow firstX lastX z =
     List.map
         (\x ->
-            { xPos = x * Constants.tileSize
-            , zPos = z * Constants.tileSize
-            , tileWidth = Constants.tileSize
-            , tileDepth = Constants.tileSize
-            , yScale = floor Constants.terrainHeight
+            { xPos = x * Geometry.tileSize
+            , zPos = z * Geometry.tileSize
+            , tileWidth = Geometry.tileSize
+            , tileDepth = Geometry.tileSize
+            , yScale = floor Geometry.terrainHeight
             }
         )
     <|
-        List.range (firstX // Constants.tileSize) (lastX // Constants.tileSize)
+        List.range (firstX // Geometry.tileSize) (lastX // Geometry.tileSize)
 
 
 tileStartFor : Vec2 -> ( Int, Int )
 tileStartFor p =
-    ( Constants.tileSize * ((floor <| Vec2.getX p) // Constants.tileSize)
-    , Constants.tileSize * ((floor <| Vec2.getY p) // Constants.tileSize)
+    ( Geometry.tileSize * ((floor <| Vec2.getX p) // Geometry.tileSize)
+    , Geometry.tileSize * ((floor <| Vec2.getY p) // Geometry.tileSize)
     )
 
 
@@ -53,7 +53,7 @@ farLeft : Vec2 -> Vec2
 farLeft p =
     let
         pp =
-            vec2 -Constants.tileVista -Constants.tileVista
+            vec2 -Geometry.tileVista -Geometry.tileVista
     in
         Vec2.add p pp
 
@@ -64,7 +64,7 @@ farRight : Vec2 -> Vec2
 farRight p =
     let
         pp =
-            vec2 Constants.tileVista -Constants.tileVista
+            vec2 Geometry.tileVista -Geometry.tileVista
     in
         Vec2.add p pp
 
@@ -75,7 +75,7 @@ nearLeft : Vec2 -> Vec2
 nearLeft p =
     let
         pp =
-            vec2 -Constants.tileVista Constants.tileVista
+            vec2 -Geometry.tileVista Geometry.tileVista
     in
         Vec2.add p pp
 
@@ -86,6 +86,6 @@ nearRight : Vec2 -> Vec2
 nearRight p =
     let
         pp =
-            vec2 Constants.tileVista Constants.tileVista
+            vec2 Geometry.tileVista Geometry.tileVista
     in
         Vec2.add p pp
