@@ -72,6 +72,7 @@ toEntity viewMatrix mvpMatrix tile =
         tile.mesh
         { viewMatrix = viewMatrix
         , mvpMatrix = mvpMatrix
+        , terrainHeight = Geometry.terrainHeight
         }
 
 
@@ -120,6 +121,7 @@ fragmentShader :
     Shader {}
         { unif
             | viewMatrix : Mat4
+            , terrainHeight : Float
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
@@ -129,6 +131,7 @@ fragmentShader =
         precision mediump float;
 
         uniform mat4 viewMatrix;
+        uniform float terrainHeight;
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
@@ -161,8 +164,7 @@ fragmentShader =
 
         vec3 baseColor()
         {
-            // Assume 200 as max terrain height.
-            float y = vPosition.y / 200.0;
+            float y = vPosition.y / terrainHeight;
 
             vec3 lowerBand1 = vec3(239.0 / 255.0, 141.0 / 255.0, 55.0 / 255.0);
             vec3 upperBand1 = vec3(0.0, 1.0, 0.0);
