@@ -1,6 +1,6 @@
 module Environment exposing (Environment, init)
 
-import Math.Vector3 exposing (Vec3, vec3)
+import Math.Vector3 exposing (Vec3, vec3, normalize)
 
 
 {-| The Environment module presents values for colors, lights and stuff.
@@ -14,6 +14,7 @@ type alias Environment =
     , ambientColor : Vec3
     , ambientStrength : Float
     , diffuseColor : Vec3
+    , sunDirection : Vec3
     }
 
 
@@ -27,4 +28,5 @@ init =
     , ambientColor = vec3 1 1 1
     , ambientStrength = 0.2
     , diffuseColor = vec3 0.8 0.8 0.8
+    , sunDirection = normalize <| vec3 1 1 0
     }

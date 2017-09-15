@@ -77,6 +77,7 @@ toEntity viewMatrix mvpMatrix environment tile =
         , ambientColor = environment.ambientColor
         , ambientStrength = environment.ambientStrength
         , diffuseColor = environment.diffuseColor
+        , sunDirection = environment.sunDirection
         }
 
 
@@ -129,6 +130,7 @@ fragmentShader :
             , ambientColor : Vec3
             , ambientStrength : Float
             , diffuseColor : Vec3
+            , sunDirection : Vec3
         }
         { vPosition : Vec3
         , vTransformedNormal : Vec3
@@ -142,6 +144,7 @@ fragmentShader =
         uniform vec3 ambientColor;
         uniform float ambientStrength;
         uniform vec3 diffuseColor;
+        uniform vec3 sunDirection;
 
         varying vec3 vPosition;
         varying vec3 vTransformedNormal;
@@ -149,8 +152,8 @@ fragmentShader =
         // Calculate the texture color for the fragment.
         vec3 baseColor();
 
-        // Get the sun's direction. In view space.
-        vec3 sunDirection();
+        // Get the light's direction. Transformed to view space.
+        vec3 lightDirection();
 
         // Calculate the ambient light component.
         vec3 calcAmbientLight();
@@ -180,10 +183,9 @@ fragmentShader =
             return mix(color, upperBand2, smoothstep(0.66, 1.0, y));
         }
 
-        vec3 sunDirection()
+        vec3 lightDirection()
         {
-            // To the east.
-            vec4 direction = viewMatrix * vec4(1.0, 1.0, 0.0, 0.0);
+            vec4 direction = viewMatrix * vec4(sunDirection, 0.0);
             return normalize(direction.xyz);
         }
 
@@ -195,7 +197,7 @@ fragmentShader =
         vec3 calcDiffuseLight()
         {
             vec3 normal = normalize(vTransformedNormal);
-            float diffuse = max(dot(normal, sunDirection()), 0.0);
+            float diffuse = max(dot(normal, lightDirection()), 0.0);
             return diffuseColor * diffuse;
         }
     |]
