@@ -63,7 +63,7 @@ update msg model =
                     , camera = newCamera
                     , terrain = newTerrain
                   }
-                , Cmd.none
+                , Navigator.runTileQueries newTerrain newNavigator
                 )
 
 

@@ -6,6 +6,9 @@ import Msg exposing (Msg)
 import Navigator.TileSelector as TileSelector
 import Time
 import Time exposing (Time)
+import Terrain exposing (Terrain)
+import Terrain
+import Terrain.TileQuery exposing (TileQuery)
 import Terrain.TileQuery as TileQuery
 
 
@@ -32,9 +35,17 @@ animate time navigator =
         { navigator | position = newPosition }
 
 
-runTileQueries : Navigator -> Cmd Msg
-runTileQueries navigator =
-    Cmd.batch <| List.map TileQuery.execute <| TileSelector.tiles navigator.position
+runTileQueries : Terrain -> Navigator -> Cmd Msg
+runTileQueries terrain navigator =
+    Cmd.batch <|
+        List.map TileQuery.execute <|
+            removeAlreadyExistingTileQueries terrain <|
+                TileSelector.tiles navigator.position
+
+
+removeAlreadyExistingTileQueries : Terrain -> List TileQuery -> List TileQuery
+removeAlreadyExistingTileQueries terrain tileQueries =
+    List.filter (not << Terrain.haveMatchingTile terrain) tileQueries
 
 
 speed : Float

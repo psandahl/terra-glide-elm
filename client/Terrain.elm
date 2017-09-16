@@ -4,6 +4,7 @@ module Terrain
         , init
         , addTile
         , purgePassedTiles
+        , haveMatchingTile
         , entities
         )
 
@@ -16,6 +17,7 @@ import Math.Matrix4 as Mat
 import Terrain.TileData exposing (TileData)
 import Terrain.Tile exposing (Tile)
 import Terrain.Tile as Tile
+import Terrain.TileQuery exposing (TileQuery)
 import WebGL exposing (Entity)
 
 
@@ -44,6 +46,15 @@ purgePassedTiles position terrain =
             List.filter (keepTile <| tileStart position) terrain.tiles
     in
         { terrain | tiles = keptTiles }
+
+
+haveMatchingTile : Terrain -> TileQuery -> Bool
+haveMatchingTile terrain tileQuery =
+    List.any
+        (\tile ->
+            tile.startX == tileQuery.xPos && tile.startZ == tileQuery.zPos
+        )
+        terrain.tiles
 
 
 entities : Mat4 -> Mat4 -> Environment -> Terrain -> List Entity

@@ -35,6 +35,9 @@ init =
     let
         navigator =
             Navigator.init (vec2 123456 0)
+
+        terrain =
+            Terrain.init
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
@@ -42,13 +45,13 @@ init =
           , environment = Environment.init
           , navigator = navigator
           , skyDome = SkyDome.init
-          , terrain = Terrain.init
+          , terrain = terrain
           , water = Water.init
           , errorMessage = Nothing
           }
         , Cmd.batch
             [ Task.perform WindowSize Window.size
-            , Navigator.runTileQueries navigator
+            , Navigator.runTileQueries terrain navigator
             ]
         )
 
