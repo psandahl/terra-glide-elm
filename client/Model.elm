@@ -14,6 +14,7 @@ import Window exposing (Size)
 -}
 type alias Model =
     { canvasSize : Size
+    , countDown : Int
     , projectionMatrix : Mat4
     , camera : Camera
     , environment : Environment

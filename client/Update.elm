@@ -64,7 +64,11 @@ update msg model =
                     , terrain = newTerrain
                   }
                 , Navigator.runTileQueries newTerrain newNavigator
+                  --, Cmd.none
                 )
+
+        CountDown time ->
+            ( { model | countDown = model.countDown - 1 }, Cmd.none )
 
 
 {-| Convert Http.Error to a string.

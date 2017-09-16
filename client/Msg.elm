@@ -16,3 +16,4 @@ type
     | NewTileData ( Int, Int ) (Result Http.Error TileData)
       -- Animation request, with the time that have passed since last animation.
     | Animate Time
+    | CountDown Time

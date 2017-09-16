@@ -1,5 +1,6 @@
 module Navigator exposing (Navigator, init, animate, runTileQueries)
 
+import Debug
 import Math.Vector2 as Vec2
 import Math.Vector2 exposing (Vec2, vec2)
 import Msg exposing (Msg)
@@ -37,10 +38,14 @@ animate time navigator =
 
 runTileQueries : Terrain -> Navigator -> Cmd Msg
 runTileQueries terrain navigator =
-    Cmd.batch <|
-        List.map TileQuery.execute <|
-            removeAlreadyExistingTileQueries terrain <|
-                TileSelector.tiles navigator.position
+    let
+        foo =
+            Debug.log "runTileQueries" 1
+    in
+        Cmd.batch <|
+            List.map TileQuery.execute <|
+                removeAlreadyExistingTileQueries terrain <|
+                    TileSelector.tiles navigator.position
 
 
 removeAlreadyExistingTileQueries : Terrain -> List TileQuery -> List TileQuery

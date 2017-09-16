@@ -12610,7 +12610,7 @@ var _psandahl$terra_glide$Geometry$terrainHeight = 200;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
 var _psandahl$terra_glide$Geometry$tileVistaAhead = 800;
-var _psandahl$terra_glide$Geometry$tileSize = 50;
+var _psandahl$terra_glide$Geometry$tileSize = 100;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
@@ -12646,6 +12646,9 @@ var _psandahl$terra_glide$Terrain_TileData$decode = A4(
 		'vertices',
 		_elm_lang$core$Json_Decode$list(_psandahl$terra_glide$Terrain_TileData$decodeVertex)));
 
+var _psandahl$terra_glide$Msg$CountDown = function (a) {
+	return {ctor: 'CountDown', _0: a};
+};
 var _psandahl$terra_glide$Msg$Animate = function (a) {
 	return {ctor: 'Animate', _0: a};
 };
@@ -12781,6 +12784,7 @@ var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 		_psandahl$terra_glide$Navigator_TileSelector$farLeft(point));
 	var xFarLeft = _p3._0;
 	var zFarLeft = _p3._1;
+	var foo = A2(_elm_lang$core$Debug$log, 'tiles, point = ', point);
 	return A2(
 		_elm_lang$core$List$concatMap,
 		A2(_psandahl$terra_glide$Navigator_TileSelector$tileRow, xFarLeft, xFarRight),
@@ -12962,6 +12966,7 @@ var _psandahl$terra_glide$Navigator$removeAlreadyExistingTileQueries = F2(
 	});
 var _psandahl$terra_glide$Navigator$runTileQueries = F2(
 	function (terrain, navigator) {
+		var foo = A2(_elm_lang$core$Debug$log, 'runTileQueries', 1);
 		return _elm_lang$core$Platform_Cmd$batch(
 			A2(
 				_elm_lang$core$List$map,
@@ -13291,10 +13296,27 @@ var _psandahl$terra_glide$Water$Vertex = function (a) {
 	return {position: a};
 };
 
-var _psandahl$terra_glide$Model$Model = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {canvasSize: a, projectionMatrix: b, camera: c, environment: d, navigator: e, skyDome: f, terrain: g, water: h, errorMessage: i};
-	});
+var _psandahl$terra_glide$Model$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return {canvasSize: a, countDown: b, projectionMatrix: c, camera: d, environment: e, navigator: f, skyDome: g, terrain: h, water: i, errorMessage: j};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 
 var _psandahl$terra_glide$Projection$defaultWindowSize = {width: 800, height: 600};
 var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
@@ -13367,7 +13389,7 @@ var _psandahl$terra_glide$Update$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			default:
+			case 'Animate':
 				var newNavigator = A2(_psandahl$terra_glide$Navigator$animate, _p1._0, model.navigator);
 				var newCameraPosition = A3(
 					_elm_community$linear_algebra$Math_Vector3$vec3,
@@ -13382,6 +13404,14 @@ var _psandahl$terra_glide$Update$update = F2(
 						model,
 						{navigator: newNavigator, camera: newCamera, terrain: newTerrain}),
 					_1: A2(_psandahl$terra_glide$Navigator$runTileQueries, newTerrain, newNavigator)
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{countDown: model.countDown - 1}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
@@ -13435,7 +13465,7 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 			_0: _elm_lang$window$Window$resizes(_psandahl$terra_glide$Msg$WindowSize),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$animation_frame$AnimationFrame$diffs(_psandahl$terra_glide$Msg$Animate),
+				_0: (_elm_lang$core$Native_Utils.cmp(model.countDown, 0) > 0) ? A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _psandahl$terra_glide$Msg$CountDown) : _elm_lang$animation_frame$AnimationFrame$diffs(_psandahl$terra_glide$Msg$Animate),
 				_1: {ctor: '[]'}
 			}
 		});
@@ -13448,6 +13478,7 @@ var _psandahl$terra_glide$Main$init = function () {
 		ctor: '_Tuple2',
 		_0: {
 			canvasSize: _psandahl$terra_glide$Projection$defaultWindowSize,
+			countDown: 60,
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,

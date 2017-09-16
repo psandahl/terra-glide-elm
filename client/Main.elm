@@ -13,6 +13,7 @@ import Msg exposing (Msg(..))
 import Projection
 import SkyDome
 import Task
+import Time
 import Update
 import View
 import Water
@@ -40,6 +41,7 @@ init =
             Terrain.init
     in
         ( { canvasSize = Projection.defaultWindowSize
+          , countDown = 60
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
           , camera = Camera.set (vec3 123456 Geometry.cameraHeight 0) 0
           , environment = Environment.init
@@ -60,5 +62,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Window.resizes WindowSize
-        , AnimationFrame.diffs Animate
+        , if model.countDown > 0 then
+            Time.every Time.second CountDown
+          else
+            AnimationFrame.diffs Animate
         ]

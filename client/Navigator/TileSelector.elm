@@ -1,5 +1,6 @@
 module Navigator.TileSelector exposing (tiles)
 
+import Debug
 import Geometry
 import Math.Vector2 exposing (Vec2, vec2)
 import Math.Vector2 as Vec2
@@ -9,6 +10,9 @@ import Terrain.TileQuery exposing (TileQuery)
 tiles : Vec2 -> List TileQuery
 tiles point =
     let
+        foo =
+            Debug.log "tiles, point = " point
+
         ( xFarLeft, zFarLeft ) =
             tileStartFor <| farLeft point
 
