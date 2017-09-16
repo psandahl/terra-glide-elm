@@ -13122,6 +13122,14 @@ var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
 		return {startX: a, startZ: b, width: c, depth: d, mesh: e};
 	});
 
+var _psandahl$terra_glide$Terrain$tileStart = function (position) {
+	return _psandahl$terra_glide$Geometry$tileSize * ((_elm_lang$core$Basics$floor(
+		_elm_community$linear_algebra$Math_Vector2$getY(position)) / _psandahl$terra_glide$Geometry$tileSize) | 0);
+};
+var _psandahl$terra_glide$Terrain$keepTile = F2(
+	function (startZ, tile) {
+		return _elm_lang$core$Native_Utils.cmp(tile.startZ, startZ) > -1;
+	});
 var _psandahl$terra_glide$Terrain$generateIndices = function (tileSize) {
 	return A2(
 		_elm_lang$core$List$concatMap,
@@ -13157,6 +13165,17 @@ var _psandahl$terra_glide$Terrain$entities = F4(
 				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix),
 				environment),
 			terrain.tiles);
+	});
+var _psandahl$terra_glide$Terrain$purgePassedTiles = F2(
+	function (position, terrain) {
+		var keptTiles = A2(
+			_elm_lang$core$List$filter,
+			_psandahl$terra_glide$Terrain$keepTile(
+				_psandahl$terra_glide$Terrain$tileStart(position)),
+			terrain.tiles);
+		return _elm_lang$core$Native_Utils.update(
+			terrain,
+			{tiles: keptTiles});
 	});
 var _psandahl$terra_glide$Terrain$addTile = F3(
 	function (pos, tileData, terrain) {
@@ -13334,11 +13353,12 @@ var _psandahl$terra_glide$Update$update = F2(
 					_psandahl$terra_glide$Geometry$cameraHeight,
 					_elm_community$linear_algebra$Math_Vector2$getY(newNavigator.position));
 				var newCamera = A2(_psandahl$terra_glide$Camera$set, newCameraPosition, 0);
+				var newTerrain = A2(_psandahl$terra_glide$Terrain$purgePassedTiles, newNavigator.position, model.terrain);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{navigator: newNavigator, camera: newCamera}),
+						{navigator: newNavigator, camera: newCamera, terrain: newTerrain}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}

@@ -3,11 +3,14 @@ module Terrain
         ( Terrain
         , init
         , addTile
+        , purgePassedTiles
         , entities
         )
 
 import Environment exposing (Environment)
 import Geometry
+import Math.Vector2 exposing (Vec2)
+import Math.Vector2 as Vec2
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Terrain.TileData exposing (TileData)
@@ -32,6 +35,15 @@ init =
 addTile : ( Int, Int ) -> TileData -> Terrain -> Terrain
 addTile pos tileData terrain =
     { terrain | tiles = Tile.init pos terrain.indices tileData :: terrain.tiles }
+
+
+purgePassedTiles : Vec2 -> Terrain -> Terrain
+purgePassedTiles position terrain =
+    let
+        keptTiles =
+            List.filter (keepTile <| tileStart position) terrain.tiles
+    in
+        { terrain | tiles = keptTiles }
 
 
 entities : Mat4 -> Mat4 -> Environment -> Terrain -> List Entity
@@ -72,3 +84,13 @@ generateIndices tileSize =
         )
     <|
         List.range 0 (tileSize - 2)
+
+
+keepTile : Int -> Tile -> Bool
+keepTile startZ tile =
+    tile.startZ >= startZ
+
+
+tileStart : Vec2 -> Int
+tileStart position =
+    Geometry.tileSize * (floor (Vec2.getY position) // Geometry.tileSize)

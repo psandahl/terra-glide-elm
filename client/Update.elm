@@ -54,8 +54,17 @@ update msg model =
 
                 newCamera =
                     Camera.set newCameraPosition 0
+
+                newTerrain =
+                    Terrain.purgePassedTiles newNavigator.position model.terrain
             in
-                ( { model | navigator = newNavigator, camera = newCamera }, Cmd.none )
+                ( { model
+                    | navigator = newNavigator
+                    , camera = newCamera
+                    , terrain = newTerrain
+                  }
+                , Cmd.none
+                )
 
 
 {-| Convert Http.Error to a string.
