@@ -12787,6 +12787,8 @@ var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 		A2(_elm_lang$core$List$range, (zFarLeft / _psandahl$terra_glide$Geometry$tileSize) | 0, (zNearLeft / _psandahl$terra_glide$Geometry$tileSize) | 0));
 };
 
+var _psandahl$terra_glide$Navigator$moveDirection = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, 1);
+var _psandahl$terra_glide$Navigator$speed = 5;
 var _psandahl$terra_glide$Navigator$runTileQueries = function (navigator) {
 	return _elm_lang$core$Platform_Cmd$batch(
 		A2(
@@ -12794,6 +12796,19 @@ var _psandahl$terra_glide$Navigator$runTileQueries = function (navigator) {
 			_psandahl$terra_glide$Terrain_TileQuery$execute,
 			_psandahl$terra_glide$Navigator_TileSelector$tiles(navigator.position)));
 };
+var _psandahl$terra_glide$Navigator$animate = F2(
+	function (time, navigator) {
+		var newPosition = A2(
+			_elm_community$linear_algebra$Math_Vector2$add,
+			navigator.position,
+			A2(
+				_elm_community$linear_algebra$Math_Vector2$scale,
+				_elm_lang$core$Time$inSeconds(time) * _psandahl$terra_glide$Navigator$speed,
+				_psandahl$terra_glide$Navigator$moveDirection));
+		return _elm_lang$core$Native_Utils.update(
+			navigator,
+			{position: newPosition});
+	});
 var _psandahl$terra_glide$Navigator$init = function (position) {
 	return {position: position};
 };
@@ -13312,7 +13327,20 @@ var _psandahl$terra_glide$Update$update = F2(
 					};
 				}
 			default:
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				var newNavigator = A2(_psandahl$terra_glide$Navigator$animate, _p1._0, model.navigator);
+				var newCameraPosition = A3(
+					_elm_community$linear_algebra$Math_Vector3$vec3,
+					_elm_community$linear_algebra$Math_Vector2$getX(newNavigator.position),
+					_psandahl$terra_glide$Geometry$cameraHeight,
+					_elm_community$linear_algebra$Math_Vector2$getY(newNavigator.position));
+				var newCamera = A2(_psandahl$terra_glide$Camera$set, newCameraPosition, 0);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{navigator: newNavigator, camera: newCamera}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 
@@ -13365,18 +13393,14 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 			_0: _elm_lang$window$Window$resizes(_psandahl$terra_glide$Msg$WindowSize),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$animation_frame$AnimationFrame$diffs(
-					function (_p0) {
-						return _psandahl$terra_glide$Msg$Animate(
-							_elm_lang$core$Time$inSeconds(_p0));
-					}),
+				_0: _elm_lang$animation_frame$AnimationFrame$diffs(_psandahl$terra_glide$Msg$Animate),
 				_1: {ctor: '[]'}
 			}
 		});
 };
 var _psandahl$terra_glide$Main$init = function () {
 	var navigator = _psandahl$terra_glide$Navigator$init(
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 2000, 2300));
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 123456, 0));
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -13384,7 +13408,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2000, _psandahl$terra_glide$Geometry$cameraHeight, 2300),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 123456, _psandahl$terra_glide$Geometry$cameraHeight, 0),
 				0),
 			environment: _psandahl$terra_glide$Environment$init,
 			navigator: navigator,

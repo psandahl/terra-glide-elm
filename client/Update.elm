@@ -1,9 +1,14 @@
 module Update exposing (update)
 
+import Camera
 import Debug
+import Geometry
 import Http
+import Math.Vector2 as Vec2
+import Math.Vector3 exposing (vec3)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
+import Navigator
 import Projection
 import Terrain
 
@@ -37,8 +42,20 @@ update msg model =
                     in
                         ( { model | errorMessage = Just errMsg }, Cmd.none )
 
-        Animate diff ->
-            ( model, Cmd.none )
+        Animate time ->
+            let
+                newNavigator =
+                    Navigator.animate time model.navigator
+
+                newCameraPosition =
+                    vec3 (Vec2.getX newNavigator.position)
+                        Geometry.cameraHeight
+                        (Vec2.getY newNavigator.position)
+
+                newCamera =
+                    Camera.set newCameraPosition 0
+            in
+                ( { model | navigator = newNavigator, camera = newCamera }, Cmd.none )
 
 
 {-| Convert Http.Error to a string.

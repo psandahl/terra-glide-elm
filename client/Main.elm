@@ -13,7 +13,6 @@ import Msg exposing (Msg(..))
 import Projection
 import SkyDome
 import Task
-import Time
 import Update
 import View
 import Water
@@ -35,11 +34,11 @@ init : ( Model, Cmd Msg )
 init =
     let
         navigator =
-            Navigator.init (vec2 2000 2300)
+            Navigator.init (vec2 123456 0)
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 2000 Geometry.cameraHeight 2300) 0
+          , camera = Camera.set (vec3 123456 Geometry.cameraHeight 0) 0
           , environment = Environment.init
           , navigator = navigator
           , skyDome = SkyDome.init
@@ -58,5 +57,5 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Window.resizes WindowSize
-        , AnimationFrame.diffs (Animate << Time.inSeconds)
+        , AnimationFrame.diffs Animate
         ]
