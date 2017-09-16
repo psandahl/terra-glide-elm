@@ -47,45 +47,42 @@ tileStartFor p =
     )
 
 
-{-| The far left point that is reached by from current point given the vista.
--}
+
+-- In the below left is -x and right is x. Far is -z and near is z. I.e. it's
+-- from a position facing the camera.
+
+
 farLeft : Vec2 -> Vec2
 farLeft p =
     let
         pp =
-            vec2 -Geometry.tileVista -Geometry.tileVista
+            vec2 -Geometry.tileVistaAside 0
     in
         Vec2.add p pp
 
 
-{-| The far right point that is reached by from current point given the vista.
--}
 farRight : Vec2 -> Vec2
 farRight p =
     let
         pp =
-            vec2 Geometry.tileVista -Geometry.tileVista
+            vec2 Geometry.tileVistaAside 0
     in
         Vec2.add p pp
 
 
-{-| The near left point that is reached by from current point given the vista.
--}
 nearLeft : Vec2 -> Vec2
 nearLeft p =
     let
         pp =
-            vec2 -Geometry.tileVista Geometry.tileVista
+            vec2 -Geometry.tileVistaAside Geometry.tileVistaAhead
     in
         Vec2.add p pp
 
 
-{-| The near right point that is reached by from current point given the vista.
--}
 nearRight : Vec2 -> Vec2
 nearRight p =
     let
         pp =
-            vec2 Geometry.tileVista Geometry.tileVista
+            vec2 Geometry.tileVistaAside Geometry.tileVistaAhead
     in
         Vec2.add p pp

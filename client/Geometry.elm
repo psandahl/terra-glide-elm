@@ -1,7 +1,8 @@
 module Geometry
     exposing
         ( tileSize
-        , tileVista
+        , tileVistaAhead
+        , tileVistaAside
         , terrainHeight
         , waterHeight
         , cameraHeight
@@ -16,14 +17,19 @@ module Geometry
 -}
 tileSize : Int
 tileSize =
-    10
+    50
 
 
 {-| The radius how far tiles must be available from the view position.
 -}
-tileVista : Float
-tileVista =
-    300
+tileVistaAhead : Float
+tileVistaAhead =
+    800
+
+
+tileVistaAside : Float
+tileVistaAside =
+    600
 
 
 {-| The max height of the terrain.

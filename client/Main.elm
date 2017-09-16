@@ -35,11 +35,11 @@ init : ( Model, Cmd Msg )
 init =
     let
         navigator =
-            Navigator.init (vec2 2000 2000)
+            Navigator.init (vec2 2000 2300)
     in
         ( { canvasSize = Projection.defaultWindowSize
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 2000 Geometry.cameraHeight 2000) 0
+          , camera = Camera.set (vec3 2000 Geometry.cameraHeight 2300) 0
           , environment = Environment.init
           , navigator = navigator
           , skyDome = SkyDome.init

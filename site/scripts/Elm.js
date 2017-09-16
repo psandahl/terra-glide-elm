@@ -12608,8 +12608,9 @@ var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
 var _psandahl$terra_glide$Geometry$waterHeight = 50;
 var _psandahl$terra_glide$Geometry$terrainHeight = 200;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
-var _psandahl$terra_glide$Geometry$tileVista = 300;
-var _psandahl$terra_glide$Geometry$tileSize = 10;
+var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
+var _psandahl$terra_glide$Geometry$tileVistaAhead = 800;
+var _psandahl$terra_glide$Geometry$tileSize = 50;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
@@ -12724,19 +12725,19 @@ var _psandahl$terra_glide$Terrain_TileQuery$TileQuery = F5(
 	});
 
 var _psandahl$terra_glide$Navigator_TileSelector$nearRight = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Geometry$tileVista, _psandahl$terra_glide$Geometry$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Geometry$tileVistaAside, _psandahl$terra_glide$Geometry$tileVistaAhead);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$nearLeft = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Geometry$tileVista, _psandahl$terra_glide$Geometry$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Geometry$tileVistaAside, _psandahl$terra_glide$Geometry$tileVistaAhead);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$farRight = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Geometry$tileVista, 0 - _psandahl$terra_glide$Geometry$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, _psandahl$terra_glide$Geometry$tileVistaAside, 0);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$farLeft = function (p) {
-	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Geometry$tileVista, 0 - _psandahl$terra_glide$Geometry$tileVista);
+	var pp = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0 - _psandahl$terra_glide$Geometry$tileVistaAside, 0);
 	return A2(_elm_community$linear_algebra$Math_Vector2$add, p, pp);
 };
 var _psandahl$terra_glide$Navigator_TileSelector$tileStartFor = function (p) {
@@ -13375,7 +13376,7 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 };
 var _psandahl$terra_glide$Main$init = function () {
 	var navigator = _psandahl$terra_glide$Navigator$init(
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 2000, 2000));
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 2000, 2300));
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -13383,7 +13384,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2000, _psandahl$terra_glide$Geometry$cameraHeight, 2000),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2000, _psandahl$terra_glide$Geometry$cameraHeight, 2300),
 				0),
 			environment: _psandahl$terra_glide$Environment$init,
 			navigator: navigator,
