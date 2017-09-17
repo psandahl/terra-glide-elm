@@ -53,7 +53,7 @@ init =
           }
         , Cmd.batch
             [ Task.perform WindowSize Window.size
-            , Navigator.runTileQueries terrain navigator
+            , Navigator.runTileQueries <| Navigator.proposeTileQueries navigator
             ]
         )
 

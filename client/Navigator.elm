@@ -1,14 +1,18 @@
-module Navigator exposing (Navigator, init, animate, runTileQueries)
+module Navigator
+    exposing
+        ( Navigator
+        , init
+        , animate
+        , proposeTileQueries
+        , runTileQueries
+        )
 
-import Debug
 import Math.Vector2 as Vec2
 import Math.Vector2 exposing (Vec2, vec2)
 import Msg exposing (Msg)
 import Navigator.TileSelector as TileSelector
 import Time
 import Time exposing (Time)
-import Terrain exposing (Terrain)
-import Terrain
 import Terrain.TileQuery exposing (TileQuery)
 import Terrain.TileQuery as TileQuery
 
@@ -36,21 +40,15 @@ animate time navigator =
         { navigator | position = newPosition }
 
 
-runTileQueries : Terrain -> Navigator -> Cmd Msg
-runTileQueries terrain navigator =
-    let
-        foo =
-            Debug.log "runTileQueries" 1
-    in
-        Cmd.batch <|
-            List.map TileQuery.execute <|
-                removeAlreadyExistingTileQueries terrain <|
-                    TileSelector.tiles navigator.position
+runTileQueries : List TileQuery -> Cmd Msg
+runTileQueries tileQueries =
+    Cmd.batch <|
+        List.map TileQuery.execute tileQueries
 
 
-removeAlreadyExistingTileQueries : Terrain -> List TileQuery -> List TileQuery
-removeAlreadyExistingTileQueries terrain tileQueries =
-    List.filter (not << Terrain.haveMatchingTile terrain) tileQueries
+proposeTileQueries : Navigator -> List TileQuery
+proposeTileQueries navigator =
+    TileSelector.tiles navigator.position
 
 
 speed : Float

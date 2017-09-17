@@ -55,15 +55,21 @@ update msg model =
                 newCamera =
                     Camera.set newCameraPosition 0
 
-                newTerrain =
+                purgedTerrain =
                     Terrain.purgePassedTiles newNavigator.position model.terrain
+
+                proposedTiles =
+                    Navigator.proposeTileQueries newNavigator
+
+                ( acceptedTiles, newTerrain ) =
+                    Terrain.addTileQueries proposedTiles purgedTerrain
             in
                 ( { model
                     | navigator = newNavigator
                     , camera = newCamera
                     , terrain = newTerrain
                   }
-                , Navigator.runTileQueries newTerrain newNavigator
+                , Navigator.runTileQueries acceptedTiles
                   --, Cmd.none
                 )
 

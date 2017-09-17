@@ -3,8 +3,8 @@ module Terrain
         ( Terrain
         , init
         , addTile
+        , addTileQueries
         , purgePassedTiles
-        , haveMatchingTile
         , entities
         )
 
@@ -23,6 +23,7 @@ import WebGL exposing (Entity)
 
 type alias Terrain =
     { tiles : List Tile
+    , tileQueries : List TileQuery
     , indices : List ( Int, Int, Int )
     }
 
@@ -30,6 +31,7 @@ type alias Terrain =
 init : Terrain
 init =
     { tiles = []
+    , tileQueries = []
     , indices = generateIndices (Geometry.tileSize + 1) -- +1 is glue between tiles
     }
 
@@ -39,22 +41,37 @@ addTile pos tileData terrain =
     { terrain | tiles = Tile.init pos terrain.indices tileData :: terrain.tiles }
 
 
+addTileQueries : List TileQuery -> Terrain -> ( List TileQuery, Terrain )
+addTileQueries tileQueries terrain =
+    let
+        acceptedQueries =
+            List.filter (not << haveMatchingTileQuery terrain) tileQueries
+
+        newTerrain =
+            { terrain | tileQueries = terrain.tileQueries ++ acceptedQueries }
+    in
+        ( acceptedQueries, newTerrain )
+
+
 purgePassedTiles : Vec2 -> Terrain -> Terrain
 purgePassedTiles position terrain =
     let
         keptTiles =
             List.filter (keepTile <| tileStart position) terrain.tiles
+
+        keptTileQueries =
+            List.filter (keepTileQuery <| tileStart position) terrain.tileQueries
     in
-        { terrain | tiles = keptTiles }
+        { terrain | tiles = keptTiles, tileQueries = keptTileQueries }
 
 
-haveMatchingTile : Terrain -> TileQuery -> Bool
-haveMatchingTile terrain tileQuery =
+haveMatchingTileQuery : Terrain -> TileQuery -> Bool
+haveMatchingTileQuery terrain tileQuery =
     List.any
-        (\tile ->
-            tile.startX == tileQuery.xPos && tile.startZ == tileQuery.zPos
+        (\tq ->
+            tq.xPos == tileQuery.xPos && tq.zPos == tileQuery.zPos
         )
-        terrain.tiles
+        terrain.tileQueries
 
 
 entities : Mat4 -> Mat4 -> Environment -> Terrain -> List Entity
@@ -100,6 +117,11 @@ generateIndices tileSize =
 keepTile : Int -> Tile -> Bool
 keepTile startZ tile =
     tile.startZ >= startZ
+
+
+keepTileQuery : Int -> TileQuery -> Bool
+keepTileQuery startZ tileQuery =
+    tileQuery.zPos >= startZ
 
 
 tileStart : Vec2 -> Int

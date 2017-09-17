@@ -12791,191 +12791,15 @@ var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 		A2(_elm_lang$core$List$range, (zFarLeft / _psandahl$terra_glide$Geometry$tileSize) | 0, (zNearLeft / _psandahl$terra_glide$Geometry$tileSize) | 0));
 };
 
-var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform float terrainHeight;\n        uniform vec3 ambientColor;\n        uniform float ambientStrength;\n        uniform vec3 diffuseColor;\n        uniform vec3 sunDirection;\n        uniform vec3 lowerTerrainLower;\n        uniform vec3 lowerTerrainUpper;\n        uniform vec3 upperTerrainLower;\n        uniform vec3 upperTerrainUpper;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the light\'s direction. Transformed to view space.\n        vec3 lightDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            float y = vPosition.y / terrainHeight;\n\n            vec3 color = mix(lowerTerrainLower, lowerTerrainUpper, smoothstep(0.0, 0.33, y));\n            color = mix(color, upperTerrainLower, smoothstep(0.33, 0.66, y));\n            return mix(color, upperTerrainUpper, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 lightDirection()\n        {\n            vec4 direction = viewMatrix * vec4(sunDirection, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, lightDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
-var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
-var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
-	function (tgt, src) {
-		tuplify:
-		while (true) {
-			var _p0 = A2(_elm_lang$core$List$take, 3, src);
-			if ((((_p0.ctor === '::') && (_p0._1.ctor === '::')) && (_p0._1._1.ctor === '::')) && (_p0._1._1._1.ctor === '[]')) {
-				var _v1 = {
-					ctor: '::',
-					_0: {ctor: '_Tuple3', _0: _p0._0, _1: _p0._1._0, _2: _p0._1._1._0},
-					_1: tgt
-				},
-					_v2 = A2(_elm_lang$core$List$drop, 3, src);
-				tgt = _v1;
-				src = _v2;
-				continue tuplify;
-			} else {
-				return _elm_lang$core$List$reverse(tgt);
-			}
-		}
-	});
-var _psandahl$terra_glide$Terrain_Tile$toEntity = F4(
-	function (viewMatrix, mvpMatrix, environment, tile) {
-		return A5(
-			_elm_community$webgl$WebGL$entityWith,
-			{
-				ctor: '::',
-				_0: _elm_community$webgl$WebGL_Settings_DepthTest$default,
-				_1: {
-					ctor: '::',
-					_0: _elm_community$webgl$WebGL_Settings$cullFace(_elm_community$webgl$WebGL_Settings$back),
-					_1: {ctor: '[]'}
-				}
-			},
-			_psandahl$terra_glide$Terrain_Tile$vertexShader,
-			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
-			tile.mesh,
-			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, terrainHeight: _psandahl$terra_glide$Geometry$terrainHeight, ambientColor: environment.ambientColor, ambientStrength: environment.ambientStrength, diffuseColor: environment.diffuseColor, sunDirection: environment.sunDirection, lowerTerrainLower: environment.lowerTerrain.lower, lowerTerrainUpper: environment.lowerTerrain.upper, upperTerrainLower: environment.upperTerrain.lower, upperTerrainUpper: environment.upperTerrain.upper});
-	});
-var _psandahl$terra_glide$Terrain_Tile$checkIndices = F2(
-	function (fromServer, fromLocal) {
-		var deb = A2(
-			_elm_lang$core$Debug$log,
-			'(server, local): ',
-			{
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$List$length(fromServer),
-				_1: _elm_lang$core$List$length(fromLocal)
-			});
-		return fromLocal;
-	});
-var _psandahl$terra_glide$Terrain_Tile$checkHeights = function (xs) {
-	return A2(
-		_elm_lang$core$List$map,
-		function (v) {
-			var y = _elm_community$linear_algebra$Math_Vector3$getY(v.position);
-			return (_elm_lang$core$Native_Utils.cmp(y, _psandahl$terra_glide$Geometry$terrainHeight) > 0) ? A2(_elm_lang$core$Debug$log, 'Error: > maxHeight', v) : v;
-		},
-		xs);
-};
-var _psandahl$terra_glide$Terrain_Tile$init = F3(
-	function (_p1, indices, tileData) {
-		var _p2 = _p1;
-		return {
-			startX: _p2._0,
-			startZ: _p2._1,
-			width: tileData.width,
-			depth: tileData.depth,
-			mesh: A2(_elm_community$webgl$WebGL$indexedTriangles, tileData.vertices, indices)
-		};
-	});
-var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
-	function (a, b, c, d, e) {
-		return {startX: a, startZ: b, width: c, depth: d, mesh: e};
-	});
-
-var _psandahl$terra_glide$Terrain$tileStart = function (position) {
-	return _psandahl$terra_glide$Geometry$tileSize * ((_elm_lang$core$Basics$floor(
-		_elm_community$linear_algebra$Math_Vector2$getY(position)) / _psandahl$terra_glide$Geometry$tileSize) | 0);
-};
-var _psandahl$terra_glide$Terrain$keepTile = F2(
-	function (startZ, tile) {
-		return _elm_lang$core$Native_Utils.cmp(tile.startZ, startZ) > -1;
-	});
-var _psandahl$terra_glide$Terrain$generateIndices = function (tileSize) {
-	return A2(
-		_elm_lang$core$List$concatMap,
-		function (row) {
-			return A2(
-				_elm_lang$core$List$concatMap,
-				function (col) {
-					var lowerLeft = ((row + 1) * tileSize) + col;
-					var lowerRight = lowerLeft + 1;
-					var upperLeft = (row * tileSize) + col;
-					var upperRight = upperLeft + 1;
-					return {
-						ctor: '::',
-						_0: {ctor: '_Tuple3', _0: upperRight, _1: upperLeft, _2: lowerLeft},
-						_1: {
-							ctor: '::',
-							_0: {ctor: '_Tuple3', _0: upperRight, _1: lowerLeft, _2: lowerRight},
-							_1: {ctor: '[]'}
-						}
-					};
-				},
-				A2(_elm_lang$core$List$range, 0, tileSize - 2));
-		},
-		A2(_elm_lang$core$List$range, 0, tileSize - 2));
-};
-var _psandahl$terra_glide$Terrain$entities = F4(
-	function (projectionMatrix, viewMatrix, environment, terrain) {
-		return A2(
-			_elm_lang$core$List$map,
-			A3(
-				_psandahl$terra_glide$Terrain_Tile$toEntity,
-				viewMatrix,
-				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix),
-				environment),
-			terrain.tiles);
-	});
-var _psandahl$terra_glide$Terrain$haveMatchingTile = F2(
-	function (terrain, tileQuery) {
-		return A2(
-			_elm_lang$core$List$any,
-			function (tile) {
-				return _elm_lang$core$Native_Utils.eq(tile.startX, tileQuery.xPos) && _elm_lang$core$Native_Utils.eq(tile.startZ, tileQuery.zPos);
-			},
-			terrain.tiles);
-	});
-var _psandahl$terra_glide$Terrain$purgePassedTiles = F2(
-	function (position, terrain) {
-		var keptTiles = A2(
-			_elm_lang$core$List$filter,
-			_psandahl$terra_glide$Terrain$keepTile(
-				_psandahl$terra_glide$Terrain$tileStart(position)),
-			terrain.tiles);
-		return _elm_lang$core$Native_Utils.update(
-			terrain,
-			{tiles: keptTiles});
-	});
-var _psandahl$terra_glide$Terrain$addTile = F3(
-	function (pos, tileData, terrain) {
-		return _elm_lang$core$Native_Utils.update(
-			terrain,
-			{
-				tiles: {
-					ctor: '::',
-					_0: A3(_psandahl$terra_glide$Terrain_Tile$init, pos, terrain.indices, tileData),
-					_1: terrain.tiles
-				}
-			});
-	});
-var _psandahl$terra_glide$Terrain$init = {
-	tiles: {ctor: '[]'},
-	indices: _psandahl$terra_glide$Terrain$generateIndices(_psandahl$terra_glide$Geometry$tileSize + 1)
-};
-var _psandahl$terra_glide$Terrain$Terrain = F2(
-	function (a, b) {
-		return {tiles: a, indices: b};
-	});
-
 var _psandahl$terra_glide$Navigator$moveDirection = A2(_elm_community$linear_algebra$Math_Vector2$vec2, 0, 1);
 var _psandahl$terra_glide$Navigator$speed = 5;
-var _psandahl$terra_glide$Navigator$removeAlreadyExistingTileQueries = F2(
-	function (terrain, tileQueries) {
-		return A2(
-			_elm_lang$core$List$filter,
-			function (_p0) {
-				return !A2(_psandahl$terra_glide$Terrain$haveMatchingTile, terrain, _p0);
-			},
-			tileQueries);
-	});
-var _psandahl$terra_glide$Navigator$runTileQueries = F2(
-	function (terrain, navigator) {
-		var foo = A2(_elm_lang$core$Debug$log, 'runTileQueries', 1);
-		return _elm_lang$core$Platform_Cmd$batch(
-			A2(
-				_elm_lang$core$List$map,
-				_psandahl$terra_glide$Terrain_TileQuery$execute,
-				A2(
-					_psandahl$terra_glide$Navigator$removeAlreadyExistingTileQueries,
-					terrain,
-					_psandahl$terra_glide$Navigator_TileSelector$tiles(navigator.position))));
-	});
+var _psandahl$terra_glide$Navigator$proposeTileQueries = function (navigator) {
+	return _psandahl$terra_glide$Navigator_TileSelector$tiles(navigator.position);
+};
+var _psandahl$terra_glide$Navigator$runTileQueries = function (tileQueries) {
+	return _elm_lang$core$Platform_Cmd$batch(
+		A2(_elm_lang$core$List$map, _psandahl$terra_glide$Terrain_TileQuery$execute, tileQueries));
+};
 var _psandahl$terra_glide$Navigator$animate = F2(
 	function (time, navigator) {
 		var newPosition = A2(
@@ -13225,6 +13049,193 @@ var _psandahl$terra_glide$SkyDome$Vertex = function (a) {
 	return {position: a};
 };
 
+var _psandahl$terra_glide$Terrain_Tile$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 viewMatrix;\n        uniform float terrainHeight;\n        uniform vec3 ambientColor;\n        uniform float ambientStrength;\n        uniform vec3 diffuseColor;\n        uniform vec3 sunDirection;\n        uniform vec3 lowerTerrainLower;\n        uniform vec3 lowerTerrainUpper;\n        uniform vec3 upperTerrainLower;\n        uniform vec3 upperTerrainUpper;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        // Calculate the texture color for the fragment.\n        vec3 baseColor();\n\n        // Get the light\'s direction. Transformed to view space.\n        vec3 lightDirection();\n\n        // Calculate the ambient light component.\n        vec3 calcAmbientLight();\n\n        // Calculate the diffuse light component.\n        vec3 calcDiffuseLight();\n\n        void main()\n        {\n            vec3 fragmentColor = baseColor() *\n                (calcAmbientLight() + calcDiffuseLight());\n            gl_FragColor = vec4(fragmentColor, 1.0);\n        }\n\n        vec3 baseColor()\n        {\n            float y = vPosition.y / terrainHeight;\n\n            vec3 color = mix(lowerTerrainLower, lowerTerrainUpper, smoothstep(0.0, 0.33, y));\n            color = mix(color, upperTerrainLower, smoothstep(0.33, 0.66, y));\n            return mix(color, upperTerrainUpper, smoothstep(0.66, 1.0, y));\n        }\n\n        vec3 lightDirection()\n        {\n            vec4 direction = viewMatrix * vec4(sunDirection, 0.0);\n            return normalize(direction.xyz);\n        }\n\n        vec3 calcAmbientLight()\n        {\n            return ambientColor * ambientStrength;\n        }\n\n        vec3 calcDiffuseLight()\n        {\n            vec3 normal = normalize(vTransformedNormal);\n            float diffuse = max(dot(normal, lightDirection()), 0.0);\n            return diffuseColor * diffuse;\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n        attribute vec3 normal;\n\n        uniform mat4 viewMatrix;\n        uniform mat4 mvpMatrix;\n\n        varying vec3 vPosition;\n        varying vec3 vTransformedNormal;\n\n        void main()\n        {\n            vPosition = position;\n            vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
+var _psandahl$terra_glide$Terrain_Tile$tuplify = F2(
+	function (tgt, src) {
+		tuplify:
+		while (true) {
+			var _p0 = A2(_elm_lang$core$List$take, 3, src);
+			if ((((_p0.ctor === '::') && (_p0._1.ctor === '::')) && (_p0._1._1.ctor === '::')) && (_p0._1._1._1.ctor === '[]')) {
+				var _v1 = {
+					ctor: '::',
+					_0: {ctor: '_Tuple3', _0: _p0._0, _1: _p0._1._0, _2: _p0._1._1._0},
+					_1: tgt
+				},
+					_v2 = A2(_elm_lang$core$List$drop, 3, src);
+				tgt = _v1;
+				src = _v2;
+				continue tuplify;
+			} else {
+				return _elm_lang$core$List$reverse(tgt);
+			}
+		}
+	});
+var _psandahl$terra_glide$Terrain_Tile$toEntity = F4(
+	function (viewMatrix, mvpMatrix, environment, tile) {
+		return A5(
+			_elm_community$webgl$WebGL$entityWith,
+			{
+				ctor: '::',
+				_0: _elm_community$webgl$WebGL_Settings_DepthTest$default,
+				_1: {
+					ctor: '::',
+					_0: _elm_community$webgl$WebGL_Settings$cullFace(_elm_community$webgl$WebGL_Settings$back),
+					_1: {ctor: '[]'}
+				}
+			},
+			_psandahl$terra_glide$Terrain_Tile$vertexShader,
+			_psandahl$terra_glide$Terrain_Tile$fragmentShader,
+			tile.mesh,
+			{viewMatrix: viewMatrix, mvpMatrix: mvpMatrix, terrainHeight: _psandahl$terra_glide$Geometry$terrainHeight, ambientColor: environment.ambientColor, ambientStrength: environment.ambientStrength, diffuseColor: environment.diffuseColor, sunDirection: environment.sunDirection, lowerTerrainLower: environment.lowerTerrain.lower, lowerTerrainUpper: environment.lowerTerrain.upper, upperTerrainLower: environment.upperTerrain.lower, upperTerrainUpper: environment.upperTerrain.upper});
+	});
+var _psandahl$terra_glide$Terrain_Tile$checkIndices = F2(
+	function (fromServer, fromLocal) {
+		var deb = A2(
+			_elm_lang$core$Debug$log,
+			'(server, local): ',
+			{
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$List$length(fromServer),
+				_1: _elm_lang$core$List$length(fromLocal)
+			});
+		return fromLocal;
+	});
+var _psandahl$terra_glide$Terrain_Tile$checkHeights = function (xs) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (v) {
+			var y = _elm_community$linear_algebra$Math_Vector3$getY(v.position);
+			return (_elm_lang$core$Native_Utils.cmp(y, _psandahl$terra_glide$Geometry$terrainHeight) > 0) ? A2(_elm_lang$core$Debug$log, 'Error: > maxHeight', v) : v;
+		},
+		xs);
+};
+var _psandahl$terra_glide$Terrain_Tile$init = F3(
+	function (_p1, indices, tileData) {
+		var _p2 = _p1;
+		return {
+			startX: _p2._0,
+			startZ: _p2._1,
+			width: tileData.width,
+			depth: tileData.depth,
+			mesh: A2(_elm_community$webgl$WebGL$indexedTriangles, tileData.vertices, indices)
+		};
+	});
+var _psandahl$terra_glide$Terrain_Tile$Tile = F5(
+	function (a, b, c, d, e) {
+		return {startX: a, startZ: b, width: c, depth: d, mesh: e};
+	});
+
+var _psandahl$terra_glide$Terrain$tileStart = function (position) {
+	return _psandahl$terra_glide$Geometry$tileSize * ((_elm_lang$core$Basics$floor(
+		_elm_community$linear_algebra$Math_Vector2$getY(position)) / _psandahl$terra_glide$Geometry$tileSize) | 0);
+};
+var _psandahl$terra_glide$Terrain$keepTileQuery = F2(
+	function (startZ, tileQuery) {
+		return _elm_lang$core$Native_Utils.cmp(tileQuery.zPos, startZ) > -1;
+	});
+var _psandahl$terra_glide$Terrain$keepTile = F2(
+	function (startZ, tile) {
+		return _elm_lang$core$Native_Utils.cmp(tile.startZ, startZ) > -1;
+	});
+var _psandahl$terra_glide$Terrain$generateIndices = function (tileSize) {
+	return A2(
+		_elm_lang$core$List$concatMap,
+		function (row) {
+			return A2(
+				_elm_lang$core$List$concatMap,
+				function (col) {
+					var lowerLeft = ((row + 1) * tileSize) + col;
+					var lowerRight = lowerLeft + 1;
+					var upperLeft = (row * tileSize) + col;
+					var upperRight = upperLeft + 1;
+					return {
+						ctor: '::',
+						_0: {ctor: '_Tuple3', _0: upperRight, _1: upperLeft, _2: lowerLeft},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple3', _0: upperRight, _1: lowerLeft, _2: lowerRight},
+							_1: {ctor: '[]'}
+						}
+					};
+				},
+				A2(_elm_lang$core$List$range, 0, tileSize - 2));
+		},
+		A2(_elm_lang$core$List$range, 0, tileSize - 2));
+};
+var _psandahl$terra_glide$Terrain$entities = F4(
+	function (projectionMatrix, viewMatrix, environment, terrain) {
+		return A2(
+			_elm_lang$core$List$map,
+			A3(
+				_psandahl$terra_glide$Terrain_Tile$toEntity,
+				viewMatrix,
+				A2(_elm_community$linear_algebra$Math_Matrix4$mul, projectionMatrix, viewMatrix),
+				environment),
+			terrain.tiles);
+	});
+var _psandahl$terra_glide$Terrain$haveMatchingTileQuery = F2(
+	function (terrain, tileQuery) {
+		return A2(
+			_elm_lang$core$List$any,
+			function (tq) {
+				return _elm_lang$core$Native_Utils.eq(tq.xPos, tileQuery.xPos) && _elm_lang$core$Native_Utils.eq(tq.zPos, tileQuery.zPos);
+			},
+			terrain.tileQueries);
+	});
+var _psandahl$terra_glide$Terrain$purgePassedTiles = F2(
+	function (position, terrain) {
+		var keptTileQueries = A2(
+			_elm_lang$core$List$filter,
+			_psandahl$terra_glide$Terrain$keepTileQuery(
+				_psandahl$terra_glide$Terrain$tileStart(position)),
+			terrain.tileQueries);
+		var keptTiles = A2(
+			_elm_lang$core$List$filter,
+			_psandahl$terra_glide$Terrain$keepTile(
+				_psandahl$terra_glide$Terrain$tileStart(position)),
+			terrain.tiles);
+		return _elm_lang$core$Native_Utils.update(
+			terrain,
+			{tiles: keptTiles, tileQueries: keptTileQueries});
+	});
+var _psandahl$terra_glide$Terrain$addTileQueries = F2(
+	function (tileQueries, terrain) {
+		var acceptedQueries = A2(
+			_elm_lang$core$List$filter,
+			function (_p0) {
+				return !A2(_psandahl$terra_glide$Terrain$haveMatchingTileQuery, terrain, _p0);
+			},
+			tileQueries);
+		var newTerrain = _elm_lang$core$Native_Utils.update(
+			terrain,
+			{
+				tileQueries: A2(_elm_lang$core$Basics_ops['++'], terrain.tileQueries, acceptedQueries)
+			});
+		return {ctor: '_Tuple2', _0: acceptedQueries, _1: newTerrain};
+	});
+var _psandahl$terra_glide$Terrain$addTile = F3(
+	function (pos, tileData, terrain) {
+		return _elm_lang$core$Native_Utils.update(
+			terrain,
+			{
+				tiles: {
+					ctor: '::',
+					_0: A3(_psandahl$terra_glide$Terrain_Tile$init, pos, terrain.indices, tileData),
+					_1: terrain.tiles
+				}
+			});
+	});
+var _psandahl$terra_glide$Terrain$init = {
+	tiles: {ctor: '[]'},
+	tileQueries: {ctor: '[]'},
+	indices: _psandahl$terra_glide$Terrain$generateIndices(_psandahl$terra_glide$Geometry$tileSize + 1)
+};
+var _psandahl$terra_glide$Terrain$Terrain = F3(
+	function (a, b, c) {
+		return {tiles: a, tileQueries: b, indices: c};
+	});
+
 var _psandahl$terra_glide$Water$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform vec3 waterColor;\n\n        void main()\n        {\n            gl_FragColor = vec4(waterColor, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Water$vertexShader = {'src': '\n        precision mediump float;\n\n        attribute vec3 position;\n\n        uniform mat4 mvpMatrix;\n\n        void main()\n        {\n            gl_Position = mvpMatrix * vec4(position, 1.0);\n        }\n    '};
 var _psandahl$terra_glide$Water$indices = {
@@ -13397,13 +13408,17 @@ var _psandahl$terra_glide$Update$update = F2(
 					_psandahl$terra_glide$Geometry$cameraHeight,
 					_elm_community$linear_algebra$Math_Vector2$getY(newNavigator.position));
 				var newCamera = A2(_psandahl$terra_glide$Camera$set, newCameraPosition, 0);
-				var newTerrain = A2(_psandahl$terra_glide$Terrain$purgePassedTiles, newNavigator.position, model.terrain);
+				var purgedTerrain = A2(_psandahl$terra_glide$Terrain$purgePassedTiles, newNavigator.position, model.terrain);
+				var proposedTiles = _psandahl$terra_glide$Navigator$proposeTileQueries(newNavigator);
+				var _p4 = A2(_psandahl$terra_glide$Terrain$addTileQueries, proposedTiles, purgedTerrain);
+				var acceptedTiles = _p4._0;
+				var newTerrain = _p4._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{navigator: newNavigator, camera: newCamera, terrain: newTerrain}),
-					_1: A2(_psandahl$terra_glide$Navigator$runTileQueries, newTerrain, newNavigator)
+					_1: _psandahl$terra_glide$Navigator$runTileQueries(acceptedTiles)
 				};
 			default:
 				return {
@@ -13497,7 +13512,8 @@ var _psandahl$terra_glide$Main$init = function () {
 				_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Msg$WindowSize, _elm_lang$window$Window$size),
 				_1: {
 					ctor: '::',
-					_0: A2(_psandahl$terra_glide$Navigator$runTileQueries, terrain, navigator),
+					_0: _psandahl$terra_glide$Navigator$runTileQueries(
+						_psandahl$terra_glide$Navigator$proposeTileQueries(navigator)),
 					_1: {ctor: '[]'}
 				}
 			})
