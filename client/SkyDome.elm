@@ -103,16 +103,24 @@ fragmentShader =
 
         void main()
         {
-            float y = abs(vPosition.y);
-            vec3 sky = mix(horizonColor, skyColor, y);
+            float y = vPosition.y;
 
-            if (y > fogHeight)
+            if (y > 0.0)
             {
-                gl_FragColor = vec4(sky, 1.0);
+                vec3 sky = mix(horizonColor, skyColor, y);
+
+                if (y > fogHeight)
+                {
+                    gl_FragColor = vec4(sky, 1.0);
+                }
+                else
+                {
+                gl_FragColor = vec4(mix(fogColor, sky, smoothstep(0.0, fogHeight, y)), 1.0);
+                }
             }
             else
             {
-                gl_FragColor = vec4(mix(fogColor, sky, smoothstep(0.0, fogHeight, y)), 1.0);
+                gl_FragColor = vec4(fogColor, 1.0);
             }
         }
     |]
