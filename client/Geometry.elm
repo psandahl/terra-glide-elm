@@ -17,7 +17,7 @@ module Geometry
 -}
 tileSize : Int
 tileSize =
-    100
+    200
 
 
 {-| The radius how far tiles must be available from the view position.

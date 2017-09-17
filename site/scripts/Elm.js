@@ -12610,7 +12610,7 @@ var _psandahl$terra_glide$Geometry$terrainHeight = 200;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
 var _psandahl$terra_glide$Geometry$tileVistaAhead = 800;
-var _psandahl$terra_glide$Geometry$tileSize = 100;
+var _psandahl$terra_glide$Geometry$tileSize = 200;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
 	_elm_lang$core$Json_Decode$map3,
