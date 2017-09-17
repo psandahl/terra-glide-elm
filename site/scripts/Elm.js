@@ -12606,7 +12606,7 @@ var _psandahl$terra_glide$Environment$Gradient = F2(
 
 var _psandahl$terra_glide$Geometry$maxWorld = 1000000000;
 var _psandahl$terra_glide$Geometry$waterHeight = 50;
-var _psandahl$terra_glide$Geometry$terrainHeight = 200;
+var _psandahl$terra_glide$Geometry$terrainHeight = 250;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
 var _psandahl$terra_glide$Geometry$tileVistaAhead = 1000;

@@ -44,7 +44,7 @@ tileVistaAside =
 -}
 terrainHeight : Float
 terrainHeight =
-    200
+    250
 
 
 {-| The height of the water.
