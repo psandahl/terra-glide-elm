@@ -82,6 +82,8 @@ toEntity viewMatrix mvpMatrix environment tile =
         , lowerTerrainUpper = environment.lowerTerrain.upper
         , upperTerrainLower = environment.upperTerrain.lower
         , upperTerrainUpper = environment.upperTerrain.upper
+        , fogColor = environment.fogColor
+        , fogDistance = environment.fogDistance
         }
 
 
@@ -102,6 +104,7 @@ vertexShader :
             , mvpMatrix : Mat4
         }
         { vPosition : Vec3
+        , vTransformedPosition : Vec3
         , vTransformedNormal : Vec3
         }
 vertexShader =
@@ -115,11 +118,13 @@ vertexShader =
         uniform mat4 mvpMatrix;
 
         varying vec3 vPosition;
+        varying vec3 vTransformedPosition;
         varying vec3 vTransformedNormal;
 
         void main()
         {
             vPosition = position;
+            vTransformedPosition = (viewMatrix * vec4(position, 1.0)).xyz;
             vTransformedNormal = (viewMatrix * vec4(normal, 0.0)).xyz;
             gl_Position = mvpMatrix * vec4(position, 1.0);
         }
@@ -139,8 +144,11 @@ fragmentShader :
             , lowerTerrainUpper : Vec3
             , upperTerrainLower : Vec3
             , upperTerrainUpper : Vec3
+            , fogColor : Vec3
+            , fogDistance : Float
         }
         { vPosition : Vec3
+        , vTransformedPosition : Vec3
         , vTransformedNormal : Vec3
         }
 fragmentShader =
@@ -157,8 +165,11 @@ fragmentShader =
         uniform vec3 lowerTerrainUpper;
         uniform vec3 upperTerrainLower;
         uniform vec3 upperTerrainUpper;
+        uniform vec3 fogColor;
+        uniform float fogDistance;
 
         varying vec3 vPosition;
+        varying vec3 vTransformedPosition;
         varying vec3 vTransformedNormal;
 
         // Calculate the texture color for the fragment.
@@ -175,9 +186,15 @@ fragmentShader =
 
         void main()
         {
+            // Calculate the fragment color before applying fog.
             vec3 fragmentColor = baseColor() *
                 (calcAmbientLight() + calcDiffuseLight());
-            gl_FragColor = vec4(fragmentColor, 1.0);
+
+            // Apply a linear fog.
+            float dist = distance(vec3(0.0), vTransformedPosition);
+            vec3 mixedWithFog = mix(fragmentColor, fogColor, smoothstep(0.0, fogDistance, dist));
+
+            gl_FragColor = vec4(mixedWithFog, 1.0);
         }
 
         vec3 baseColor()
