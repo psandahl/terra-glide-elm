@@ -12574,9 +12574,9 @@ var _psandahl$terra_glide$Environment$init = {
 	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1),
 	ambientColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 1),
 	ambientStrength: 0.2,
-	diffuseColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.8, 0.8, 0.8),
+	diffuseColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 182 / 255, 126 / 255, 91 / 255),
 	sunDirection: _elm_community$linear_algebra$Math_Vector3$normalize(
-		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 0))
+		A3(_elm_community$linear_algebra$Math_Vector3$vec3, 2, 1, 0))
 };
 var _psandahl$terra_glide$Environment$Environment = function (a) {
 	return function (b) {

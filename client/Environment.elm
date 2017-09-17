@@ -44,6 +44,6 @@ init =
     , waterColor = vec3 0 0 1
     , ambientColor = vec3 1 1 1
     , ambientStrength = 0.2
-    , diffuseColor = vec3 0.8 0.8 0.8
-    , sunDirection = normalize <| vec3 1 1 0
+    , diffuseColor = vec3 (182 / 255) (126 / 255) (91 / 255)
+    , sunDirection = normalize <| vec3 2 1 0
     }
