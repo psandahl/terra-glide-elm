@@ -35,7 +35,7 @@ init : ( Model, Cmd Msg )
 init =
     let
         navigator =
-            Navigator.init (vec2 123456 0)
+            Navigator.init (vec2 7890600 1100)
 
         ( proposedQueries, terrain ) =
             Terrain.addTileQueries (Navigator.proposeTileQueries navigator) Terrain.init
@@ -43,7 +43,7 @@ init =
         ( { canvasSize = Projection.defaultWindowSize
           , countDown = 60
           , projectionMatrix = Projection.makeProjection Projection.defaultWindowSize
-          , camera = Camera.set (vec3 123456 Geometry.cameraHeight 0) 0
+          , camera = Camera.set (vec3 7890600 Geometry.cameraHeight 1100) 0
           , environment = Environment.init
           , navigator = navigator
           , skyDome = SkyDome.init

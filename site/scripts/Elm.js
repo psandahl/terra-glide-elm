@@ -12612,7 +12612,7 @@ var _psandahl$terra_glide$Geometry$waterHeight = 50;
 var _psandahl$terra_glide$Geometry$terrainHeight = 250;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
-var _psandahl$terra_glide$Geometry$tileVistaAhead = 1200;
+var _psandahl$terra_glide$Geometry$tileVistaAhead = 1300;
 var _psandahl$terra_glide$Geometry$farPlane = 1100;
 var _psandahl$terra_glide$Geometry$tileSize = 200;
 
@@ -13520,7 +13520,7 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 };
 var _psandahl$terra_glide$Main$init = function () {
 	var navigator = _psandahl$terra_glide$Navigator$init(
-		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 123456, 0));
+		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 7890600, 1100));
 	var _p0 = A2(
 		_psandahl$terra_glide$Terrain$addTileQueries,
 		_psandahl$terra_glide$Navigator$proposeTileQueries(navigator),
@@ -13535,7 +13535,7 @@ var _psandahl$terra_glide$Main$init = function () {
 			projectionMatrix: _psandahl$terra_glide$Projection$makeProjection(_psandahl$terra_glide$Projection$defaultWindowSize),
 			camera: A2(
 				_psandahl$terra_glide$Camera$set,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 123456, _psandahl$terra_glide$Geometry$cameraHeight, 0),
+				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 7890600, _psandahl$terra_glide$Geometry$cameraHeight, 1100),
 				0),
 			environment: _psandahl$terra_glide$Environment$init,
 			navigator: navigator,

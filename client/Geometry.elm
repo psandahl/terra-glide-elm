@@ -32,7 +32,7 @@ farPlane =
 -}
 tileVistaAhead : Float
 tileVistaAhead =
-    1200
+    1300
 
 
 tileVistaAside : Float
