@@ -28,8 +28,8 @@ type alias Gradient =
 init : Environment
 init =
     { sky =
-        { lower = vec3 (170 / 255) (204 / 255) (204 / 255)
-        , upper = vec3 (12 / 255) (94 / 255) (170 / 255)
+        { lower = vec3 (246 / 255) (176 / 255) (133 / 255)
+        , upper = vec3 (70 / 255) (106 / 255) (200 / 255)
         }
     , lowerTerrain =
         { lower = vec3 (239 / 255) (141 / 255) (55 / 255)
