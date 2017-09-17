@@ -201,9 +201,9 @@ fragmentShader =
         {
             float y = vPosition.y / terrainHeight;
 
-            vec3 color = mix(lowerTerrainLower, lowerTerrainUpper, smoothstep(0.0, 0.33, y));
-            color = mix(color, upperTerrainLower, smoothstep(0.33, 0.66, y));
-            return mix(color, upperTerrainUpper, smoothstep(0.66, 1.0, y));
+            vec3 color = mix(lowerTerrainLower, lowerTerrainUpper, smoothstep(0.0, 0.20, y));
+            color = mix(color, upperTerrainLower, smoothstep(0.20, 0.7, y));
+            return mix(color, upperTerrainUpper, smoothstep(0.7, 1.0, y));
         }
 
         vec3 lightDirection()

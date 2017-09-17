@@ -31,7 +31,10 @@ view model =
     in
         Html.div
             []
-            [ GL.toHtmlWith
+            [ Html.audio [ Attr.autoplay True, Attr.loop True ]
+                [ Html.source [ Attr.src "/music/song.mp3", Attr.type_ "audio/mpeg" ] []
+                ]
+            , GL.toHtmlWith
                 [ GL.antialias
                 , GL.depth 1
                 ]

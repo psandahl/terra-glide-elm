@@ -33,11 +33,11 @@ init =
         , upper = vec3 (70 / 255) (106 / 255) (200 / 255)
         }
     , lowerTerrain =
-        { lower = vec3 (239 / 255) (141 / 255) (55 / 255)
-        , upper = vec3 0 1 0
+        { lower = vec3 (115 / 255) (69 / 255) (35 / 255)
+        , upper = vec3 (57 / 255) (118 / 255) (40 / 255)
         }
     , upperTerrain =
-        { lower = vec3 (55 / 255) (68 / 255) (71 / 255)
+        { lower = vec3 (45 / 255) (58 / 255) (61 / 255)
         , upper = vec3 1 1 1
         }
     , fogColor = vec3 0.5 0.5 0.5
