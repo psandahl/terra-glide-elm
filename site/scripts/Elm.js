@@ -12609,7 +12609,8 @@ var _psandahl$terra_glide$Geometry$waterHeight = 50;
 var _psandahl$terra_glide$Geometry$terrainHeight = 200;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
-var _psandahl$terra_glide$Geometry$tileVistaAhead = 800;
+var _psandahl$terra_glide$Geometry$tileVistaAhead = 1000;
+var _psandahl$terra_glide$Geometry$farPlane = 800;
 var _psandahl$terra_glide$Geometry$tileSize = 200;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
@@ -13335,7 +13336,7 @@ var _psandahl$terra_glide$Projection$makeProjection = function (windowSize) {
 		45,
 		_elm_lang$core$Basics$toFloat(windowSize.width) / _elm_lang$core$Basics$toFloat(windowSize.height),
 		1,
-		800);
+		_psandahl$terra_glide$Geometry$farPlane);
 };
 
 var _psandahl$terra_glide$Update$httpErrorToString = function (err) {

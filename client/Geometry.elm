@@ -1,6 +1,7 @@
 module Geometry
     exposing
         ( tileSize
+        , farPlane
         , tileVistaAhead
         , tileVistaAside
         , terrainHeight
@@ -20,11 +21,18 @@ tileSize =
     200
 
 
+{-| The far plane of the frustum.
+-}
+farPlane : Float
+farPlane =
+    800
+
+
 {-| The radius how far tiles must be available from the view position.
 -}
 tileVistaAhead : Float
 tileVistaAhead =
-    800
+    1000
 
 
 tileVistaAside : Float
