@@ -12784,7 +12784,6 @@ var _psandahl$terra_glide$Navigator_TileSelector$tiles = function (point) {
 		_psandahl$terra_glide$Navigator_TileSelector$farLeft(point));
 	var xFarLeft = _p3._0;
 	var zFarLeft = _p3._1;
-	var foo = A2(_elm_lang$core$Debug$log, 'tiles, point = ', point);
 	return A2(
 		_elm_lang$core$List$concatMap,
 		A2(_psandahl$terra_glide$Navigator_TileSelector$tileRow, xFarLeft, xFarRight),
