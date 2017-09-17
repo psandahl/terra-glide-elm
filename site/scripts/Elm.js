@@ -13486,9 +13486,14 @@ var _psandahl$terra_glide$Main$subscriptions = function (model) {
 		});
 };
 var _psandahl$terra_glide$Main$init = function () {
-	var terrain = _psandahl$terra_glide$Terrain$init;
 	var navigator = _psandahl$terra_glide$Navigator$init(
 		A2(_elm_community$linear_algebra$Math_Vector2$vec2, 123456, 0));
+	var _p0 = A2(
+		_psandahl$terra_glide$Terrain$addTileQueries,
+		_psandahl$terra_glide$Navigator$proposeTileQueries(navigator),
+		_psandahl$terra_glide$Terrain$init);
+	var proposedQueries = _p0._0;
+	var terrain = _p0._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {
@@ -13512,8 +13517,7 @@ var _psandahl$terra_glide$Main$init = function () {
 				_0: A2(_elm_lang$core$Task$perform, _psandahl$terra_glide$Msg$WindowSize, _elm_lang$window$Window$size),
 				_1: {
 					ctor: '::',
-					_0: _psandahl$terra_glide$Navigator$runTileQueries(
-						_psandahl$terra_glide$Navigator$proposeTileQueries(navigator)),
+					_0: _psandahl$terra_glide$Navigator$runTileQueries(proposedQueries),
 					_1: {ctor: '[]'}
 				}
 			})

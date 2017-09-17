@@ -37,8 +37,8 @@ init =
         navigator =
             Navigator.init (vec2 123456 0)
 
-        terrain =
-            Terrain.init
+        ( proposedQueries, terrain ) =
+            Terrain.addTileQueries (Navigator.proposeTileQueries navigator) Terrain.init
     in
         ( { canvasSize = Projection.defaultWindowSize
           , countDown = 60
@@ -53,7 +53,7 @@ init =
           }
         , Cmd.batch
             [ Task.perform WindowSize Window.size
-            , Navigator.runTileQueries <| Navigator.proposeTileQueries navigator
+            , Navigator.runTileQueries proposedQueries
             ]
         )
 
