@@ -25,14 +25,14 @@ tileSize =
 -}
 farPlane : Float
 farPlane =
-    800
+    1100
 
 
 {-| The radius how far tiles must be available from the view position.
 -}
 tileVistaAhead : Float
 tileVistaAhead =
-    1000
+    1200
 
 
 tileVistaAside : Float

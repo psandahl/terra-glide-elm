@@ -12570,8 +12570,8 @@ var _psandahl$terra_glide$Environment$init = {
 		upper: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 1)
 	},
 	fogColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0.5, 0.5, 0.5),
-	fogHeight: 0.1,
-	fogDistance: 1200,
+	fogHeight: 5.0e-2,
+	fogDistance: 1600,
 	waterColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1),
 	ambientColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 1),
 	ambientStrength: 0.2,
@@ -12612,8 +12612,8 @@ var _psandahl$terra_glide$Geometry$waterHeight = 50;
 var _psandahl$terra_glide$Geometry$terrainHeight = 250;
 var _psandahl$terra_glide$Geometry$cameraHeight = _psandahl$terra_glide$Geometry$terrainHeight + 1;
 var _psandahl$terra_glide$Geometry$tileVistaAside = 600;
-var _psandahl$terra_glide$Geometry$tileVistaAhead = 1000;
-var _psandahl$terra_glide$Geometry$farPlane = 800;
+var _psandahl$terra_glide$Geometry$tileVistaAhead = 1200;
+var _psandahl$terra_glide$Geometry$farPlane = 1100;
 var _psandahl$terra_glide$Geometry$tileSize = 200;
 
 var _psandahl$terra_glide$Terrain_TileData$decodeVec3 = A4(
