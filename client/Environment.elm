@@ -41,8 +41,8 @@ init =
         , upper = vec3 1 1 1
         }
     , fogColor = vec3 0.5 0.5 0.5
-    , fogHeight = 0.05
-    , fogDistance = 1600
+    , fogHeight = 0.7
+    , fogDistance = 1500
     , waterColor = vec3 0 0 1
     , ambientColor = vec3 1 1 1
     , ambientStrength = 0.2

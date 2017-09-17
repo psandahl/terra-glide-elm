@@ -29,6 +29,10 @@ main = do
             serveFile "scripts" "application/javascript; charset=utf-8" =<<
                 param "file"
 
+        -- Serving music.
+        get "/music/:file" $
+            serveFile "music" "audio/mpeg" =<< param "file"
+
         -- Terrain generation APIs.
         get "/terrain/heightmap/png" $ heightmapPng perlin `rescue` badRequest
         get "/terrain/heightmap/r16" $ heightmapR16 perlin `rescue` badRequest
